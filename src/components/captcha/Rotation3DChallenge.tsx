@@ -52,7 +52,7 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
     }));
     faceDepths.sort((a, b) => a.depth - b.depth);
 
-    for (const { face } of faceDepths) {
+    faceDepths.forEach(({ face }, sortedIdx) => {
       ctx.beginPath();
       face.forEach((vi, i) => {
         const [px, py] = projected[vi];
@@ -60,7 +60,7 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
         else ctx.lineTo(cx + px, cy + py);
       });
       ctx.closePath();
-      const shade = faceDepths.indexOf(faceDepths.find(f => f.face === face)!) * 0.12;
+      const shade = sortedIdx * 0.12;
       ctx.fillStyle = color;
       ctx.globalAlpha = 0.3 + shade;
       ctx.fill();
@@ -68,7 +68,7 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
       ctx.strokeStyle = color;
       ctx.lineWidth = 1.5;
       ctx.stroke();
-    }
+    });
   } else if (shape === 'prism') {
     const top = [[-s, -s * 0.6, 0], [s, -s * 0.6, 0], [0, -s * 0.6, -s * 1.2]];
     const bot = [[-s, s * 0.6, 0], [s, s * 0.6, 0], [0, s * 0.6, -s * 1.2]];
@@ -142,7 +142,16 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
     ctx.clearRect(0, 0, canvasSize, canvasSize);
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
-    ctx.roundRect(0, 0, canvasSize, canvasSize, 10);
+    ctx.moveTo(10, 0);
+    ctx.lineTo(canvasSize - 10, 0);
+    ctx.arcTo(canvasSize, 0, canvasSize, 10, 10);
+    ctx.lineTo(canvasSize, canvasSize - 10);
+    ctx.arcTo(canvasSize, canvasSize, canvasSize - 10, canvasSize, 10);
+    ctx.lineTo(10, canvasSize);
+    ctx.arcTo(0, canvasSize, 0, canvasSize - 10, 10);
+    ctx.lineTo(0, 10);
+    ctx.arcTo(0, 0, 10, 0, 10);
+    ctx.closePath();
     ctx.fill();
 
     // Grid
@@ -172,10 +181,7 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5 text-center">
         <p className="text-xs font-medium text-emerald-300">
-          Rota el {shapeLabels[shapeType]} para que coincida con el ángulo objetivo
-        </p>
-        <p className="text-[10px] text-gray-500 mt-1">
-          Objetivo: X={targetRotationX}° Y={targetRotationY}°
+          Rota el {shapeLabels[shapeType]} hasta que coincida con el objetivo
         </p>
       </motion.div>
 

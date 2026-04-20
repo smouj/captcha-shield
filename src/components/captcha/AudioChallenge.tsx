@@ -13,6 +13,7 @@ export default function AudioChallenge({ challengeData, onVerify }: Props) {
   const [userAnswer, setUserAnswer] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -20,6 +21,7 @@ export default function AudioChallenge({ challengeData, onVerify }: Props) {
 
   const playTones = useCallback(async () => {
     if (isPlaying) return;
+    setHasInteracted(true);
     setIsPlaying(true);
 
     try {
@@ -36,7 +38,16 @@ export default function AudioChallenge({ challengeData, onVerify }: Props) {
           cctx.clearRect(0, 0, canvas.width, canvas.height);
           cctx.fillStyle = '#0f172a';
           cctx.beginPath();
-          cctx.roundRect(0, 0, canvas.width, canvas.height, 8);
+          cctx.moveTo(8, 0);
+          cctx.lineTo(canvas.width - 8, 0);
+          cctx.arcTo(canvas.width, 0, canvas.width, 8, 8);
+          cctx.lineTo(canvas.width, canvas.height - 8);
+          cctx.arcTo(canvas.width, canvas.height, canvas.width - 8, canvas.height, 8);
+          cctx.lineTo(8, canvas.height);
+          cctx.arcTo(0, canvas.height, 0, canvas.height - 8, 8);
+          cctx.lineTo(0, 8);
+          cctx.arcTo(0, 0, 8, 0, 8);
+          cctx.closePath();
           cctx.fill();
 
           // Draw frequency bars
@@ -89,11 +100,12 @@ export default function AudioChallenge({ challengeData, onVerify }: Props) {
     setPlayCount(prev => prev + 1);
   }, [isPlaying, tones]);
 
-  // Auto-play on mount
+  // Auto-play only after first user interaction
   useEffect(() => {
-    const timer = setTimeout(() => playTones(), 500);
+    if (!hasInteracted || playCount > 0) return;
+    const timer = setTimeout(() => playTones(), 300);
     return () => clearTimeout(timer);
-  }, []);
+  }, [hasInteracted, playCount, playTones]);
 
   const handleSubmit = useCallback(() => {
     const numAnswer = parseInt(userAnswer, 10);

@@ -115,40 +115,5 @@ export default function BehaviorTracker({ onData, active, challengeType }: Behav
     }
   }, [active, handleMouseMove, handlePointerDown, handlePointerUp, handleScroll, handleKeyDown, handleKeyUp, handleVisibility]);
 
-  // Registrar getData via custom event
-  const dataRef = useRef(onData);
-  dataRef.current = onData;
-
-  useEffect(() => {
-    const handler = () => {
-      dataRef.current({
-        mouseMovements: mouseMovementsRef.current,
-        clicks: clicksRef.current,
-        scrollEvents: scrollEventsRef.current,
-        keyEvents: keyEventsRef.current,
-        visibilityEvents: visibilityEventsRef.current,
-        startTime: startTimeRef.current,
-        submitTime: Date.now(),
-        challengeType,
-        totalInteractions: clicksRef.current.length,
-        deviceFingerprint: deviceFingerprintRef.current || collectDeviceFingerprint(),
-      });
-    };
-    window.addEventListener('captcha-get-data', handler);
-    return () => window.removeEventListener('captcha-get-data', handler);
-  }, [challengeType]);
-
   return null;
-}
-
-export function getBehavioralData(): BehavioralData | null {
-  const event = new Event('captcha-get-data');
-  let data: BehavioralData | null = null;
-
-  const handler = () => {
-    // Solved via ref in the tracker
-  };
-
-  window.dispatchEvent(event);
-  return data;
 }

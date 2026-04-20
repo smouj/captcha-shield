@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Loader2, Shield, Smartphone, AlertCircle, RefreshCw } from 'lucide-react';
@@ -50,7 +50,7 @@ export default function CaptchaWidget() {
   const behavioralDataRef = useRef<BehavioralData | null>(null);
 
   // Cooldown timer
-  useState(() => {
+  useEffect(() => {
     if (cooldown > 0) {
       const timer = setInterval(() => setCooldown(prev => {
         if (prev <= 1) { clearInterval(timer); return 0; }
@@ -58,7 +58,7 @@ export default function CaptchaWidget() {
       }), 1000);
       return () => clearInterval(timer);
     }
-  });
+  }, [cooldown]);
 
   const generateCaptcha = useCallback(() => {
     if (cooldown > 0) return;
@@ -126,7 +126,14 @@ export default function CaptchaWidget() {
         riskScore: riskAssessment.riskScore,
         riskLevel: riskAssessment.riskLevel,
       };
-      setLogs(prev => [logEntry, ...prev].slice(0, 50));
+      setLogs(prev => {
+        const updated = [logEntry, ...prev].slice(0, 50);
+        try {
+          const existing = JSON.parse(localStorage.getItem('captcha-shield-logs') || '[]') as AttemptLog[];
+          localStorage.setItem('captcha-shield-logs', JSON.stringify([logEntry, ...existing].slice(0, 200)));
+        } catch {}
+        return updated;
+      });
 
       setResult({
         success: verification.success && !riskAssessment.isBot,
@@ -154,14 +161,21 @@ export default function CaptchaWidget() {
         deviceFingerprint: null,
         timeTaken: 0,
       });
-      setLogs(prev => [{
-        id: crypto.randomUUID(),
-        timestamp: Date.now(),
-        challengeType: 'qr_mobile',
-        success: true,
-        riskScore: 0,
-        riskLevel: 'low',
-      }, ...prev].slice(0, 50));
+      setLogs(prev => {
+        const logEntry = {
+          id: crypto.randomUUID(),
+          timestamp: Date.now(),
+          challengeType: 'qr_mobile',
+          success: true,
+          riskScore: 0,
+          riskLevel: 'low',
+        };
+        try {
+          const existing = JSON.parse(localStorage.getItem('captcha-shield-logs') || '[]') as AttemptLog[];
+          localStorage.setItem('captcha-shield-logs', JSON.stringify([logEntry, ...existing].slice(0, 200)));
+        } catch {}
+        return [logEntry, ...prev].slice(0, 50);
+      });
       setState('result');
     }
   }, []);

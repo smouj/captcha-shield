@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://smouj.github.io'),
   title: "CAPTCHA Shield v3.0 - Sistema Anti-Bot Avanzado",
   description:
     "Sistema CAPTCHA anti-bot/anti-IA con 7 tipos de desafío, análisis comportamental de 14 señales y verificación móvil QR. 100% del lado del cliente.",

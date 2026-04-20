@@ -195,10 +195,11 @@ const SECONDARY_COLORS = [
 ];
 
 const INSTRUCTIONS = [
-  { text: 'Selecciona todas las figuras rojas con bordes curvos que NO sean círculos', check: (c: ImageCell) => (c.color === '#ef4444' || c.color === '#f43f5e') && c.hasCurvedEdges && c.shape !== 'circle' },
-  { text: 'Selecciona todas las figuras que tengan degradado y sean verdes o azules', check: (c: ImageCell) => c.hasGradient && (c.color === '#22c55e' || c.color === '#3b82f6' || c.color === '#06b6d4') },
+  { text: 'Selecciona todas las figuras rojas', check: (c: ImageCell) => (c.color === '#ef4444' || c.color === '#f43f5e') },
+  { text: 'Selecciona todas las estrellas', check: (c: ImageCell) => c.shape === 'star' },
+  { text: 'Selecciona todas las figuras azules', check: (c: ImageCell) => c.color === '#3b82f6' || c.color === '#06b6d4' },
+  { text: 'Selecciona las figuras que tengan degradado y sean verdes o azules', check: (c: ImageCell) => c.hasGradient && (c.color === '#22c55e' || c.color === '#3b82f6' || c.color === '#06b6d4') },
   { text: 'Selecciona todas las figuras distorsionadas con bordes rectos', check: (c: ImageCell) => c.distorted && !c.hasCurvedEdges },
-  { text: 'Selecciona todas las figuras pequeñas con sombra', check: (c: ImageCell) => c.size < 35 && c.hasShadow },
   { text: 'Selecciona las figuras que sean amarillas O púrpura pero NO estrellas', check: (c: ImageCell) => (c.color === '#eab308' || c.color === '#a855f7') && c.shape !== 'star' },
   { text: 'Selecciona todas las figuras grandes rotadas más de 20 grados', check: (c: ImageCell) => c.size > 35 && c.rotation > 20 },
 ];
@@ -233,7 +234,8 @@ export function generateImageSelectChallenge(): ImageSelectChallengeData {
     const idx = Math.floor(Math.random() * gridSize);
     const forcedShape = instructionDef.text.includes('bordes curvos') ? 'star'
       : instructionDef.text.includes('bordes rectos') ? 'square'
-      : instructionDef.text.includes('estrellas') ? 'circle'
+      : instructionDef.text.includes('NO estrellas') ? 'circle'
+      : instructionDef.text.includes('estrellas') ? 'star'
       : SHAPES[Math.floor(Math.random() * SHAPES.length)];
 
     const forcedColor = instructionDef.text.includes('rojas') ? '#ef4444'
@@ -592,9 +594,8 @@ export function verifySolution(challenge: ChallengeData, response: any): { succe
 
     case 'timeline_order': {
       const correct = (challenge as TimelineOrderChallengeData).correctOrder;
-      const userOrder = (response.order as number[]).sort((a, b) => a - b);
-      const correctSorted = [...correct].sort((a, b) => a - b);
-      if (JSON.stringify(userOrder) === JSON.stringify(correctSorted)) {
+      const userOrder = response.order as number[];
+      if (JSON.stringify(userOrder) === JSON.stringify(correct)) {
         return { success: true, message: 'Orden cronológico correcto' };
       }
       return { success: false, message: 'Orden incorrecto. Revisa las fechas.' };

@@ -74,7 +74,16 @@ export default function RotationChallenge({ challengeData, onVerify }: RotationC
     // Fondo
     ctx.fillStyle = '#111827';
     ctx.beginPath();
-    ctx.roundRect(0, 0, w, h, 12);
+    ctx.moveTo(12, 0);
+    ctx.lineTo(w - 12, 0);
+    ctx.arcTo(w, 0, w, 12, 12);
+    ctx.lineTo(w, h - 12);
+    ctx.arcTo(w, h, w - 12, h, 12);
+    ctx.lineTo(12, h);
+    ctx.arcTo(0, h, 0, h - 12, 12);
+    ctx.lineTo(0, 12);
+    ctx.arcTo(0, 0, 12, 0, 12);
+    ctx.closePath();
     ctx.fill();
 
     // Cuadrícula

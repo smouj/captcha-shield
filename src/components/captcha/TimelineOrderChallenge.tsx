@@ -70,11 +70,6 @@ export default function TimelineOrderChallenge({ challengeData, onVerify }: Prop
                   {event.title}
                 </p>
               </div>
-
-              {/* Date */}
-              <span className="text-[10px] text-gray-500 font-mono flex-shrink-0">
-                {event.date}
-              </span>
             </motion.button>
           );
         })}
