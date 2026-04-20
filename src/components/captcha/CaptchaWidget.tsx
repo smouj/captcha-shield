@@ -209,7 +209,7 @@ export default function CaptchaWidget() {
         <div className="flex items-center justify-between px-4 py-2.5 bg-gray-800/50 border-b border-gray-700/50">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg overflow-hidden">
-              <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={28} height={28} className="w-full h-full object-cover" />
+              <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={28} height={28} className="w-full h-full object-cover" />
             </div>
             <div>
               <h2 className="text-xs font-semibold text-gray-200">CAPTCHA Shield</h2>
@@ -258,7 +258,7 @@ export default function CaptchaWidget() {
             {state === 'idle' && verifyMode === 'captcha' && cooldown === 0 && !error && (
               <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto">
-                  <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
+                  <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-200">Verificación de seguridad</h3>
@@ -331,7 +331,7 @@ export default function CaptchaWidget() {
 
         {/* Footer */}
         <div className="px-4 py-2 bg-gray-800/30 border-t border-gray-700/50 flex items-center justify-between">
-          <span className="text-[9px] text-gray-600">Anti-Bot v3.0 · 14 señales · 7 desafíos</span>
+          <span className="text-[9px] text-gray-600">Anti-Bot v3.1 · 14 señales · 7 desafíos</span>
           <div className="flex items-center gap-2">
             {failCount > 0 && (
               <span className="text-[9px] text-amber-500">Fallos: {failCount}/3</span>

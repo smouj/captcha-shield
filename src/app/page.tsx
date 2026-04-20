@@ -59,7 +59,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl overflow-hidden border border-emerald-500/20">
-                <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={32} height={32} className="w-full h-full object-cover" />
+                <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={32} height={32} className="w-full h-full object-cover" />
               </div>
               <div>
                 <h1 className="text-sm font-bold text-gray-100 tracking-tight">CAPTCHA Shield</h1>
@@ -233,7 +233,7 @@ export default function Home() {
         <footer className="border-t border-gray-800/50 bg-gray-950/80 backdrop-blur-md mt-auto">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={14} height={14} className="opacity-40" />
+              <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={14} height={14} className="opacity-40" />
               <span className="text-[10px] text-gray-600">CAPTCHA Shield v3.1 — Sistema Anti-Bot/AI</span>
             </div>
             <div className="flex items-center gap-3 text-[10px] text-gray-600">

@@ -48,7 +48,7 @@
   // 1. CONSTANTS & VERSION
   // ---------------------------------------------------------------------------
 
-  var VERSION = '3.0.0';
+  var VERSION = '3.1.0';
   var WIDGET_BASE_URL = 'https://smouj.github.io/captcha-shield';
   var ALLOWED_ORIGIN = 'https://smouj.github.io';
   var DEFAULT_IFRAME_HEIGHT = 420; // px — initial height before auto-resize

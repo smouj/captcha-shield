@@ -91,7 +91,7 @@ export default function QRVerification({ onVerified }: Props) {
         {phase === 'idle' && (
           <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
             <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto">
-              <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
+              <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-200">Verificación móvil</h3>

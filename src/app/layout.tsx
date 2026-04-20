@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   description:
     "Sistema CAPTCHA anti-bot/anti-IA instalable en cualquier web con 2 líneas de código. 7 desafíos, 14 señales, QR móvil, personalizable. 100% client-side.",
   icons: {
-    icon: "/logo-icon-white.png",
-    shortcut: "/logo-icon-white.png",
-    apple: "/logo-icon-black.png",
+    icon: "/captcha-shield/logo-icon-white.png",
+    shortcut: "/captcha-shield/logo-icon-white.png",
+    apple: "/captcha-shield/logo-icon-black.png",
   },
   openGraph: {
     title: "CAPTCHA Shield v3.1",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/social-banner.png",
+        url: "/captcha-shield/social-banner.png",
         width: 1536,
         height: 1024,
         alt: "CAPTCHA Shield v3.1",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CAPTCHA Shield v3.1",
     description: "Installable Anti-Bot / Anti-AI CAPTCHA System",
-    images: ["/social-banner.png"],
+    images: ["/captcha-shield/social-banner.png"],
   },
 };
 

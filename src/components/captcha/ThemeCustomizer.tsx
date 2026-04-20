@@ -48,7 +48,7 @@ const LABELS: Record<string, Record<string, string>> = {
     challengeDesc: '7 tipos de desafío + 14 señales',
     signalsActive: '14 señales activas',
     verified: 'Verificado',
-    antiBot: 'Anti-Bot v3.0 · 14 señales · 7 desafíos',
+    antiBot: 'Anti-Bot v3.1 · 14 señales · 7 desafíos',
     captchaTab: 'CAPTCHA',
     mobileQR: 'Móvil QR',
     configTab: 'Config',

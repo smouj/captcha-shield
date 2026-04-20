@@ -101,7 +101,7 @@ export default function AdminDashboard() {
     <div className="space-y-4">
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <StatCard icon={<Image src="/logo-icon-white.png" alt="" width={14} height={14} className="w-3.5 h-3.5" />}
+        <StatCard icon={<Image src="/captcha-shield/logo-icon-white.png" alt="" width={14} height={14} className="w-3.5 h-3.5" />}
           label="Total" value={analytics.total} color="text-emerald-400" bg="bg-emerald-500/10" />
         <StatCard icon={<Activity className="w-3.5 h-3.5" />}
           label="Tasa éxito" value={`${analytics.successRate}%`} color="text-blue-400" bg="bg-blue-500/10" />
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
         className="bg-gray-900/60 border border-gray-700/50 rounded-xl p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <Zap className="w-3.5 h-3.5 text-emerald-400" />
-          <h3 className="text-xs font-semibold text-gray-200">Motor de análisis v3.0</h3>
+          <h3 className="text-xs font-semibold text-gray-200">Motor de análisis v3.1</h3>
         </div>
         <div className="grid grid-cols-2 gap-2 text-[10px]">
           <div className="text-gray-400">Señales de comportamiento:</div>
