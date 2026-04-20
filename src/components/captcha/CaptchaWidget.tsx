@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Loader2, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
+import { Loader2, AlertCircle } from 'lucide-react';
 import BehaviorTracker from './BehaviorTracker';
 import PuzzleChallenge from './PuzzleChallenge';
 import ImageSelectChallenge from './ImageSelectChallenge';
@@ -163,8 +164,8 @@ export default function CaptchaWidget() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 bg-gray-800/50 border-b border-gray-700/50">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-emerald-500/15 rounded-lg flex items-center justify-center">
-              <Shield className="w-4 h-4 text-emerald-400" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden">
+              <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={32} height={32} className="w-full h-full object-cover" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-gray-200">CAPTCHA Shield</h2>
@@ -203,8 +204,8 @@ export default function CaptchaWidget() {
                 exit={{ opacity: 0 }}
                 className="text-center space-y-4"
               >
-                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto">
-                  <Shield className="w-8 h-8 text-emerald-400" />
+                <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto">
+                  <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={64} height={64} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-gray-200">

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Activity, Shield, Clock, RefreshCw } from 'lucide-react';
+import Image from 'next/image';
+import { BarChart3, Activity, Clock, RefreshCw } from 'lucide-react';
 
 interface Analytics {
   totalSessions: number;
@@ -106,7 +107,7 @@ export default function AdminDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
-          icon={<Shield className="w-4 h-4" />}
+          icon={<Image src="/logo-icon-white.png" alt="" width={16} height={16} className="w-4 h-4" />}
           label="Total sesiones"
           value={analytics.totalSessions}
           color="text-emerald-400"

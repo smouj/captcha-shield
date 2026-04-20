@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Brain, Eye, Activity, Zap, Lock, Fingerprint, Gauge } from 'lucide-react';
+import Image from 'next/image';
+import { Brain, Eye, Activity, Zap, Lock, Fingerprint, Gauge } from 'lucide-react';
 import CaptchaWidget from '@/components/captcha/CaptchaWidget';
 import AdminDashboard from '@/components/captcha/AdminDashboard';
 
@@ -59,8 +60,8 @@ export default function Home() {
         <header className="border-b border-gray-800/50 bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center border border-emerald-500/20">
-                <Shield className="w-5 h-5 text-emerald-400" />
+              <div className="w-9 h-9 rounded-xl overflow-hidden border border-emerald-500/20">
+                <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={36} height={36} className="w-full h-full object-cover" />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-100 tracking-tight">CAPTCHA Shield</h1>
@@ -256,7 +257,7 @@ export default function Home() {
         <footer className="border-t border-gray-800/50 bg-gray-950/80 backdrop-blur-md mt-auto">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-500/50" />
+              <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={16} height={16} className="opacity-40" />
               <span className="text-xs text-gray-600">CAPTCHA Shield — Sistema Anti-Bot</span>
             </div>
             <div className="flex items-center gap-4 text-xs text-gray-600">
