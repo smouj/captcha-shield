@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAPTCHA Shield — Advanced Anti-Bot CAPTCHA System</title>
+  <meta name="description" content="Advanced anti-bot / anti-AI CAPTCHA system with 6-signal behavioral analysis engine. Sistema avanzado de CAPTCHA anti-bot y anti-IA." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CAPTCHA Shield" />
+  <meta property="og:description" content="Advanced Anti-Bot / Anti-AI CAPTCHA System" />
+  <meta property="og:image" content="social-banner.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://smouj.github.io/captcha-shield/" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CAPTCHA Shield" />
+  <meta name="twitter:description" content="Advanced Anti-Bot / Anti-AI CAPTCHA System" />
+  <meta name="twitter:image" content="social-banner.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo-icon-white.png" />
+  <link rel="apple-touch-icon" href="logo-icon-black.png" />
+
+  <!-- Preload fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================
+       CSS Variables & Reset
+       ============================================ */
+    :root {
+      --bg-primary: #030712;
+      --bg-secondary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.6);
+      --bg-card-hover: rgba(15, 23, 42, 0.8);
+      --border: rgba(55, 65, 81, 0.5);
+      --border-light: rgba(55, 65, 81, 0.3);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --emerald-400: #34d399;
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
+      --emerald-glow: rgba(16, 185, 129, 0.15);
+      --emerald-glow-strong: rgba(16, 185, 129, 0.25);
+      --red-400: #f87171;
+      --red-500: #ef4444;
+      --yellow-400: #facc15;
+      --yellow-500: #eab308;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ============================================
+       Background Effects
+       ============================================ */
+    .bg-effects {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-effects .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+    }
+    .bg-effects .orb-1 {
+      width: 600px; height: 600px;
+      background: rgba(16, 185, 129, 0.05);
+      top: -200px; left: 10%;
+    }
+    .bg-effects .orb-2 {
+      width: 500px; height: 500px;
+      background: rgba(16, 185, 129, 0.04);
+      bottom: -150px; right: 10%;
+    }
+    .bg-effects .orb-3 {
+      width: 800px; height: 800px;
+      background: rgba(16, 185, 129, 0.03);
+      top: 40%; left: 30%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ============================================
+       Layout
+       ============================================ */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .relative-z { position: relative; z-index: 1; }
+
+    /* ============================================
+       Header / Navbar
+       ============================================ */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .navbar .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .navbar .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .navbar .brand img {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .navbar .brand-text h1 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .navbar .brand-text p {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: -1px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .nav-tab {
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-sans);
+    }
+    .nav-tab:hover { color: var(--text-secondary); }
+    .nav-tab.active {
+      background: var(--emerald-glow);
+      color: var(--emerald-400);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    /* ============================================
+       Hero
+       ============================================ */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--emerald-glow);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 999px;
+      padding: 6px 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--emerald-400);
+      animation: fadeInDown 0.6s ease-out;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-500);
+      animation: pulse 2s infinite;
+    }
+    .hero h2 {
+      font-size: clamp(30px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    .hero h2 .gradient {
+      background: linear-gradient(135deg, var(--emerald-400), var(--emerald-500));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+
+    /* ============================================
+       Sections
+       ============================================ */
+    .section { padding-bottom: 64px; }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto 32px;
+    }
+
+    /* ============================================
+       Tab Content
+       ============================================ */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+
+    /* ============================================
+       CAPTCHA Widget
+       ============================================ */
+    .captcha-wrapper {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .captcha-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
+    }
+    .captcha-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.5);
+      border-bottom: 1px solid var(--border);
+    }
+    .captcha-header .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .captcha-header .left img {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+    }
+    .captcha-header .left h3 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .captcha-header .left .subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .captcha-header .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .captcha-header .status .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--emerald-500);
+      animation: pulse 2s infinite;
+    }
+    .captcha-header .verified-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--emerald-400);
+      background: var(--emerald-glow);
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .captcha-body {
+      padding: 20px;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .captcha-footer {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .captcha-footer span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .captcha-footer button {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color 0.2s;
+    }
+    .captcha-footer button:hover { color: var(--text-secondary); }
+
+    /* Idle State */
+    .idle-state {
+      text-align: center;
+    }
+    .idle-state .logo-container {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 auto 16px;
+    }
+    .idle-state .logo-container img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .idle-state h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .idle-state p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--emerald-600);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+    }
+    .btn-primary:hover { background: var(--emerald-500); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(55, 65, 81, 0.5);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(55, 65, 81, 0.7); }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--emerald-400);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    /* Challenge Styles */
+    .challenge { width: 100%; }
+    .challenge-instruction {
+      background: var(--emerald-glow);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+    }
+    .challenge-instruction p {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--emerald-300);
+    }
+    .challenge-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    /* Puzzle Canvas */
+    .puzzle-container {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .puzzle-container canvas {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+    .puzzle-slider {
+      width: 100%;
+      max-width: 360px;
+      margin: 12px auto 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .puzzle-slider .track {
+      flex: 1;
+      height: 44px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      touch-action: none;
+    }
+    .puzzle-slider .track .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald-glow), var(--emerald-glow-strong));
+      border-radius: 10px;
+      transition: width 0.05s;
+    }
+    .puzzle-slider .track .handle {
+      position: absolute;
+      top: 2px;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .puzzle-slider .track .handle:active { cursor: grabbing; }
+    .puzzle-slider .track .handle .arrows {
+      color: var(--text-secondary);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    /* Image Selection Grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .image-cell {
+      aspect-ratio: 1;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .image-cell:hover { border-color: rgba(75, 85, 99, 0.6); background: rgba(15, 23, 42, 0.6); }
+    .image-cell.selected {
+      border-color: var(--emerald-400);
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+    }
+    .image-cell svg { width: 70%; height: 70%; }
+    .image-cell .check {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--emerald-500);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-cell.selected .check { display: flex; }
+    .image-cell .check svg { width: 10px; height: 10px; }
+
+    /* Math Challenge */
+    .math-container {
+      text-align: center;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .math-container canvas {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .math-input-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .math-input-row input {
+      width: 100px;
+      padding: 10px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .math-input-row input:focus { border-color: var(--emerald-500); }
+
+    /* Pattern Trace */
+    .pattern-container {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .pattern-container canvas {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+
+    /* Result View */
+    .result-view {
+      width: 100%;
+      text-align: center;
+    }
+    .result-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .result-icon.success {
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+    }
+    .result-icon.fail {
+      background: rgba(239, 68, 68, 0.15);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+    }
+    .result-icon svg { width: 36px; height: 36px; }
+    .result-view h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .result-view h3.success { color: var(--emerald-400); }
+    .result-view h3.fail { color: var(--red-400); }
+    .result-view .message { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+
+    /* Risk Score */
+    .risk-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .risk-card .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .risk-card .header span { font-size: 12px; color: var(--text-muted); }
+    .risk-card .score-value { font-size: 12px; font-weight: 700; font-family: var(--font-mono); }
+    .risk-card .score-value.low { color: var(--emerald-400); }
+    .risk-card .score-value.mid { color: var(--yellow-400); }
+    .risk-card .score-value.high { color: var(--red-400); }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.8s ease-out;
+    }
+    .progress-bar .fill.low { background: var(--emerald-500); }
+    .progress-bar .fill.mid { background: var(--yellow-500); }
+    .progress-bar .fill.high { background: var(--red-500); }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+    }
+    .progress-labels span { font-size: 10px; color: var(--text-muted); }
+
+    /* Signals */
+    .signals-list {
+      text-align: left;
+      margin-top: 16px;
+    }
+    .signals-list h4 {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .signal-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 12px;
+    }
+    .signal-item .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .signal-item .dot.low { background: var(--emerald-500); }
+    .signal-item .dot.mid { background: var(--yellow-500); }
+    .signal-item .dot.high { background: var(--red-500); }
+    .signal-item .name { flex: 1; color: var(--text-secondary); }
+    .signal-item .value { color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; }
+    .signal-item .mini-bar {
+      width: 60px;
+      height: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .signal-item .mini-bar .fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease-out 0.3s;
+    }
+
+    /* ============================================
+       Features Grid
+       ============================================ */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: all 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(16, 185, 129, 0.2);
+      background: var(--bg-card-hover);
+    }
+    .feature-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--emerald-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 18px;
+      transition: background 0.3s;
+    }
+    .feature-card:hover .feature-icon { background: var(--emerald-glow-strong); }
+    .feature-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .feature-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ============================================
+       How It Works Steps
+       ============================================ */
+    .steps-container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .step-number {
+      width: 32px; height: 32px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: var(--emerald-glow);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--emerald-400);
+    }
+    .step h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .step p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    .formula-box {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .formula-box h4 {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .formula-code {
+      background: var(--bg-primary);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: rgba(52, 211, 153, 0.85);
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    /* ============================================
+       Footer
+       ============================================ */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(12px);
+      margin-top: auto;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 20px 0;
+    }
+    .footer-inner .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-inner .brand img {
+      width: 16px; height: 16px;
+      opacity: 0.4;
+    }
+    .footer-inner .brand span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-secondary); }
+
+    /* ============================================
+       Responsive
+       ============================================ */
+    @media (max-width: 640px) {
+      .navbar .inner { padding: 12px 0; }
+      .nav-tab { padding: 5px 12px; font-size: 11px; }
+      .hero { padding: 40px 0 28px; }
+      .captcha-body { min-height: 280px; padding: 16px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps-container { padding: 24px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+    /* ============================================
+       Animations
+       ============================================ */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Effects -->
+  <div class="bg-effects">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="relative-z" style="display:flex;flex-direction:column;min-height:100vh;">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="container">
+        <div class="inner">
+          <a href="#" class="brand">
+            <img src="logo-icon-white.png" alt="CAPTCHA Shield" />
+            <div class="brand-text">
+              <h1>CAPTCHA Shield</h1>
+              <p>Sistema Anti-Bot v2.0</p>
+            </div>
+          </a>
+          <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('demo')">Demo</button>
+            <button class="nav-tab" onclick="switchTab('features')">Features</button>
+            <button class="nav-tab" onclick="switchTab('docs')">Docs</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container" style="flex:1;">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-badge"><div class="dot"></div> Análisis de comportamiento activo</div>
+        <h2>Verificación de seguridad<br/><span class="gradient">inteligente anti-bot</span></h2>
+        <p>Sistema CAPTCHA avanzado que combina desafíos interactivos con análisis profundo de comportamiento para distinguir entre humanos y bots.</p>
+      </section>
+
+      <!-- DEMO TAB -->
+      <div id="tab-demo" class="tab-content active section">
+        <div class="captcha-wrapper">
+          <div class="captcha-card">
+            <div class="captcha-header">
+              <div class="left">
+                <img src="logo-icon-white.png" alt="" />
+                <div>
+                  <h3>CAPTCHA Shield</h3>
+                  <div class="subtitle" id="challengeLabel"></div>
+                </div>
+              </div>
+              <div id="headerStatus"></div>
+            </div>
+            <div class="captcha-body" id="captchaBody">
+              <!-- Dynamic content here -->
+            </div>
+            <div class="captcha-footer">
+              <span>Anti-Bot v2.0 · Análisis de comportamiento activo</span>
+              <button id="newChallengeBtn" onclick="generateCaptcha()" style="display:none;">↻ Nuevo desafío</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURES TAB -->
+      <div id="tab-features" class="tab-content section">
+        <h3 class="section-title">Protección multicapa contra bots</h3>
+        <p class="section-subtitle">Cada verificación analiza múltiples señales comportamentales para garantizar la autenticidad</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🧬</div>
+            <h4>Análisis de comportamiento</h4>
+            <p>Monitoreo en tiempo real de movimientos del ratón, patrones de clic y velocidad para detectar automatización y scripts maliciosos.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h4>Detección de entropía</h4>
+            <p>Evaluación de Shannon entropy para identificar patrones predecibles típicos de bots. Los movimientos naturales tienen alta entropía.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">👁️</div>
+            <h4>Resistencia a OCR</h4>
+            <p>Ecuaciones matemáticas renderizadas en canvas con distorsión y ruido visual que impiden el reconocimiento óptico de caracteres.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4>Verificación multi-capa</h4>
+            <p>Combinación de desafío correcto + análisis comportamental para máxima seguridad. Ambos filtros deben pasar simultáneamente.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h4>4 tipos de desafío</h4>
+            <p>Rompecabezas deslizante, selección de imágenes, matemática visual y trazado de patrones. Rotación aleatoria contra reconocimiento.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h4>Puntuación de riesgo</h4>
+            <p>Sistema de scoring con 6 señales: linealidad, timing, velocidad, hesitación, entropía y curvas Bézier. Umbral configurable.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCS TAB -->
+      <div id="tab-docs" class="tab-content section">
+        <h3 class="section-title">¿Cómo funciona el análisis?</h3>
+        <p class="section-subtitle">Motor de scoring con 6 señales comportamentales independientes</p>
+        <div class="steps-container">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h4>Captura de datos comportamentales</h4>
+              <p>Se registran todos los movimientos del ratón, clics, scroll y tiempos de interacción mientras el usuario resuelve el CAPTCHA. Los datos se capturan con throttle de 30ms para evitar sobrecarga.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h4>Análisis de patrones</h4>
+              <p>El motor calcula 6 métricas independientes: linealidad de trayectoria, consistencia temporal, varianza de velocidad, patrones de hesitación, entropía de Shannon y ajuste de curva Bézier.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h4>Scoring de riesgo compuesto</h4>
+              <p>Cada señal contribuye con un peso específico al score final. Puntuaciones superiores al 70% indican comportamiento automatizado y son rechazadas automáticamente.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h4>Verificación compuesta</h4>
+              <p>Se combina la respuesta del desafío con el análisis comportamental. Solo las interacciones que pasan ambos filtros son verificadas como humanas.</p>
+            </div>
+          </div>
+          <div class="formula-box">
+            <h4>Fórmula de scoring</h4>
+            <div class="formula-code">riesgo = (<br/>&nbsp;&nbsp;linealidad × 0.20 +<br/>&nbsp;&nbsp;timing × 0.20 +<br/>&nbsp;&nbsp;velocidad × 0.15 +<br/>&nbsp;&nbsp;hesitación × 0.25 +<br/>&nbsp;&nbsp;entropía × 0.10 +<br/>&nbsp;&nbsp;bézier × 0.10<br/>)</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-inner">
+          <div class="brand">
+            <img src="logo-icon-white.png" alt="" />
+            <span>CAPTCHA Shield — Sistema Anti-Bot</span>
+          </div>
+          <div class="footer-links">
+            <a href="https://github.com/smouj/captcha-shield" target="_blank" rel="noopener">GitHub</a>
+            <span>·</span>
+            <span>MIT License</span>
+            <span>·</span>
+            <span>v2.0.0</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================================
+       JavaScript Engine
+       ============================================ -->
+  <script>
+    // ============================================
+    // State
+    // ============================================
+    const STATE = {
+      phase: 'idle', // idle | loading | solving | verifying | result
+      challenge: null,
+      solution: null,
+      behavioral: null,
+      startTime: 0,
+      canvasWidth: 360,
+      canvasHeight: 240,
+    };
+
+    const TYPES = ['puzzle', 'image_select', 'math_visual', 'pattern_trace'];
+    const LABELS = { puzzle: '🧩 Rompecabezas deslizante', image_select: '🖼️ Selección de imágenes', math_visual: '🔢 Operación matemática visual', pattern_trace: '🔗 Trazado de patrón' };
+
+    // ============================================
+    // Behavioral Tracker
+    // ============================================
+    const tracker = {
+      mouse: [],
+      clicks: [],
+      startTime: 0,
+      lastMove: 0,
+
+      start() {
+        this.mouse = [];
+        this.clicks = [];
+        this.startTime = Date.now();
+        this.lastMove = 0;
+      },
+      onMouseMove(e) {
+        const now = Date.now();
+        if (now - this.lastMove < 30) return;
+        this.lastMove = now;
+        this.mouse.push({ x: e.clientX, y: e.clientY, t: now - this.startTime });
+        if (this.mouse.length > 500) this.mouse = this.mouse.slice(-400);
+      },
+      onClick(e) {
+        this.clicks.push({ x: e.clientX, y: e.clientY, t: Date.now() - this.startTime });
+      },
+      getData() {
+        return {
+          mouseMovements: this.mouse,
+          clicks: this.clicks,
+          scrollEvents: [],
+          startTime: this.startTime,
+          submitTime: Date.now(),
+          challengeType: STATE.challenge?.type || '',
+          totalInteractions: this.clicks.length,
+        };
+      }
+    };
+
+    document.addEventListener('mousemove', (e) => { if (STATE.phase === 'solving') tracker.onMouseMove(e); });
+    document.addEventListener('click', (e) => { if (STATE.phase === 'solving') tracker.onClick(e); });
+
+    // ============================================
+    // Behavioral Analyzer (6 signals)
+    // ============================================
+    function analyzeBehavior(data) {
+      const signals = [];
+
+      // 1. Path Linearity (20%)
+      const lin = calcPathLinearity(data.mouseMovements);
+      signals.push({ name: 'Linealidad', score: lin, weight: 0.20 });
+
+      // 2. Timing Consistency (20%)
+      const tim = calcTimingConsistency(data.clicks, data.mouseMovements);
+      signals.push({ name: 'Timing', score: tim, weight: 0.20 });
+
+      // 3. Speed Variance (15%)
+      const spd = calcSpeedVariance(data.mouseMovements);
+      signals.push({ name: 'Velocidad', score: spd, weight: 0.15 });
+
+      // 4. Hesitation (25%)
+      const hes = calcHesitation(data.clicks, data.mouseMovements, data.startTime, data.submitTime);
+      signals.push({ name: 'Hesitación', score: hes, weight: 0.25 });
+
+      // 5. Entropy (10%)
+      const ent = calcEntropy(data.mouseMovements);
+      signals.push({ name: 'Entropía', score: ent, weight: 0.10 });
+
+      // 6. Bezier (10%)
+      const bez = calcBezier(data.mouseMovements);
+      signals.push({ name: 'Bézier', score: bez, weight: 0.10 });
+
+      let totalRisk = 0, totalWeight = 0;
+      for (const s of signals) { totalRisk += s.score * s.weight; totalWeight += s.weight; }
+      const riskScore = totalWeight > 0 ? totalRisk / totalWeight : 0.5;
+
+      return { riskScore: Math.round(riskScore * 100) / 100, isBot: riskScore > 0.7, signals };
+    }
+
+    function calcPathLinearity(pts) {
+      if (pts.length < 3) return 0.5;
+      let pathLen = 0;
+      for (let i = 1; i < pts.length; i++) pathLen += Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+      if (pathLen < 1) return 0.5;
+      const straight = Math.hypot(pts[pts.length-1].x - pts[0].x, pts[pts.length-1].y - pts[0].y);
+      return clamp((straight / pathLen - 0.5) * 2);
+    }
+
+    function calcTimingConsistency(clicks, movs) {
+      const intervals = [];
+      for (let i = 10; i < movs.length; i += 10) intervals.push(movs[i].t - movs[i-10].t);
+      for (let i = 1; i < clicks.length; i++) intervals.push(clicks[i].t - clicks[i-1].t);
+      if (intervals.length < 2) return 0.5;
+      const mean = intervals.reduce((a,b) => a+b, 0) / intervals.length;
+      if (mean === 0) return 0.5;
+      const std = Math.sqrt(intervals.reduce((a,b) => a + (b-mean)**2, 0) / intervals.length);
+      return clamp(1 - (std / mean) / 1.5);
+    }
+
+    function calcSpeedVariance(pts) {
+      if (pts.length < 5) return 0.5;
+      const speeds = [];
+      for (let i = 4; i < pts.length; i += 4) {
+        const dt = pts[i].t - pts[i-4].t;
+        if (dt > 0) speeds.push(Math.hypot(pts[i].x - pts[i-4].x, pts[i].y - pts[i-4].y) / dt);
+      }
+      if (speeds.length < 3) return 0.5;
+      const mean = speeds.reduce((a,b) => a+b, 0) / speeds.length;
+      if (mean === 0) return 0.5;
+      const std = Math.sqrt(speeds.reduce((a,b) => a + (b-mean)**2, 0) / speeds.length);
+      return clamp(1 - (std / mean) / 1.2);
+    }
+
+    function calcHesitation(clicks, movs, start, end) {
+      const total = end - start;
+      if (total < 500) return 0.9;
+      if (total < 2000) return 0.85;
+      if (total < 3000) return 0.6;
+      let pauses = 0;
+      for (let i = 1; i < movs.length; i++) if (movs[i].t - movs[i-1].t > 200) pauses++;
+      for (const c of clicks) {
+        const before = movs.filter(m => m.t < c.t);
+        if (before.length > 0 && c.t - before[before.length-1].t > 100) pauses++;
+      }
+      if (pauses === 0 && total > 5000) return 0.7;
+      const expected = Math.max(1, Math.floor(total / 3000));
+      return clamp(1 - (pauses / expected) * 0.5);
+    }
+
+    function calcEntropy(pts) {
+      if (pts.length < 10) return 0.5;
+      const bins = 20;
+      const xC = new Array(bins).fill(0), yC = new Array(bins).fill(0);
+      const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs), yMin = Math.min(...ys), yMax = Math.max(...ys);
+      const xR = xMax - xMin || 1, yR = yMax - yMin || 1;
+      for (const p of pts) { xC[Math.min(bins-1, Math.floor(((p.x-xMin)/xR)*bins))]++; yC[Math.min(bins-1, Math.floor(((p.y-yMin)/yR)*bins))]++; }
+      const ent = (counts, total) => { let h = 0; for (const c of counts) { if (c > 0) { const p = c/total; h -= p * Math.log2(p); } } return h; };
+      const maxE = Math.log2(bins);
+      return clamp(1 - ((ent(xC, pts.length) + ent(yC, pts.length)) / 2) / maxE);
+    }
+
+    function calcBezier(pts) {
+      if (pts.length < 6) return 0.5;
+      const step = Math.max(1, Math.floor(pts.length / 20));
+      const s = pts.filter((_, i) => i % step === 0);
+      if (s.length < 4) return 0.5;
+      let total = 0, count = 0;
+      for (let i = 1; i < s.length - 1; i++) {
+        const v1x = s[i].x - s[i-1].x, v1y = s[i].y - s[i-1].y;
+        const v2x = s[i+1].x - s[i].x, v2y = s[i+1].y - s[i].y;
+        const cross = Math.abs(v1x*v2y - v1y*v2x);
+        const len = Math.hypot(v1x,v1y) * Math.hypot(v2x,v2y);
+        if (len > 0) { total += cross / len; count++; }
+      }
+      if (count === 0) return 0.5;
+      return clamp(1 - (total / count) * 2);
+    }
+
+    function clamp(v) { return Math.max(0, Math.min(1, v)); }
+
+    // ============================================
+    // Challenge Generators
+    // ============================================
+    function generateCaptcha() {
+      STATE.phase = 'loading';
+      renderCaptcha();
+
+      setTimeout(() => {
+        const type = TYPES[Math.floor(Math.random() * TYPES.length)];
+        let challenge, solution;
+
+        if (type === 'puzzle') {
+          const targetX = 40 + Math.random() * 25;
+          const pieceX = 5 + Math.random() * 10;
+          const seed = Math.floor(Math.random() * 10000);
+          challenge = { type, targetX, pieceX, tolerance: 5, seed };
+          solution = targetX;
+        } else if (type === 'image_select') {
+          const shapes = ['circle', 'square', 'triangle', 'star', 'diamond', 'hexagon'];
+          const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'];
+          const instrIdx = Math.floor(Math.random() * 4);
+          const instructions = [
+            'Selecciona todas las figuras con bordes curvos',
+            'Selecciona todas las figuras que NO son cuadrados',
+            'Selecciona todas las figuras rojas o azules',
+            'Selecciona todas las figuras distorsionadas'
+          ];
+          const checks = [
+            s => s.shape === 'circle' || s.shape === 'star' || s.shape === 'hexagon',
+            s => s.shape !== 'square',
+            s => s.color === '#ef4444' || s.color === '#3b82f6',
+            s => s.distorted
+          ];
+          const grid = [];
+          for (let i = 0; i < 9; i++) {
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const rotation = Math.floor(Math.random() * 45);
+            const distorted = Math.random() > 0.7;
+            grid.push({ id: i, shape, color, rotation, distorted, hasCurved: shape === 'circle' || shape === 'star' || shape === 'hexagon' });
+          }
+          // Ensure at least 2 match
+          let matchCount = grid.filter(checks[instrIdx]).length;
+          if (matchCount < 2) {
+            grid[0].shape = 'circle'; grid[0].hasCurved = true;
+            grid[1].shape = 'star'; grid[1].hasCurved = true;
+            if (instrIdx === 2) { grid[0].color = '#ef4444'; grid[1].color = '#3b82f6'; }
+          }
+          const correct = grid.map((c, i) => checks[instrIdx](c) ? i : -1).filter(i => i !== -1);
+          challenge = { type, instruction: instructions[instrIdx], grid, correctIndices: correct };
+          solution = correct.sort((a,b) => a-b).join(',');
+        } else if (type === 'math_visual') {
+          const a = 2 + Math.floor(Math.random() * 8);
+          const b = 2 + Math.floor(Math.random() * 8);
+          const c = 1 + Math.floor(Math.random() * (a * b - 1));
+          const eq = `(${a} × ${b}) - ${c}`;
+          challenge = { type, equation: eq, answer: a * b - c, noiseLines: 3 + Math.floor(Math.random() * 4) };
+          solution = a * b - c;
+        } else {
+          const numPts = 4 + Math.floor(Math.random() * 3);
+          const points = [];
+          for (let i = 0; i < numPts; i++) {
+            let x, y, ok = false, att = 0;
+            while (!ok && att < 100) { x = 15 + Math.random() * 70; y = 15 + Math.random() * 70; ok = points.every(p => Math.hypot(p.x-x, p.y-y) > 18); att++; }
+            if (!ok) { x = 15 + (i * 70 / (numPts - 1)); y = 30 + Math.random() * 40; }
+            points.push({ id: i, x, y });
+          }
+          const seq = Array.from({length: numPts}, (_, i) => i);
+          for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
+          challenge = { type, points, sequence: seq };
+          solution = seq.join(',');
+        }
+
+        STATE.challenge = challenge;
+        STATE.solution = solution;
+        STATE.phase = 'solving';
+        tracker.start();
+        renderCaptcha();
+      }, 600);
+    }
+
+    // ============================================
+    // Verify
+    // ============================================
+    function submitAnswer(response) {
+      STATE.phase = 'verifying';
+      renderCaptcha();
+
+      setTimeout(() => {
+        const bdata = tracker.getData();
+        bdata.challengeType = STATE.challenge.type;
+        const analysis = analyzeBehavior(bdata);
+        let correct = false;
+
+        if (STATE.challenge.type === 'puzzle') {
+          correct = Math.abs(response - STATE.solution) <= STATE.challenge.tolerance;
+        } else if (STATE.challenge.type === 'image_select') {
+          correct = response === STATE.solution;
+        } else if (STATE.challenge.type === 'math_visual') {
+          correct = parseInt(response) === STATE.solution;
+        } else if (STATE.challenge.type === 'pattern_trace') {
+          correct = response === STATE.solution;
+        }
+
+        const success = correct && !analysis.isBot;
+        STATE.phase = 'result';
+        STATE.lastResult = { success, riskScore: analysis.riskScore, signals: analysis.signals, message: success ? '¡Verificación exitosa!' : analysis.isBot ? 'Comportamiento sospechoso detectado' : 'Respuesta incorrecta. Inténtalo de nuevo.' };
+        renderCaptcha();
+      }, 800);
+    }
+
+    // ============================================
+    // Renderer
+    // ============================================
+    function renderCaptcha() {
+      const body = document.getElementById('captchaBody');
+      const label = document.getElementById('challengeLabel');
+      const status = document.getElementById('headerStatus');
+      const newBtn = document.getElementById('newChallengeBtn');
+
+      label.textContent = STATE.challenge ? LABELS[STATE.challenge.type] : '';
+      newBtn.style.display = STATE.phase !== 'idle' && STATE.phase !== 'loading' ? '' : 'none';
+
+      if (STATE.phase === 'idle') {
+        status.innerHTML = '';
+        body.innerHTML = `<div class="idle-state" style="animation:fadeIn 0.3s">
+          <div class="logo-container"><img src="logo-icon-white.png" alt="CAPTCHA Shield" /></div>
+          <h3>Verificación de seguridad</h3>
+          <p>Demuestra que eres humano completando el desafío</p>
+          <button class="btn-primary" onclick="generateCaptcha()">Iniciar verificación</button>
+        </div>`;
+      } else if (STATE.phase === 'loading') {
+        status.innerHTML = '';
+        body.innerHTML = `<div style="text-align:center;animation:fadeIn 0.3s">
+          <div class="spinner"></div>
+          <p style="font-size:13px;color:var(--text-muted)">Generando desafío...</p>
+        </div>`;
+      } else if (STATE.phase === 'verifying') {
+        status.innerHTML = '';
+        body.innerHTML = `<div style="text-align:center;animation:fadeIn 0.3s">
+          <div class="spinner"></div>
+          <p style="font-size:13px;color:var(--text-muted)">Verificando respuesta...</p>
+        </div>`;
+      } else if (STATE.phase === 'solving') {
+        status.innerHTML = `<div class="status"><div class="dot"></div><span>Activo</span></div>`;
+        renderChallenge(body);
+      } else if (STATE.phase === 'result') {
+        status.innerHTML = `<span class="verified-badge">Verificado ✓</span>`;
+        renderResult(body);
+      }
+    }
+
+    function renderChallenge(container) {
+      const c = STATE.challenge;
+      container.innerHTML = '<div class="challenge" style="animation:fadeIn 0.3s"></div>';
+      const el = container.querySelector('.challenge');
+
+      if (c.type === 'puzzle') {
+        el.innerHTML = `
+          <div class="challenge-instruction"><p>Arrastra el control deslizante para completar el puzzle</p></div>
+          <div class="puzzle-container"><canvas id="puzzleCanvas" width="${STATE.canvasWidth}" height="${STATE.canvasHeight}"></canvas></div>
+          <div class="puzzle-slider">
+            <div class="track" id="puzzleTrack">
+              <div class="fill" id="puzzleFill" style="width:0%"></div>
+              <div class="handle" id="puzzleHandle" style="left:0px">
+                <span class="arrows">➤</span>
+              </div>
+            </div>
+          </div>`;
+        initPuzzle();
+      } else if (c.type === 'image_select') {
+        let cellsHtml = c.grid.map(cell => {
+          const svg = drawShape(cell.shape, cell.color, cell.rotation, cell.distorted);
+          return `<div class="image-cell" data-id="${cell.id}" onclick="toggleImageCell(this, ${cell.id})">
+            ${svg}
+            <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>`;
+        }).join('');
+        el.innerHTML = `
+          <div class="challenge-instruction"><p>📋 ${c.instruction}</p></div>
+          <div class="image-grid">${cellsHtml}</div>
+          <div class="challenge-actions">
+            <button class="btn-secondary" onclick="clearImageSelection()">Limpiar</button>
+            <button class="btn-primary" id="verifyImgBtn" onclick="verifyImageSelection()" disabled>Verificar (0)</button>
+          </div>`;
+      } else if (c.type === 'math_visual') {
+        el.innerHTML = `
+          <div class="challenge-instruction"><p>📋 Resuelve la siguiente operación matemática</p></div>
+          <div class="math-container">
+            <canvas id="mathCanvas" width="${STATE.canvasWidth}" height="120"></canvas>
+            <div class="math-input-row">
+              <input type="number" id="mathInput" placeholder="?" autofocus />
+              <button class="btn-primary" onclick="verifyMath()">Verificar</button>
+            </div>
+          </div>`;
+        setTimeout(() => { drawMathEquation(); document.getElementById('mathInput')?.focus(); }, 50);
+        document.getElementById('mathInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') verifyMath(); });
+      } else if (c.type === 'pattern_trace') {
+        el.innerHTML = `
+          <div class="challenge-instruction"><p>📋 Haz clic en los puntos en el orden que se muestran</p></div>
+          <div class="pattern-container"><canvas id="patternCanvas" width="320" height="320"></canvas></div>
+          <div class="challenge-actions">
+            <button class="btn-secondary" onclick="resetPattern()">Reiniciar</button>
+            <button class="btn-primary" id="verifyPatBtn" onclick="verifyPattern()" disabled>Verificar</button>
+          </div>`;
+        setTimeout(initPattern, 50);
+      }
+    }
+
+    function renderResult(container) {
+      const r = STATE.lastResult;
+      const pct = (r.riskScore * 100).toFixed(1);
+      const level = r.riskScore < 0.3 ? 'low' : r.riskScore < 0.6 ? 'mid' : 'high';
+      const iconSvg = r.success
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+      let signalsHtml = '';
+      if (r.signals && r.signals.length) {
+        signalsHtml = '<div class="signals-list"><h4>Señales de comportamiento</h4>';
+        for (const s of r.signals) {
+          const sl = s.score < 0.3 ? 'low' : s.score < 0.6 ? 'mid' : 'high';
+          const barColor = sl === 'low' ? 'var(--emerald-500)' : sl === 'mid' ? 'var(--yellow-500)' : 'var(--red-500)';
+          signalsHtml += `<div class="signal-item">
+            <div class="dot ${sl}"></div>
+            <span class="name">${s.name}</span>
+            <div class="mini-bar"><div class="fill" style="width:${s.score*100}%;background:${barColor}"></div></div>
+            <span class="value">${(s.score*100).toFixed(0)}%</span>
+          </div>`;
+        }
+        signalsHtml += '</div>';
+      }
+
+      container.innerHTML = `<div class="result-view" style="animation:fadeIn 0.3s">
+        <div class="result-icon ${r.success ? 'success' : 'fail'}">${iconSvg}</div>
+        <h3 class="${r.success ? 'success' : 'fail'}">${r.success ? '¡Verificación exitosa!' : 'Verificación fallida'}</h3>
+        <p class="message">${r.message}</p>
+        <div class="risk-card">
+          <div class="header">
+            <span>Puntuación de riesgo</span>
+            <span class="score-value ${level}">${pct}%</span>
+          </div>
+          <div class="progress-bar"><div class="fill ${level}" style="width:${pct}%"></div></div>
+          <div class="progress-labels"><span>Humano</span><span>Bot</span></div>
+        </div>
+        ${signalsHtml}
+        <button class="${r.success ? 'btn-secondary' : 'btn-primary'}" onclick="generateCaptcha()" style="margin-top:16px">${r.success ? 'Nuevo CAPTCHA' : 'Intentar de nuevo'}</button>
+      </div>`;
+    }
+
+    // ============================================
+    // Puzzle Challenge
+    // ============================================
+    let puzzleDragging = false, puzzleStartX = 0, puzzleCurrentX = 0;
+
+    function initPuzzle() {
+      const canvas = document.getElementById('puzzleCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const c = STATE.challenge;
+      const w = STATE.canvasWidth, h = STATE.canvasHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.scale(dpr, dpr);
+
+      // Draw background
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#1a2332'); grad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+
+      // Draw grid pattern
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.3)'; ctx.lineWidth = 0.5;
+      for (let i = 0; i < w; i += 30) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke(); }
+      for (let i = 0; i < h; i += 30) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke(); }
+
+      // Draw shapes
+      const rng = seedRng(c.seed);
+      for (let i = 0; i < 15; i++) {
+        const sx = rng() * w, sy = rng() * h, sr = 15 + rng() * 25;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${rng() * 360}, 50%, 40%, 0.3)`;
+        ctx.fill();
+      }
+
+      // Target cutout area
+      const pieceW = w * 0.15;
+      const targetPx = (c.targetX / 100) * w;
+      const top = (h - pieceW) / 2;
+
+      // Dark cutout
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.fillRect(targetPx, top, pieceW, pieceW);
+
+      // Cutout border
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 2;
+      ctx.strokeRect(targetPx, top, pieceW, pieceW);
+
+      // Piece (at starting position)
+      const piecePx = (c.pieceX / 100) * w;
+      ctx.save();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
+      ctx.fillRect(piecePx, top, pieceW, pieceW);
+      ctx.strokeStyle = 'var(--emerald-400)';
+      ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2;
+      ctx.strokeRect(piecePx, top, pieceW, pieceW);
+      // Inner detail
+      ctx.fillStyle = '#34d399';
+      ctx.font = '14px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('▶', piecePx + pieceW/2, top + pieceW/2 + 5);
+      ctx.restore();
+
+      // Store for dragging
+      STATE._puzzle = { piecePx, top, pieceW, targetPx, canvasW: w };
+
+      // Slider
+      const track = document.getElementById('puzzleTrack');
+      const handle = document.getElementById('puzzleHandle');
+      const fill = document.getElementById('puzzleFill');
+
+      const onStart = (e) => {
+        puzzleDragging = true;
+        const ev = e.touches ? e.touches[0] : e;
+        puzzleStartX = ev.clientX;
+        puzzleCurrentX = 0;
+        handle.style.transition = 'none';
+        fill.style.transition = 'none';
+      };
+      const onMove = (e) => {
+        if (!puzzleDragging) return;
+        e.preventDefault();
+        const ev = e.touches ? e.touches[0] : e;
+        const dx = ev.clientX - puzzleStartX;
+        const trackW = track.offsetWidth - 40;
+        const clamped = Math.max(0, Math.min(trackW, dx));
+        puzzleCurrentX = clamped;
+        handle.style.left = clamped + 'px';
+        fill.style.width = (clamped + 20) + 'px';
+      };
+      const onEnd = () => {
+        if (!puzzleDragging) return;
+        puzzleDragging = false;
+        const trackW = track.offsetWidth - 40;
+        const pct = puzzleCurrentX / trackW;
+        submitAnswer(pct * 100);
+      };
+
+      handle.addEventListener('mousedown', onStart);
+      handle.addEventListener('touchstart', onStart, { passive: false });
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    // ============================================
+    // Image Select Challenge
+    // ============================================
+    const imageSelected = new Set();
+
+    function toggleImageCell(el, id) {
+      el.classList.toggle('selected');
+      if (imageSelected.has(id)) imageSelected.delete(id); else imageSelected.add(id);
+      const btn = document.getElementById('verifyImgBtn');
+      if (btn) { btn.disabled = imageSelected.size === 0; btn.textContent = `Verificar (${imageSelected.size})`; }
+    }
+
+    function clearImageSelection() {
+      imageSelected.clear();
+      document.querySelectorAll('.image-cell.selected').forEach(el => el.classList.remove('selected'));
+      const btn = document.getElementById('verifyImgBtn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Verificar (0)'; }
+    }
+
+    function verifyImageSelection() {
+      const selected = Array.from(imageSelected).sort((a,b) => a-b).join(',');
+      submitAnswer(selected);
+      imageSelected.clear();
+    }
+
+    function drawShape(shape, color, rotation, distorted) {
+      const s = 100, cx = 50, cy = 50, r = 32;
+      const d = distorted ? (Math.random() - 0.5) * 8 : 0;
+      const rot = `transform="rotate(${rotation}, ${cx}, ${cy})"`;
+      const base = `fill="${color}" ${rot}`;
+      switch (shape) {
+        case 'circle': return `<svg viewBox="0 0 100 100"><circle cx="${cx}" cy="${cy}" r="${r}" ${base} /></svg>`;
+        case 'square': return `<svg viewBox="0 0 100 100"><rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" rx="${distorted ? Math.abs(d)+3 : 2}" ${base} /></svg>`;
+        case 'triangle': { const pts=[[cx,cy-r+d],[cx+r-d,cy+r*.7],[cx-r+d,cy+r*.7]]; return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`; }
+        case 'star': {
+          const pts=[]; for(let i=0;i<10;i++){const a=(i*Math.PI)/5-Math.PI/2,rd=i%2===0?r:r*.45;pts.push([cx+Math.cos(a)*rd+(distorted?d*.5:0),cy+Math.sin(a)*rd+(distorted?d*.3:0)]);}
+          return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`;
+        }
+        case 'diamond': { const pts=[[cx,cy-r+d],[cx+r*.6,cy],[cx,cy+r-d],[cx-r*.6,cy]]; return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`; }
+        case 'hexagon': {
+          const pts=[]; for(let i=0;i<6;i++){const a=(i*Math.PI)/3-Math.PI/6;pts.push([cx+Math.cos(a)*r+(distorted?d*.4:0),cy+Math.sin(a)*r+(distorted?d*.4:0)]);}
+          return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`;
+        }
+        default: return `<svg viewBox="0 0 100 100"><circle cx="${cx}" cy="${cy}" r="${r}" ${base} /></svg>`;
+      }
+    }
+
+    // ============================================
+    // Math Visual Challenge
+    // ============================================
+    function drawMathEquation() {
+      const canvas = document.getElementById('mathCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const c = STATE.challenge;
+      const w = STATE.canvasWidth, h = 120;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.scale(dpr, dpr);
+
+      // Background
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, w, h);
+
+      // Noise lines
+      for (let i = 0; i < c.noiseLines; i++) {
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * w, Math.random() * h);
+        ctx.lineTo(Math.random() * w, Math.random() * h);
+        ctx.strokeStyle = `rgba(55, 65, 81, ${0.3 + Math.random() * 0.4})`;
+        ctx.lineWidth = 1 + Math.random() * 2;
+        ctx.stroke();
+      }
+
+      // Noise dots
+      for (let i = 0; i < 80; i++) {
+        ctx.fillStyle = `rgba(100, 116, 139, ${0.2 + Math.random() * 0.3})`;
+        ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
+      }
+
+      // Equation text
+      ctx.font = 'bold 42px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Slight distortion via shadow
+      ctx.shadowColor = 'rgba(52, 211, 153, 0.3)';
+      ctx.shadowBlur = 4;
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillText(c.equation, w / 2 + (Math.random()-0.5)*2, h / 2 + (Math.random()-0.5)*2);
+      ctx.shadowBlur = 0;
+    }
+
+    function verifyMath() {
+      const input = document.getElementById('mathInput');
+      if (!input) return;
+      submitAnswer(input.value);
+    }
+
+    // ============================================
+    // Pattern Trace Challenge
+    // ============================================
+    let patternClicked = [];
+
+    function initPattern() {
+      const canvas = document.getElementById('patternCanvas');
+      if (!canvas) return;
+      const c = STATE.challenge;
+      patternClicked = [];
+      drawPattern();
+
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = 320 / rect.width;
+        const scaleY = 320 / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+
+        for (const pt of c.points) {
+          if (Math.hypot((pt.x / 100) * 320 - mx, (pt.y / 100) * 320 - my) < 22) {
+            if (patternClicked.includes(pt.id)) break;
+            patternClicked.push(pt.id);
+            drawPattern();
+            const btn = document.getElementById('verifyPatBtn');
+            if (btn) btn.disabled = patternClicked.length < c.sequence.length;
+            break;
+          }
+        }
+      });
+    }
+
+    function resetPattern() {
+      patternClicked = [];
+      drawPattern();
+      const btn = document.getElementById('verifyPatBtn');
+      if (btn) btn.disabled = true;
+    }
+
+    function drawPattern() {
+      const canvas = document.getElementById('patternCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const c = STATE.challenge;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = 320 * dpr; canvas.height = 320 * dpr;
+      canvas.style.width = '100%'; canvas.style.maxWidth = '320px';
+      ctx.scale(dpr, dpr);
+
+      // Background
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 320, 320);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.2)'; ctx.lineWidth = 0.5;
+      for (let i = 0; i <= 320; i += 40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 320); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(320, i); ctx.stroke(); }
+
+      // Draw sequence connections (correct path hint)
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.15)'; ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      for (let i = 0; i < c.sequence.length - 1; i++) {
+        const a = c.points.find(p => p.id === c.sequence[i]);
+        const b = c.points.find(p => p.id === c.sequence[i+1]);
+        ctx.beginPath();
+        ctx.moveTo(a.x * 3.2, a.y * 3.2);
+        ctx.lineTo(b.x * 3.2, b.y * 3.2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      // Draw clicked connections
+      if (patternClicked.length > 1) {
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3;
+        ctx.beginPath();
+        const first = c.points.find(p => p.id === patternClicked[0]);
+        ctx.moveTo(first.x * 3.2, first.y * 3.2);
+        for (let i = 1; i < patternClicked.length; i++) {
+          const pt = c.points.find(p => p.id === patternClicked[i]);
+          ctx.lineTo(pt.x * 3.2, pt.y * 3.2);
+        }
+        ctx.stroke();
+      }
+
+      // Draw points
+      for (const pt of c.points) {
+        const px = pt.x * 3.2, py = pt.y * 3.2;
+        const idx = patternClicked.indexOf(pt.id);
+        const isClicked = idx !== -1;
+
+        ctx.beginPath();
+        ctx.arc(px, py, 14, 0, Math.PI * 2);
+        ctx.fillStyle = isClicked ? 'rgba(16, 185, 129, 0.3)' : 'rgba(30, 41, 59, 0.8)';
+        ctx.fill();
+        ctx.strokeStyle = isClicked ? '#34d399' : 'rgba(75, 85, 99, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = isClicked ? '#34d399' : '#9ca3af';
+        ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(idx !== -1 ? (idx + 1).toString() : (pt.id + 1).toString(), px, py);
+      }
+    }
+
+    function verifyPattern() {
+      const c = STATE.challenge;
+      submitAnswer(c.sequence.join(','));
+    }
+
+    // ============================================
+    // Utilities
+    // ============================================
+    function seedRng(seed) {
+      let s = seed;
+      return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // ============================================
+    // Init
+    // ============================================
+    renderCaptcha();
+  </script>
+</body>
+</html>
