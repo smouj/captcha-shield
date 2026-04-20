@@ -1,0 +1,100 @@
+# ============================================
+# Dependencies
+# ============================================
+node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ============================================
+# Next.js
+# ============================================
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# ============================================
+# Production / Build
+# ============================================
+/build
+/dist
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ============================================
+# Environment & Secrets (NEVER commit these)
+# ============================================
+.env
+.env.*
+!.env.example
+
+# ============================================
+# Database
+# ============================================
+*.db
+*.db-journal
+*.db-wal
+prisma/migrations/
+
+# ============================================
+# Testing / Coverage
+# ============================================
+/coverage
+/test
+
+# ============================================
+# IDE / Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude
+.z-ai-config
+
+# ============================================
+# OS generated
+# ============================================
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ============================================
+# Misc
+# ============================================
+*.pem
+.vercel
+server.log
+dev.log
+dev.out.log
+local-*
+prompt
+worklog.md
+download/
+
+# ============================================
+# Sandbox-specific (not part of the project)
+# ============================================
+.zscripts/
+skills/
+examples/
+mini-services/
+Caddyfile
+
+# ============================================
+# Python cache (from some tooling)
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
