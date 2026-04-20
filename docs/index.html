@@ -426,7 +426,7 @@
     .challenge-instruction p {
       font-size: 13px;
       font-weight: 500;
-      color: var(--emerald-300);
+      color: #6ee7b7;
     }
     .challenge-actions {
       display: flex;
@@ -468,7 +468,7 @@
     }
     .puzzle-slider .track .fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--emerald-glow), var(--emerald-glow-strong));
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.25));
       border-radius: 10px;
       transition: width 0.05s;
     }
@@ -478,6 +478,8 @@
       width: 40px;
       height: 40px;
       border-radius: 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(55, 65, 81, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -485,10 +487,12 @@
       cursor: grab;
       user-select: none;
       touch-action: none;
+      transition: border-color 0.2s;
     }
-    .puzzle-slider .track .handle:active { cursor: grabbing; }
+    .puzzle-slider .track .handle:hover { border-color: rgba(16, 185, 129, 0.4); }
+    .puzzle-slider .track .handle:active { cursor: grabbing; border-color: #10b981; }
     .puzzle-slider .track .handle .arrows {
-      color: var(--text-secondary);
+      color: #9ca3af;
       font-size: 20px;
       line-height: 1;
     }
@@ -787,6 +791,84 @@
     }
 
     /* ============================================
+       Agent Test Tab
+       ============================================ */
+    .agent-panel {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .agent-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .agent-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agent-card h4 .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--emerald-glow);
+      color: var(--emerald-400);
+    }
+    .agent-card pre {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #34d399;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .agent-card .note {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .agent-card .note strong {
+      color: var(--emerald-400);
+    }
+    .agent-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .agent-placeholder {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .agent-placeholder p {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .agent-placeholder .sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    /* ============================================
        Footer
        ============================================ */
     .site-footer {
@@ -833,13 +915,15 @@
        Responsive
        ============================================ */
     @media (max-width: 640px) {
-      .navbar .inner { padding: 12px 0; }
-      .nav-tab { padding: 5px 12px; font-size: 11px; }
+      .navbar .inner { padding: 12px 0; flex-wrap: wrap; gap: 10px; }
+      .nav-tab { padding: 5px 10px; font-size: 11px; }
       .hero { padding: 40px 0 28px; }
       .captcha-body { min-height: 280px; padding: 16px; }
       .features-grid { grid-template-columns: 1fr; }
       .steps-container { padding: 24px; }
       .footer-inner { flex-direction: column; text-align: center; }
+      .agent-card { padding: 16px; }
+      .agent-card pre { font-size: 11px; padding: 12px; }
     }
 
     /* ============================================
@@ -881,9 +965,10 @@
             </div>
           </a>
           <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('demo')">Demo</button>
-            <button class="nav-tab" onclick="switchTab('features')">Features</button>
-            <button class="nav-tab" onclick="switchTab('docs')">Docs</button>
+            <button class="nav-tab active" onclick="switchTab('demo', this)">Demo</button>
+            <button class="nav-tab" onclick="switchTab('features', this)">Features</button>
+            <button class="nav-tab" onclick="switchTab('docs', this)">Docs</button>
+            <button class="nav-tab" onclick="switchTab('agent', this)">Agent Test</button>
           </div>
         </div>
       </div>
@@ -892,9 +977,9 @@
     <main class="container" style="flex:1;">
       <!-- Hero -->
       <section class="hero">
-        <div class="hero-badge"><div class="dot"></div> Análisis de comportamiento activo</div>
-        <h2>Verificación de seguridad<br/><span class="gradient">inteligente anti-bot</span></h2>
-        <p>Sistema CAPTCHA avanzado que combina desafíos interactivos con análisis profundo de comportamiento para distinguir entre humanos y bots.</p>
+        <div class="hero-badge"><div class="dot"></div> Analisis de comportamiento activo</div>
+        <h2>Verificacion de seguridad<br/><span class="gradient">inteligente anti-bot</span></h2>
+        <p>Sistema CAPTCHA avanzado que combina desafios interactivos con analisis profundo de comportamiento para distinguir entre humanos y bots.</p>
       </section>
 
       <!-- DEMO TAB -->
@@ -915,8 +1000,8 @@
               <!-- Dynamic content here -->
             </div>
             <div class="captcha-footer">
-              <span>Anti-Bot v2.0 · Análisis de comportamiento activo</span>
-              <button id="newChallengeBtn" onclick="generateCaptcha()" style="display:none;">↻ Nuevo desafío</button>
+              <span>Anti-Bot v2.0 &middot; Analisis de comportamiento activo</span>
+              <button id="newChallengeBtn" onclick="generateCaptcha()" style="display:none;">&#8635; Nuevo desafio</button>
             </div>
           </div>
         </div>
@@ -924,78 +1009,95 @@
 
       <!-- FEATURES TAB -->
       <div id="tab-features" class="tab-content section">
-        <h3 class="section-title">Protección multicapa contra bots</h3>
-        <p class="section-subtitle">Cada verificación analiza múltiples señales comportamentales para garantizar la autenticidad</p>
+        <h3 class="section-title">Proteccion multicapa contra bots</h3>
+        <p class="section-subtitle">Cada verificacion analiza multiples senales comportamentales para garantizar la autenticidad</p>
         <div class="features-grid">
           <div class="feature-card">
-            <div class="feature-icon">🧬</div>
-            <h4>Análisis de comportamiento</h4>
-            <p>Monitoreo en tiempo real de movimientos del ratón, patrones de clic y velocidad para detectar automatización y scripts maliciosos.</p>
+            <div class="feature-icon">&#129516;</div>
+            <h4>Analisis de comportamiento</h4>
+            <p>Monitoreo en tiempo real de movimientos del raton, patrones de clic y velocidad para detectar automatizacion y scripts maliciosos.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🧠</div>
-            <h4>Detección de entropía</h4>
-            <p>Evaluación de Shannon entropy para identificar patrones predecibles típicos de bots. Los movimientos naturales tienen alta entropía.</p>
+            <div class="feature-icon">&#129504;</div>
+            <h4>Deteccion de entropia</h4>
+            <p>Evaluacion de Shannon entropy para identificar patrones predecibles tipicos de bots. Los movimientos naturales tienen alta entropia.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">👁️</div>
+            <div class="feature-icon">&#128065;&#65039;</div>
             <h4>Resistencia a OCR</h4>
-            <p>Ecuaciones matemáticas renderizadas en canvas con distorsión y ruido visual que impiden el reconocimiento óptico de caracteres.</p>
+            <p>Ecuaciones matematicas renderizadas en canvas con distorsion y ruido visual que impiden el reconocimiento optico de caracteres.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h4>Verificación multi-capa</h4>
-            <p>Combinación de desafío correcto + análisis comportamental para máxima seguridad. Ambos filtros deben pasar simultáneamente.</p>
+            <div class="feature-icon">&#9889;</div>
+            <h4>Verificacion multi-capa</h4>
+            <p>Combinacion de desafio correcto + analisis comportamental para maxima seguridad. Ambos filtros deben pasar simultaneamente.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔒</div>
-            <h4>4 tipos de desafío</h4>
-            <p>Rompecabezas deslizante, selección de imágenes, matemática visual y trazado de patrones. Rotación aleatoria contra reconocimiento.</p>
+            <div class="feature-icon">&#128274;</div>
+            <h4>4 tipos de desafio</h4>
+            <p>Rompecabezas deslizante, seleccion de imagenes, matematica visual y trazado de patrones. Rotacion aleatoria contra reconocimiento.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h4>Puntuación de riesgo</h4>
-            <p>Sistema de scoring con 6 señales: linealidad, timing, velocidad, hesitación, entropía y curvas Bézier. Umbral configurable.</p>
+            <div class="feature-icon">&#128202;</div>
+            <h4>Puntuacion de riesgo</h4>
+            <p>Sistema de scoring con 6 senales: linealidad, timing, velocidad, hesitacion, entropia y curvas Bezier. Umbral configurable.</p>
           </div>
         </div>
       </div>
 
       <!-- DOCS TAB -->
       <div id="tab-docs" class="tab-content section">
-        <h3 class="section-title">¿Cómo funciona el análisis?</h3>
-        <p class="section-subtitle">Motor de scoring con 6 señales comportamentales independientes</p>
+        <h3 class="section-title">Como funciona el analisis?</h3>
+        <p class="section-subtitle">Motor de scoring con 6 senales comportamentales independientes</p>
         <div class="steps-container">
           <div class="step">
             <div class="step-number">1</div>
             <div>
               <h4>Captura de datos comportamentales</h4>
-              <p>Se registran todos los movimientos del ratón, clics, scroll y tiempos de interacción mientras el usuario resuelve el CAPTCHA. Los datos se capturan con throttle de 30ms para evitar sobrecarga.</p>
+              <p>Se registran todos los movimientos del raton, clics, scroll y tiempos de interaccion mientras el usuario resuelve el CAPTCHA. Los datos se capturan con throttle de 30ms para evitar sobrecarga.</p>
             </div>
           </div>
           <div class="step">
             <div class="step-number">2</div>
             <div>
-              <h4>Análisis de patrones</h4>
-              <p>El motor calcula 6 métricas independientes: linealidad de trayectoria, consistencia temporal, varianza de velocidad, patrones de hesitación, entropía de Shannon y ajuste de curva Bézier.</p>
+              <h4>Analisis de patrones</h4>
+              <p>El motor calcula 6 metricas independientes: linealidad de trayectoria, consistencia temporal, varianza de velocidad, patrones de hesitacion, entropia de Shannon y ajuste de curva Bezier.</p>
             </div>
           </div>
           <div class="step">
             <div class="step-number">3</div>
             <div>
               <h4>Scoring de riesgo compuesto</h4>
-              <p>Cada señal contribuye con un peso específico al score final. Puntuaciones superiores al 70% indican comportamiento automatizado y son rechazadas automáticamente.</p>
+              <p>Cada senal contribuye con un peso especifico al score final. Puntuaciones superiores al 70% indican comportamiento automatizado y son rechazadas automaticamente.</p>
             </div>
           </div>
           <div class="step">
             <div class="step-number">4</div>
             <div>
-              <h4>Verificación compuesta</h4>
-              <p>Se combina la respuesta del desafío con el análisis comportamental. Solo las interacciones que pasan ambos filtros son verificadas como humanas.</p>
+              <h4>Verificacion compuesta</h4>
+              <p>Se combina la respuesta del desafio con el analisis comportamental. Solo las interacciones que pasan ambos filtros son verificadas como humanas.</p>
             </div>
           </div>
           <div class="formula-box">
-            <h4>Fórmula de scoring</h4>
-            <div class="formula-code">riesgo = (<br/>&nbsp;&nbsp;linealidad × 0.20 +<br/>&nbsp;&nbsp;timing × 0.20 +<br/>&nbsp;&nbsp;velocidad × 0.15 +<br/>&nbsp;&nbsp;hesitación × 0.25 +<br/>&nbsp;&nbsp;entropía × 0.10 +<br/>&nbsp;&nbsp;bézier × 0.10<br/>)</div>
+            <h4>Formula de scoring</h4>
+            <div class="formula-code">riesgo = (<br/>&nbsp;&nbsp;linealidad &times; 0.20 +<br/>&nbsp;&nbsp;timing &times; 0.20 +<br/>&nbsp;&nbsp;velocidad &times; 0.15 +<br/>&nbsp;&nbsp;hesitacion &times; 0.25 +<br/>&nbsp;&nbsp;entropia &times; 0.10 +<br/>&nbsp;&nbsp;bezier &times; 0.10<br/>)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENT TEST TAB -->
+      <div id="tab-agent" class="tab-content section">
+        <h3 class="section-title">Agent Test</h3>
+        <p class="section-subtitle">Challenge data and solutions for AI agents to evaluate</p>
+        <div class="agent-panel" id="agentPanel">
+          <div class="agent-card">
+            <div class="agent-placeholder">
+              <p>No active challenge yet.</p>
+              <p class="sub">Start a CAPTCHA challenge from the Demo tab first.</p>
+            </div>
+          </div>
+          <div class="agent-actions">
+            <button class="btn-primary" onclick="generateCaptchaForAgent()">Generate Challenge</button>
           </div>
         </div>
       </div>
@@ -1007,13 +1109,13 @@
         <div class="footer-inner">
           <div class="brand">
             <img src="logo-icon-white.png" alt="" />
-            <span>CAPTCHA Shield — Sistema Anti-Bot</span>
+            <span>CAPTCHA Shield &mdash; Sistema Anti-Bot</span>
           </div>
           <div class="footer-links">
             <a href="https://github.com/smouj/captcha-shield" target="_blank" rel="noopener">GitHub</a>
-            <span>·</span>
+            <span>&middot;</span>
             <span>MIT License</span>
-            <span>·</span>
+            <span>&middot;</span>
             <span>v2.0.0</span>
           </div>
         </div>
@@ -1022,9 +1124,43 @@
   </div>
 
   <!-- ============================================
-       JavaScript Engine
+       JavaScript Engine (Complete Rewrite)
        ============================================ -->
   <script>
+    // ============================================
+    // Literal Color Constants (for Canvas API)
+    // NO CSS variables allowed in canvas calls!
+    // ============================================
+    const C = {
+      EMERALD_400: '#34d399',
+      EMERALD_500: '#10b981',
+      EMERALD_600: '#059669',
+      EMERALD_300: '#6ee7b7',
+      EMERALD_GLOW: 'rgba(16, 185, 129, 0.15)',
+      EMERALD_GLOW_STRONG: 'rgba(16, 185, 129, 0.25)',
+      EMERALD_GLOW_BG: 'rgba(16, 185, 129, 0.4)',
+      RED_400: '#f87171',
+      RED_500: '#ef4444',
+      YELLOW_400: '#facc15',
+      YELLOW_500: '#eab308',
+      BG_PRIMARY: '#030712',
+      BG_SECONDARY: '#0a0f1a',
+      BG_CARD: 'rgba(15, 23, 42, 0.6)',
+      BG_DARK: '#0f172a',
+      BG_CANVAS: '#111827',
+      BORDER: 'rgba(55, 65, 81, 0.5)',
+      BORDER_LIGHT: 'rgba(55, 65, 81, 0.3)',
+      TEXT_PRIMARY: '#f3f4f6',
+      TEXT_SECONDARY: '#9ca3af',
+      TEXT_MUTED: '#6b7280',
+      TEXT_LIGHT: '#e2e8f0',
+      OVERLAY_DARK: 'rgba(0, 0, 0, 0.6)',
+      OVERLAY_WHITE: 'rgba(255,255,255,0.3)',
+      SLATE_400: '#94a3b8',
+      SLATE_500: '#64748b',
+      SLATE_600: '#475569',
+    };
+
     // ============================================
     // State
     // ============================================
@@ -1034,12 +1170,16 @@
       solution: null,
       behavioral: null,
       startTime: 0,
-      canvasWidth: 360,
-      canvasHeight: 240,
+      lastResult: null,
     };
 
     const TYPES = ['puzzle', 'image_select', 'math_visual', 'pattern_trace'];
-    const LABELS = { puzzle: '🧩 Rompecabezas deslizante', image_select: '🖼️ Selección de imágenes', math_visual: '🔢 Operación matemática visual', pattern_trace: '🔗 Trazado de patrón' };
+    const LABELS = {
+      puzzle: 'Rompecabezas deslizante',
+      image_select: 'Seleccion de imagenes',
+      math_visual: 'Operacion matematica visual',
+      pattern_trace: 'Trazado de patron'
+    };
 
     // ============================================
     // Behavioral Tracker
@@ -1073,126 +1213,159 @@
           scrollEvents: [],
           startTime: this.startTime,
           submitTime: Date.now(),
-          challengeType: STATE.challenge?.type || '',
+          challengeType: STATE.challenge ? STATE.challenge.type : '',
           totalInteractions: this.clicks.length,
         };
       }
     };
 
-    document.addEventListener('mousemove', (e) => { if (STATE.phase === 'solving') tracker.onMouseMove(e); });
-    document.addEventListener('click', (e) => { if (STATE.phase === 'solving') tracker.onClick(e); });
+    document.addEventListener('mousemove', function(e) {
+      if (STATE.phase === 'solving') tracker.onMouseMove(e);
+    });
+    document.addEventListener('click', function(e) {
+      if (STATE.phase === 'solving') tracker.onClick(e);
+    });
 
     // ============================================
     // Behavioral Analyzer (6 signals)
     // ============================================
     function analyzeBehavior(data) {
-      const signals = [];
+      var signals = [];
 
       // 1. Path Linearity (20%)
-      const lin = calcPathLinearity(data.mouseMovements);
+      var lin = calcPathLinearity(data.mouseMovements);
       signals.push({ name: 'Linealidad', score: lin, weight: 0.20 });
 
       // 2. Timing Consistency (20%)
-      const tim = calcTimingConsistency(data.clicks, data.mouseMovements);
+      var tim = calcTimingConsistency(data.clicks, data.mouseMovements);
       signals.push({ name: 'Timing', score: tim, weight: 0.20 });
 
       // 3. Speed Variance (15%)
-      const spd = calcSpeedVariance(data.mouseMovements);
+      var spd = calcSpeedVariance(data.mouseMovements);
       signals.push({ name: 'Velocidad', score: spd, weight: 0.15 });
 
       // 4. Hesitation (25%)
-      const hes = calcHesitation(data.clicks, data.mouseMovements, data.startTime, data.submitTime);
-      signals.push({ name: 'Hesitación', score: hes, weight: 0.25 });
+      var hes = calcHesitation(data.clicks, data.mouseMovements, data.startTime, data.submitTime);
+      signals.push({ name: 'Hesitacion', score: hes, weight: 0.25 });
 
       // 5. Entropy (10%)
-      const ent = calcEntropy(data.mouseMovements);
-      signals.push({ name: 'Entropía', score: ent, weight: 0.10 });
+      var ent = calcEntropy(data.mouseMovements);
+      signals.push({ name: 'Entropia', score: ent, weight: 0.10 });
 
       // 6. Bezier (10%)
-      const bez = calcBezier(data.mouseMovements);
-      signals.push({ name: 'Bézier', score: bez, weight: 0.10 });
+      var bez = calcBezier(data.mouseMovements);
+      signals.push({ name: 'Bezier', score: bez, weight: 0.10 });
 
-      let totalRisk = 0, totalWeight = 0;
-      for (const s of signals) { totalRisk += s.score * s.weight; totalWeight += s.weight; }
-      const riskScore = totalWeight > 0 ? totalRisk / totalWeight : 0.5;
+      var totalRisk = 0, totalWeight = 0;
+      for (var i = 0; i < signals.length; i++) {
+        totalRisk += signals[i].score * signals[i].weight;
+        totalWeight += signals[i].weight;
+      }
+      var riskScore = totalWeight > 0 ? totalRisk / totalWeight : 0.5;
 
-      return { riskScore: Math.round(riskScore * 100) / 100, isBot: riskScore > 0.7, signals };
+      return {
+        riskScore: Math.round(riskScore * 100) / 100,
+        isBot: riskScore > 0.7,
+        signals: signals
+      };
     }
 
     function calcPathLinearity(pts) {
       if (pts.length < 3) return 0.5;
-      let pathLen = 0;
-      for (let i = 1; i < pts.length; i++) pathLen += Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+      var pathLen = 0;
+      for (var i = 1; i < pts.length; i++) {
+        pathLen += Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+      }
       if (pathLen < 1) return 0.5;
-      const straight = Math.hypot(pts[pts.length-1].x - pts[0].x, pts[pts.length-1].y - pts[0].y);
+      var straight = Math.hypot(pts[pts.length-1].x - pts[0].x, pts[pts.length-1].y - pts[0].y);
       return clamp((straight / pathLen - 0.5) * 2);
     }
 
     function calcTimingConsistency(clicks, movs) {
-      const intervals = [];
-      for (let i = 10; i < movs.length; i += 10) intervals.push(movs[i].t - movs[i-10].t);
-      for (let i = 1; i < clicks.length; i++) intervals.push(clicks[i].t - clicks[i-1].t);
+      var intervals = [];
+      for (var i = 10; i < movs.length; i += 10) intervals.push(movs[i].t - movs[i-10].t);
+      for (var i = 1; i < clicks.length; i++) intervals.push(clicks[i].t - clicks[i-1].t);
       if (intervals.length < 2) return 0.5;
-      const mean = intervals.reduce((a,b) => a+b, 0) / intervals.length;
+      var mean = intervals.reduce(function(a,b){return a+b;}, 0) / intervals.length;
       if (mean === 0) return 0.5;
-      const std = Math.sqrt(intervals.reduce((a,b) => a + (b-mean)**2, 0) / intervals.length);
+      var variance = intervals.reduce(function(a,b){return a + (b-mean)*(b-mean);}, 0) / intervals.length;
+      var std = Math.sqrt(variance);
       return clamp(1 - (std / mean) / 1.5);
     }
 
     function calcSpeedVariance(pts) {
       if (pts.length < 5) return 0.5;
-      const speeds = [];
-      for (let i = 4; i < pts.length; i += 4) {
-        const dt = pts[i].t - pts[i-4].t;
+      var speeds = [];
+      for (var i = 4; i < pts.length; i += 4) {
+        var dt = pts[i].t - pts[i-4].t;
         if (dt > 0) speeds.push(Math.hypot(pts[i].x - pts[i-4].x, pts[i].y - pts[i-4].y) / dt);
       }
       if (speeds.length < 3) return 0.5;
-      const mean = speeds.reduce((a,b) => a+b, 0) / speeds.length;
+      var mean = speeds.reduce(function(a,b){return a+b;}, 0) / speeds.length;
       if (mean === 0) return 0.5;
-      const std = Math.sqrt(speeds.reduce((a,b) => a + (b-mean)**2, 0) / speeds.length);
+      var variance = speeds.reduce(function(a,b){return a + (b-mean)*(b-mean);}, 0) / speeds.length;
+      var std = Math.sqrt(variance);
       return clamp(1 - (std / mean) / 1.2);
     }
 
     function calcHesitation(clicks, movs, start, end) {
-      const total = end - start;
+      var total = end - start;
       if (total < 500) return 0.9;
       if (total < 2000) return 0.85;
       if (total < 3000) return 0.6;
-      let pauses = 0;
-      for (let i = 1; i < movs.length; i++) if (movs[i].t - movs[i-1].t > 200) pauses++;
-      for (const c of clicks) {
-        const before = movs.filter(m => m.t < c.t);
+      var pauses = 0;
+      for (var i = 1; i < movs.length; i++) {
+        if (movs[i].t - movs[i-1].t > 200) pauses++;
+      }
+      for (var ci = 0; ci < clicks.length; ci++) {
+        var c = clicks[ci];
+        var before = movs.filter(function(m){return m.t < c.t;});
         if (before.length > 0 && c.t - before[before.length-1].t > 100) pauses++;
       }
       if (pauses === 0 && total > 5000) return 0.7;
-      const expected = Math.max(1, Math.floor(total / 3000));
+      var expected = Math.max(1, Math.floor(total / 3000));
       return clamp(1 - (pauses / expected) * 0.5);
     }
 
     function calcEntropy(pts) {
       if (pts.length < 10) return 0.5;
-      const bins = 20;
-      const xC = new Array(bins).fill(0), yC = new Array(bins).fill(0);
-      const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-      const xMin = Math.min(...xs), xMax = Math.max(...xs), yMin = Math.min(...ys), yMax = Math.max(...ys);
-      const xR = xMax - xMin || 1, yR = yMax - yMin || 1;
-      for (const p of pts) { xC[Math.min(bins-1, Math.floor(((p.x-xMin)/xR)*bins))]++; yC[Math.min(bins-1, Math.floor(((p.y-yMin)/yR)*bins))]++; }
-      const ent = (counts, total) => { let h = 0; for (const c of counts) { if (c > 0) { const p = c/total; h -= p * Math.log2(p); } } return h; };
-      const maxE = Math.log2(bins);
+      var bins = 20;
+      var xC = new Array(bins).fill(0), yC = new Array(bins).fill(0);
+      var xs = pts.map(function(p){return p.x;}), ys = pts.map(function(p){return p.y;});
+      var xMin = Math.min.apply(null, xs), xMax = Math.max.apply(null, xs);
+      var yMin = Math.min.apply(null, ys), yMax = Math.max.apply(null, ys);
+      var xR = xMax - xMin || 1, yR = yMax - yMin || 1;
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        xC[Math.min(bins-1, Math.floor(((p.x-xMin)/xR)*bins))]++;
+        yC[Math.min(bins-1, Math.floor(((p.y-yMin)/yR)*bins))]++;
+      }
+      function ent(counts, total) {
+        var h = 0;
+        for (var j = 0; j < counts.length; j++) {
+          if (counts[j] > 0) {
+            var pr = counts[j]/total;
+            h -= pr * Math.log2(pr);
+          }
+        }
+        return h;
+      }
+      var maxE = Math.log2(bins);
       return clamp(1 - ((ent(xC, pts.length) + ent(yC, pts.length)) / 2) / maxE);
     }
 
     function calcBezier(pts) {
       if (pts.length < 6) return 0.5;
-      const step = Math.max(1, Math.floor(pts.length / 20));
-      const s = pts.filter((_, i) => i % step === 0);
-      if (s.length < 4) return 0.5;
-      let total = 0, count = 0;
-      for (let i = 1; i < s.length - 1; i++) {
-        const v1x = s[i].x - s[i-1].x, v1y = s[i].y - s[i-1].y;
-        const v2x = s[i+1].x - s[i].x, v2y = s[i+1].y - s[i].y;
-        const cross = Math.abs(v1x*v2y - v1y*v2x);
-        const len = Math.hypot(v1x,v1y) * Math.hypot(v2x,v2y);
+      var step = Math.max(1, Math.floor(pts.length / 20));
+      var sampled = [];
+      for (var i = 0; i < pts.length; i += step) sampled.push(pts[i]);
+      if (sampled.length < 4) return 0.5;
+      var total = 0, count = 0;
+      for (var i = 1; i < sampled.length - 1; i++) {
+        var v1x = sampled[i].x - sampled[i-1].x, v1y = sampled[i].y - sampled[i-1].y;
+        var v2x = sampled[i+1].x - sampled[i].x, v2y = sampled[i+1].y - sampled[i].y;
+        var cross = Math.abs(v1x*v2y - v1y*v2x);
+        var len = Math.hypot(v1x,v1y) * Math.hypot(v2x,v2y);
         if (len > 0) { total += cross / len; count++; }
       }
       if (count === 0) return 0.5;
@@ -1202,76 +1375,54 @@
     function clamp(v) { return Math.max(0, Math.min(1, v)); }
 
     // ============================================
+    // Seeded RNG (for deterministic shapes)
+    // ============================================
+    function seedRng(seed) {
+      var s = seed;
+      return function() {
+        s = (s * 16807 + 0) % 2147483647;
+        return (s - 1) / 2147483646;
+      };
+    }
+
+    // ============================================
+    // Tab Switcher
+    // ============================================
+    function switchTab(tab, el) {
+      document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (el) el.classList.add('active');
+
+      // Update agent panel when switching to agent tab
+      if (tab === 'agent') {
+        renderAgentPanel();
+      }
+    }
+
+    // ============================================
     // Challenge Generators
     // ============================================
     function generateCaptcha() {
       STATE.phase = 'loading';
       renderCaptcha();
 
-      setTimeout(() => {
-        const type = TYPES[Math.floor(Math.random() * TYPES.length)];
-        let challenge, solution;
+      setTimeout(function() {
+        var type = TYPES[Math.floor(Math.random() * TYPES.length)];
+        var challenge, solution;
 
         if (type === 'puzzle') {
-          const targetX = 40 + Math.random() * 25;
-          const pieceX = 5 + Math.random() * 10;
-          const seed = Math.floor(Math.random() * 10000);
-          challenge = { type, targetX, pieceX, tolerance: 5, seed };
-          solution = targetX;
+          challenge = generatePuzzleChallenge();
+          solution = challenge.targetX;
         } else if (type === 'image_select') {
-          const shapes = ['circle', 'square', 'triangle', 'star', 'diamond', 'hexagon'];
-          const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'];
-          const instrIdx = Math.floor(Math.random() * 4);
-          const instructions = [
-            'Selecciona todas las figuras con bordes curvos',
-            'Selecciona todas las figuras que NO son cuadrados',
-            'Selecciona todas las figuras rojas o azules',
-            'Selecciona todas las figuras distorsionadas'
-          ];
-          const checks = [
-            s => s.shape === 'circle' || s.shape === 'star' || s.shape === 'hexagon',
-            s => s.shape !== 'square',
-            s => s.color === '#ef4444' || s.color === '#3b82f6',
-            s => s.distorted
-          ];
-          const grid = [];
-          for (let i = 0; i < 9; i++) {
-            const shape = shapes[Math.floor(Math.random() * shapes.length)];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const rotation = Math.floor(Math.random() * 45);
-            const distorted = Math.random() > 0.7;
-            grid.push({ id: i, shape, color, rotation, distorted, hasCurved: shape === 'circle' || shape === 'star' || shape === 'hexagon' });
-          }
-          // Ensure at least 2 match
-          let matchCount = grid.filter(checks[instrIdx]).length;
-          if (matchCount < 2) {
-            grid[0].shape = 'circle'; grid[0].hasCurved = true;
-            grid[1].shape = 'star'; grid[1].hasCurved = true;
-            if (instrIdx === 2) { grid[0].color = '#ef4444'; grid[1].color = '#3b82f6'; }
-          }
-          const correct = grid.map((c, i) => checks[instrIdx](c) ? i : -1).filter(i => i !== -1);
-          challenge = { type, instruction: instructions[instrIdx], grid, correctIndices: correct };
-          solution = correct.sort((a,b) => a-b).join(',');
+          challenge = generateImageSelectChallenge();
+          solution = challenge.correctIndices.slice().sort(function(a,b){return a-b;}).join(',');
         } else if (type === 'math_visual') {
-          const a = 2 + Math.floor(Math.random() * 8);
-          const b = 2 + Math.floor(Math.random() * 8);
-          const c = 1 + Math.floor(Math.random() * (a * b - 1));
-          const eq = `(${a} × ${b}) - ${c}`;
-          challenge = { type, equation: eq, answer: a * b - c, noiseLines: 3 + Math.floor(Math.random() * 4) };
-          solution = a * b - c;
-        } else {
-          const numPts = 4 + Math.floor(Math.random() * 3);
-          const points = [];
-          for (let i = 0; i < numPts; i++) {
-            let x, y, ok = false, att = 0;
-            while (!ok && att < 100) { x = 15 + Math.random() * 70; y = 15 + Math.random() * 70; ok = points.every(p => Math.hypot(p.x-x, p.y-y) > 18); att++; }
-            if (!ok) { x = 15 + (i * 70 / (numPts - 1)); y = 30 + Math.random() * 40; }
-            points.push({ id: i, x, y });
-          }
-          const seq = Array.from({length: numPts}, (_, i) => i);
-          for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
-          challenge = { type, points, sequence: seq };
-          solution = seq.join(',');
+          challenge = generateMathChallenge();
+          solution = challenge.answer;
+        } else if (type === 'pattern_trace') {
+          challenge = generatePatternChallenge();
+          solution = challenge.sequence.join(',');
         }
 
         STATE.challenge = challenge;
@@ -1282,6 +1433,164 @@
       }, 600);
     }
 
+    // Generate for Agent Test tab (no tracker needed, just generates data)
+    function generateCaptchaForAgent() {
+      var type = TYPES[Math.floor(Math.random() * TYPES.length)];
+      var challenge, solution;
+
+      if (type === 'puzzle') {
+        challenge = generatePuzzleChallenge();
+        solution = challenge.targetX;
+      } else if (type === 'image_select') {
+        challenge = generateImageSelectChallenge();
+        solution = challenge.correctIndices.slice().sort(function(a,b){return a-b;}).join(',');
+      } else if (type === 'math_visual') {
+        challenge = generateMathChallenge();
+        solution = challenge.answer;
+      } else if (type === 'pattern_trace') {
+        challenge = generatePatternChallenge();
+        solution = challenge.sequence.join(',');
+      }
+
+      STATE.challenge = challenge;
+      STATE.solution = solution;
+      STATE.phase = 'solving';
+      renderCaptcha();
+      renderAgentPanel();
+    }
+
+    // ---- Puzzle Challenge ----
+    function generatePuzzleChallenge() {
+      var targetX = 30 + Math.floor(Math.random() * 40); // 30-69% of canvas width
+      var seed = Math.floor(Math.random() * 100000);
+      return {
+        type: 'puzzle',
+        targetX: targetX, // percentage 0-100
+        tolerance: 5, // within 5% = success
+        seed: seed,
+        canvasWidth: 360,
+        canvasHeight: 200,
+        pieceSize: 50 // piece width/height in pixels
+      };
+    }
+
+    // ---- Image Select Challenge ----
+    function generateImageSelectChallenge() {
+      var shapeTypes = ['circle', 'square', 'triangle', 'star', 'diamond', 'hexagon'];
+      var shapeColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#8b5cf6', '#ec4899', '#14b8a6'];
+
+      // Pick ONE target shape — simple and reliable
+      var targetShape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+      var instruction = 'Select all ' + targetShape + 's';
+
+      // Build grid: ensure exactly 2-3 match the target
+      var matchCount = 2 + Math.floor(Math.random() * 2); // 2 or 3
+      var grid = [];
+      var correctIndices = [];
+
+      // Place matching shapes at random positions
+      var matchPositions = [];
+      while (matchPositions.length < matchCount) {
+        var pos = Math.floor(Math.random() * 9);
+        if (matchPositions.indexOf(pos) === -1) matchPositions.push(pos);
+      }
+
+      for (var i = 0; i < 9; i++) {
+        var isMatch = matchPositions.indexOf(i) !== -1;
+        var shape, color, rotation;
+
+        if (isMatch) {
+          shape = targetShape;
+          correctIndices.push(i);
+        } else {
+          // Pick a different shape
+          do {
+            shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+          } while (shape === targetShape);
+        }
+
+        color = shapeColors[Math.floor(Math.random() * shapeColors.length)];
+        rotation = Math.floor(Math.random() * 360);
+
+        grid.push({
+          id: i,
+          shape: shape,
+          color: color,
+          rotation: rotation
+        });
+      }
+
+      return {
+        type: 'image_select',
+        instruction: instruction,
+        targetShape: targetShape,
+        grid: grid,
+        correctIndices: correctIndices
+      };
+    }
+
+    // ---- Math Visual Challenge ----
+    function generateMathChallenge() {
+      var a = 2 + Math.floor(Math.random() * 8);
+      var b = 2 + Math.floor(Math.random() * 8);
+      var c = 1 + Math.floor(Math.random() * (a * b - 1));
+      var answer = a * b - c;
+      var equation = '(' + a + ' x ' + b + ') - ' + c + ' = ?';
+
+      return {
+        type: 'math_visual',
+        equation: equation,
+        equationRaw: '(' + a + ' x ' + b + ') - ' + c,
+        answer: answer,
+        noiseLines: 3 + Math.floor(Math.random() * 4),
+        noiseDots: 50 + Math.floor(Math.random() * 50)
+      };
+    }
+
+    // ---- Pattern Trace Challenge ----
+    function generatePatternChallenge() {
+      var numPts = 5 + Math.floor(Math.random() * 2); // 5 or 6 dots
+      var points = [];
+      var canvasSize = 280;
+
+      for (var i = 0; i < numPts; i++) {
+        var x, y, ok = false, attempts = 0;
+        while (!ok && attempts < 200) {
+          x = 40 + Math.random() * (canvasSize - 80);
+          y = 40 + Math.random() * (canvasSize - 80);
+          ok = true;
+          for (var j = 0; j < points.length; j++) {
+            if (Math.hypot(points[j].x - x, points[j].y - y) < 50) {
+              ok = false;
+              break;
+            }
+          }
+          attempts++;
+        }
+        if (!ok) {
+          // Fallback: spread evenly
+          x = 40 + (i / (numPts - 1)) * (canvasSize - 80);
+          y = 60 + Math.sin(i * 1.5) * 60 + canvasSize / 2 - 50;
+        }
+        points.push({ id: i, x: x, y: y });
+      }
+
+      // Generate random sequence
+      var sequence = [];
+      for (var i = 0; i < numPts; i++) sequence.push(i);
+      for (var i = sequence.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = sequence[i]; sequence[i] = sequence[j]; sequence[j] = tmp;
+      }
+
+      return {
+        type: 'pattern_trace',
+        points: points,
+        sequence: sequence,
+        canvasSize: canvasSize
+      };
+    }
+
     // ============================================
     // Verify
     // ============================================
@@ -1289,265 +1598,220 @@
       STATE.phase = 'verifying';
       renderCaptcha();
 
-      setTimeout(() => {
-        const bdata = tracker.getData();
+      setTimeout(function() {
+        var bdata = tracker.getData();
         bdata.challengeType = STATE.challenge.type;
-        const analysis = analyzeBehavior(bdata);
-        let correct = false;
+        var analysis = analyzeBehavior(bdata);
+        var correct = false;
 
         if (STATE.challenge.type === 'puzzle') {
-          correct = Math.abs(response - STATE.solution) <= STATE.challenge.tolerance;
+          correct = Math.abs(parseFloat(response) - parseFloat(STATE.solution)) <= STATE.challenge.tolerance;
         } else if (STATE.challenge.type === 'image_select') {
-          correct = response === STATE.solution;
+          var userArr = response.split(',').map(function(s){return parseInt(s);}).sort(function(a,b){return a-b;});
+          var solArr = STATE.solution.split(',').map(function(s){return parseInt(s);}).sort(function(a,b){return a-b;});
+          correct = userArr.length === solArr.length;
+          if (correct) {
+            for (var i = 0; i < userArr.length; i++) {
+              if (userArr[i] !== solArr[i]) { correct = false; break; }
+            }
+          }
         } else if (STATE.challenge.type === 'math_visual') {
           correct = parseInt(response) === STATE.solution;
         } else if (STATE.challenge.type === 'pattern_trace') {
           correct = response === STATE.solution;
         }
 
-        const success = correct && !analysis.isBot;
+        var success = correct && !analysis.isBot;
         STATE.phase = 'result';
-        STATE.lastResult = { success, riskScore: analysis.riskScore, signals: analysis.signals, message: success ? '¡Verificación exitosa!' : analysis.isBot ? 'Comportamiento sospechoso detectado' : 'Respuesta incorrecta. Inténtalo de nuevo.' };
+        STATE.lastResult = {
+          success: success,
+          challengeCorrect: correct,
+          isBot: analysis.isBot,
+          riskScore: analysis.riskScore,
+          signals: analysis.signals,
+          message: success
+            ? 'Verification successful!'
+            : analysis.isBot
+              ? 'Suspicious behavior detected'
+              : 'Incorrect answer. Try again.'
+        };
         renderCaptcha();
+        renderAgentPanel();
       }, 800);
     }
 
     // ============================================
-    // Renderer
+    // Main Renderer
     // ============================================
     function renderCaptcha() {
-      const body = document.getElementById('captchaBody');
-      const label = document.getElementById('challengeLabel');
-      const status = document.getElementById('headerStatus');
-      const newBtn = document.getElementById('newChallengeBtn');
+      var body = document.getElementById('captchaBody');
+      var label = document.getElementById('challengeLabel');
+      var status = document.getElementById('headerStatus');
+      var newBtn = document.getElementById('newChallengeBtn');
 
       label.textContent = STATE.challenge ? LABELS[STATE.challenge.type] : '';
-      newBtn.style.display = STATE.phase !== 'idle' && STATE.phase !== 'loading' ? '' : 'none';
+      newBtn.style.display = (STATE.phase !== 'idle' && STATE.phase !== 'loading') ? '' : 'none';
 
       if (STATE.phase === 'idle') {
         status.innerHTML = '';
-        body.innerHTML = `<div class="idle-state" style="animation:fadeIn 0.3s">
-          <div class="logo-container"><img src="logo-icon-white.png" alt="CAPTCHA Shield" /></div>
-          <h3>Verificación de seguridad</h3>
-          <p>Demuestra que eres humano completando el desafío</p>
-          <button class="btn-primary" onclick="generateCaptcha()">Iniciar verificación</button>
-        </div>`;
+        body.innerHTML = '<div class="idle-state" style="animation:fadeIn 0.3s">' +
+          '<div class="logo-container"><img src="logo-icon-white.png" alt="CAPTCHA Shield" /></div>' +
+          '<h3>Verification de seguridad</h3>' +
+          '<p>Demuestra que eres humano completando el desafio</p>' +
+          '<button class="btn-primary" onclick="generateCaptcha()">Iniciar verificacion</button>' +
+          '</div>';
       } else if (STATE.phase === 'loading') {
         status.innerHTML = '';
-        body.innerHTML = `<div style="text-align:center;animation:fadeIn 0.3s">
-          <div class="spinner"></div>
-          <p style="font-size:13px;color:var(--text-muted)">Generando desafío...</p>
-        </div>`;
+        body.innerHTML = '<div style="text-align:center;animation:fadeIn 0.3s">' +
+          '<div class="spinner"></div>' +
+          '<p style="font-size:13px;color:#6b7280">Generando desafio...</p>' +
+          '</div>';
       } else if (STATE.phase === 'verifying') {
         status.innerHTML = '';
-        body.innerHTML = `<div style="text-align:center;animation:fadeIn 0.3s">
-          <div class="spinner"></div>
-          <p style="font-size:13px;color:var(--text-muted)">Verificando respuesta...</p>
-        </div>`;
+        body.innerHTML = '<div style="text-align:center;animation:fadeIn 0.3s">' +
+          '<div class="spinner"></div>' +
+          '<p style="font-size:13px;color:#6b7280">Verificando respuesta...</p>' +
+          '</div>';
       } else if (STATE.phase === 'solving') {
-        status.innerHTML = `<div class="status"><div class="dot"></div><span>Activo</span></div>`;
+        status.innerHTML = '<div class="status"><div class="dot"></div><span>Activo</span></div>';
         renderChallenge(body);
       } else if (STATE.phase === 'result') {
-        status.innerHTML = `<span class="verified-badge">Verificado ✓</span>`;
+        status.innerHTML = '<span class="verified-badge">Verificado &#10003;</span>';
         renderResult(body);
       }
     }
 
     function renderChallenge(container) {
-      const c = STATE.challenge;
+      var c = STATE.challenge;
       container.innerHTML = '<div class="challenge" style="animation:fadeIn 0.3s"></div>';
-      const el = container.querySelector('.challenge');
+      var el = container.querySelector('.challenge');
 
       if (c.type === 'puzzle') {
-        el.innerHTML = `
-          <div class="challenge-instruction"><p>Arrastra el control deslizante para completar el puzzle</p></div>
-          <div class="puzzle-container"><canvas id="puzzleCanvas" width="${STATE.canvasWidth}" height="${STATE.canvasHeight}"></canvas></div>
-          <div class="puzzle-slider">
-            <div class="track" id="puzzleTrack">
-              <div class="fill" id="puzzleFill" style="width:0%"></div>
-              <div class="handle" id="puzzleHandle" style="left:0px">
-                <span class="arrows">➤</span>
-              </div>
-            </div>
-          </div>`;
-        initPuzzle();
+        el.innerHTML =
+          '<div class="challenge-instruction"><p>Drag the slider to move the puzzle piece to the target position</p></div>' +
+          '<div class="puzzle-container"><canvas id="puzzleCanvas" width="' + c.canvasWidth + '" height="' + c.canvasHeight + '"></canvas></div>' +
+          '<div class="puzzle-slider">' +
+            '<div class="track" id="puzzleTrack">' +
+              '<div class="fill" id="puzzleFill" style="width:0%"></div>' +
+              '<div class="handle" id="puzzleHandle" style="left:0px">' +
+                '<span class="arrows">&#10148;</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        setTimeout(initPuzzle, 50);
       } else if (c.type === 'image_select') {
-        let cellsHtml = c.grid.map(cell => {
-          const svg = drawShape(cell.shape, cell.color, cell.rotation, cell.distorted);
-          return `<div class="image-cell" data-id="${cell.id}" onclick="toggleImageCell(this, ${cell.id})">
-            ${svg}
-            <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          </div>`;
-        }).join('');
-        el.innerHTML = `
-          <div class="challenge-instruction"><p>📋 ${c.instruction}</p></div>
-          <div class="image-grid">${cellsHtml}</div>
-          <div class="challenge-actions">
-            <button class="btn-secondary" onclick="clearImageSelection()">Limpiar</button>
-            <button class="btn-primary" id="verifyImgBtn" onclick="verifyImageSelection()" disabled>Verificar (0)</button>
-          </div>`;
+        renderImageSelect(el, c);
       } else if (c.type === 'math_visual') {
-        el.innerHTML = `
-          <div class="challenge-instruction"><p>📋 Resuelve la siguiente operación matemática</p></div>
-          <div class="math-container">
-            <canvas id="mathCanvas" width="${STATE.canvasWidth}" height="120"></canvas>
-            <div class="math-input-row">
-              <input type="number" id="mathInput" placeholder="?" autofocus />
-              <button class="btn-primary" onclick="verifyMath()">Verificar</button>
-            </div>
-          </div>`;
-        setTimeout(() => { drawMathEquation(); document.getElementById('mathInput')?.focus(); }, 50);
-        document.getElementById('mathInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') verifyMath(); });
+        el.innerHTML =
+          '<div class="challenge-instruction"><p>Solve the following math operation</p></div>' +
+          '<div class="math-container">' +
+            '<canvas id="mathCanvas" width="360" height="120"></canvas>' +
+            '<div class="math-input-row">' +
+              '<input type="number" id="mathInput" placeholder="?" />' +
+              '<button class="btn-primary" onclick="verifyMath()">Verify</button>' +
+            '</div>' +
+          '</div>';
+        setTimeout(function() {
+          drawMathCanvas();
+          var inp = document.getElementById('mathInput');
+          if (inp) {
+            inp.focus();
+            inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') verifyMath(); });
+          }
+        }, 50);
       } else if (c.type === 'pattern_trace') {
-        el.innerHTML = `
-          <div class="challenge-instruction"><p>📋 Haz clic en los puntos en el orden que se muestran</p></div>
-          <div class="pattern-container"><canvas id="patternCanvas" width="320" height="320"></canvas></div>
-          <div class="challenge-actions">
-            <button class="btn-secondary" onclick="resetPattern()">Reiniciar</button>
-            <button class="btn-primary" id="verifyPatBtn" onclick="verifyPattern()" disabled>Verificar</button>
-          </div>`;
+        el.innerHTML =
+          '<div class="challenge-instruction"><p>Click the dots in the numbered order shown</p></div>' +
+          '<div class="pattern-container"><canvas id="patternCanvas" width="' + c.canvasSize + '" height="' + c.canvasSize + '"></canvas></div>' +
+          '<div class="challenge-actions">' +
+            '<button class="btn-secondary" onclick="resetPattern()">Reset</button>' +
+          '</div>';
         setTimeout(initPattern, 50);
       }
     }
 
-    function renderResult(container) {
-      const r = STATE.lastResult;
-      const pct = (r.riskScore * 100).toFixed(1);
-      const level = r.riskScore < 0.3 ? 'low' : r.riskScore < 0.6 ? 'mid' : 'high';
-      const iconSvg = r.success
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-
-      let signalsHtml = '';
-      if (r.signals && r.signals.length) {
-        signalsHtml = '<div class="signals-list"><h4>Señales de comportamiento</h4>';
-        for (const s of r.signals) {
-          const sl = s.score < 0.3 ? 'low' : s.score < 0.6 ? 'mid' : 'high';
-          const barColor = sl === 'low' ? 'var(--emerald-500)' : sl === 'mid' ? 'var(--yellow-500)' : 'var(--red-500)';
-          signalsHtml += `<div class="signal-item">
-            <div class="dot ${sl}"></div>
-            <span class="name">${s.name}</span>
-            <div class="mini-bar"><div class="fill" style="width:${s.score*100}%;background:${barColor}"></div></div>
-            <span class="value">${(s.score*100).toFixed(0)}%</span>
-          </div>`;
-        }
-        signalsHtml += '</div>';
-      }
-
-      container.innerHTML = `<div class="result-view" style="animation:fadeIn 0.3s">
-        <div class="result-icon ${r.success ? 'success' : 'fail'}">${iconSvg}</div>
-        <h3 class="${r.success ? 'success' : 'fail'}">${r.success ? '¡Verificación exitosa!' : 'Verificación fallida'}</h3>
-        <p class="message">${r.message}</p>
-        <div class="risk-card">
-          <div class="header">
-            <span>Puntuación de riesgo</span>
-            <span class="score-value ${level}">${pct}%</span>
-          </div>
-          <div class="progress-bar"><div class="fill ${level}" style="width:${pct}%"></div></div>
-          <div class="progress-labels"><span>Humano</span><span>Bot</span></div>
-        </div>
-        ${signalsHtml}
-        <button class="${r.success ? 'btn-secondary' : 'btn-primary'}" onclick="generateCaptcha()" style="margin-top:16px">${r.success ? 'Nuevo CAPTCHA' : 'Intentar de nuevo'}</button>
-      </div>`;
-    }
-
     // ============================================
-    // Puzzle Challenge
+    // Puzzle Challenge (FIXED: piece moves with slider)
     // ============================================
-    let puzzleDragging = false, puzzleStartX = 0, puzzleCurrentX = 0;
+    var puzzleDragging = false;
+    var puzzleStartClientX = 0;
+    var puzzleCurrentOffset = 0;
 
     function initPuzzle() {
-      const canvas = document.getElementById('puzzleCanvas');
+      var canvas = document.getElementById('puzzleCanvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const c = STATE.challenge;
-      const w = STATE.canvasWidth, h = STATE.canvasHeight;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-      ctx.scale(dpr, dpr);
+      var c = STATE.challenge;
+      var w = c.canvasWidth;
+      var h = c.canvasHeight;
+      var ps = c.pieceSize;
+      var dpr = window.devicePixelRatio || 1;
 
-      // Draw background
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#1a2332'); grad.addColorStop(1, '#0f172a');
-      ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
 
-      // Draw grid pattern
-      ctx.strokeStyle = 'rgba(55, 65, 81, 0.3)'; ctx.lineWidth = 0.5;
-      for (let i = 0; i < w; i += 30) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke(); }
-      for (let i = 0; i < h; i += 30) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke(); }
+      // Generate background scene once
+      var bgImage = generatePuzzleBackground(w, h, c.seed);
 
-      // Draw shapes
-      const rng = seedRng(c.seed);
-      for (let i = 0; i < 15; i++) {
-        const sx = rng() * w, sy = rng() * h, sr = 15 + rng() * 25;
-        ctx.beginPath();
-        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${rng() * 360}, 50%, 40%, 0.3)`;
-        ctx.fill();
-      }
+      // Store puzzle state
+      STATE._puzzle = {
+        canvas: canvas,
+        w: w,
+        h: h,
+        pieceSize: ps,
+        targetX: (c.targetX / 100) * (w - ps), // convert % to pixels
+        currentX: 0, // piece starts at left
+        bgImage: bgImage
+      };
 
-      // Target cutout area
-      const pieceW = w * 0.15;
-      const targetPx = (c.targetX / 100) * w;
-      const top = (h - pieceW) / 2;
+      drawPuzzle(0);
 
-      // Dark cutout
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      ctx.fillRect(targetPx, top, pieceW, pieceW);
+      // Setup slider events
+      var track = document.getElementById('puzzleTrack');
+      var handle = document.getElementById('puzzleHandle');
+      var fill = document.getElementById('puzzleFill');
+      if (!track || !handle || !fill) return;
 
-      // Cutout border
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 2;
-      ctx.strokeRect(targetPx, top, pieceW, pieceW);
-
-      // Piece (at starting position)
-      const piecePx = (c.pieceX / 100) * w;
-      ctx.save();
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
-      ctx.fillRect(piecePx, top, pieceW, pieceW);
-      ctx.strokeStyle = 'var(--emerald-400)';
-      ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2;
-      ctx.strokeRect(piecePx, top, pieceW, pieceW);
-      // Inner detail
-      ctx.fillStyle = '#34d399';
-      ctx.font = '14px Inter'; ctx.textAlign = 'center';
-      ctx.fillText('▶', piecePx + pieceW/2, top + pieceW/2 + 5);
-      ctx.restore();
-
-      // Store for dragging
-      STATE._puzzle = { piecePx, top, pieceW, targetPx, canvasW: w };
-
-      // Slider
-      const track = document.getElementById('puzzleTrack');
-      const handle = document.getElementById('puzzleHandle');
-      const fill = document.getElementById('puzzleFill');
-
-      const onStart = (e) => {
+      function onStart(e) {
+        e.preventDefault();
         puzzleDragging = true;
-        const ev = e.touches ? e.touches[0] : e;
-        puzzleStartX = ev.clientX;
-        puzzleCurrentX = 0;
+        puzzleCurrentOffset = 0;
+        var ev = e.touches ? e.touches[0] : e;
+        puzzleStartClientX = ev.clientX;
+        // Get current handle position
+        var handleLeft = parseInt(handle.style.left) || 0;
+        puzzleCurrentOffset = handleLeft;
+        puzzleStartClientX = ev.clientX - puzzleCurrentOffset;
         handle.style.transition = 'none';
         fill.style.transition = 'none';
-      };
-      const onMove = (e) => {
+      }
+
+      function onMove(e) {
         if (!puzzleDragging) return;
         e.preventDefault();
-        const ev = e.touches ? e.touches[0] : e;
-        const dx = ev.clientX - puzzleStartX;
-        const trackW = track.offsetWidth - 40;
-        const clamped = Math.max(0, Math.min(trackW, dx));
-        puzzleCurrentX = clamped;
+        var ev = e.touches ? e.touches[0] : e;
+        var trackW = track.offsetWidth - 40;
+        var rawOffset = ev.clientX - puzzleStartClientX;
+        var clamped = Math.max(0, Math.min(trackW, rawOffset));
+        puzzleCurrentOffset = clamped;
         handle.style.left = clamped + 'px';
         fill.style.width = (clamped + 20) + 'px';
-      };
-      const onEnd = () => {
+
+        // Update puzzle piece position
+        var piecePercent = clamped / trackW;
+        var maxPieceX = STATE._puzzle.w - STATE._puzzle.pieceSize;
+        STATE._puzzle.currentX = piecePercent * maxPieceX;
+        drawPuzzle(piecePercent * 100);
+      }
+
+      function onEnd() {
         if (!puzzleDragging) return;
         puzzleDragging = false;
-        const trackW = track.offsetWidth - 40;
-        const pct = puzzleCurrentX / trackW;
-        submitAnswer(pct * 100);
-      };
+        var trackW = track.offsetWidth - 40;
+        var pct = trackW > 0 ? (puzzleCurrentOffset / trackW) * 100 : 0;
+        submitAnswer(pct);
+      }
 
       handle.addEventListener('mousedown', onStart);
       handle.addEventListener('touchstart', onStart, { passive: false });
@@ -1557,227 +1821,640 @@
       document.addEventListener('touchend', onEnd);
     }
 
+    function generatePuzzleBackground(w, h, seed) {
+      var offCanvas = document.createElement('canvas');
+      offCanvas.width = w;
+      offCanvas.height = h;
+      var ctx = offCanvas.getContext('2d');
+      var rng = seedRng(seed);
+
+      // Gradient background
+      var grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#1a2332');
+      grad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Grid pattern
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.25)';
+      ctx.lineWidth = 0.5;
+      for (var i = 0; i < w; i += 30) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke();
+      }
+      for (var i = 0; i < h; i += 30) {
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke();
+      }
+
+      // Decorative circles
+      var hue = rng() * 360;
+      for (var i = 0; i < 18; i++) {
+        var cx = rng() * w;
+        var cy = rng() * h;
+        var r = Math.max(1, 10 + rng() * 30);
+        var h2 = (hue + rng() * 120) % 360;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' +
+          Math.round(100 + Math.sin(h2 * 0.017) * 100) + ',' +
+          Math.round(100 + Math.cos(h2 * 0.013) * 80) + ',' +
+          Math.round(140 + Math.sin(h2 * 0.02) * 60) + ',0.25)';
+        ctx.fill();
+      }
+
+      // Small squares
+      for (var i = 0; i < 10; i++) {
+        var sx = rng() * w;
+        var sy = rng() * h;
+        var ss = 8 + rng() * 20;
+        ctx.fillStyle = 'rgba(' +
+          Math.round(80 + rng() * 100) + ',' +
+          Math.round(80 + rng() * 80) + ',' +
+          Math.round(120 + rng() * 80) + ',0.2)';
+        ctx.fillRect(sx, sy, ss, ss);
+      }
+
+      // Small triangles
+      for (var i = 0; i < 6; i++) {
+        var tx = rng() * w;
+        var ty = rng() * h;
+        var ts = 10 + rng() * 20;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty - ts);
+        ctx.lineTo(tx + ts, ty + ts);
+        ctx.lineTo(tx - ts, ty + ts);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(' +
+          Math.round(120 + rng() * 80) + ',' +
+          Math.round(90 + rng() * 60) + ',' +
+          Math.round(160 + rng() * 60) + ',0.2)';
+        ctx.fill();
+      }
+
+      return offCanvas;
+    }
+
+    function drawPuzzle(sliderPercent) {
+      var p = STATE._puzzle;
+      if (!p) return;
+      var canvas = p.canvas;
+      var ctx = canvas.getContext('2d');
+      var w = p.w;
+      var h = p.h;
+      var ps = p.pieceSize;
+      var dpr = window.devicePixelRatio || 1;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Draw background
+      ctx.drawImage(p.bgImage, 0, 0);
+
+      var targetX = p.targetX;
+      var pieceX = p.currentX;
+      var pieceY = (h - ps) / 2;
+
+      // Draw target cutout (dark overlay with emerald border)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+      ctx.fillRect(targetX, pieceY, ps, ps);
+
+      // Target border - emerald dashed
+      ctx.strokeStyle = C.EMERALD_500;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.strokeRect(targetX + 1, pieceY + 1, ps - 2, ps - 2);
+      ctx.setLineDash([]);
+
+      // Target label
+      ctx.fillStyle = C.EMERALD_400;
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('TARGET', targetX + ps / 2, pieceY + ps + 4);
+
+      // Draw small arrow pointing down at target
+      ctx.beginPath();
+      ctx.moveTo(targetX + ps / 2 - 5, pieceY - 2);
+      ctx.lineTo(targetX + ps / 2 + 5, pieceY - 2);
+      ctx.lineTo(targetX + ps / 2, pieceY + 4);
+      ctx.closePath();
+      ctx.fillStyle = C.EMERALD_500;
+      ctx.fill();
+
+      // Draw movable piece
+      // Extract the area from background that the piece covers
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pieceX, pieceY, ps, ps);
+      ctx.clip();
+      ctx.drawImage(p.bgImage, 0, 0);
+      ctx.restore();
+
+      // Piece border
+      var dist = Math.abs(pieceX - targetX);
+      var tolerance = (STATE.challenge.tolerance / 100) * (w - ps);
+      var isNear = dist <= tolerance;
+
+      ctx.strokeStyle = isNear ? C.EMERALD_400 : C.EMERALD_500;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(pieceX, pieceY, ps, ps);
+
+      // Piece inner glow
+      if (isNear) {
+        ctx.shadowColor = C.EMERALD_400;
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = C.EMERALD_400;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(pieceX + 1, pieceY + 1, ps - 2, ps - 2);
+        ctx.shadowBlur = 0;
+      }
+
+      // Piece arrow indicator
+      ctx.fillStyle = C.TEXT_PRIMARY;
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('\u25B6', pieceX + ps / 2, pieceY + ps / 2);
+    }
+
     // ============================================
-    // Image Select Challenge
+    // Image Select Challenge (FIXED: reliable)
     // ============================================
-    const imageSelected = new Set();
+    var imageSelected = new Set();
+
+    function renderImageSelect(el, c) {
+      var cellsHtml = '';
+      for (var i = 0; i < c.grid.length; i++) {
+        var cell = c.grid[i];
+        var svg = buildShapeSVG(cell.shape, cell.color, cell.rotation);
+        cellsHtml += '<div class="image-cell" data-id="' + cell.id + '" onclick="toggleImageCell(this, ' + cell.id + ')">' +
+          svg +
+          '<div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '</div>';
+      }
+
+      el.innerHTML =
+        '<div class="challenge-instruction"><p>' + c.instruction + '</p></div>' +
+        '<div class="image-grid">' + cellsHtml + '</div>' +
+        '<div class="challenge-actions">' +
+          '<button class="btn-secondary" onclick="clearImageSelection()">Clear</button>' +
+          '<button class="btn-primary" id="verifyImgBtn" onclick="verifyImageSelection()" disabled>Verify (0)</button>' +
+        '</div>';
+
+      // Reset selection state
+      imageSelected.clear();
+    }
 
     function toggleImageCell(el, id) {
       el.classList.toggle('selected');
-      if (imageSelected.has(id)) imageSelected.delete(id); else imageSelected.add(id);
-      const btn = document.getElementById('verifyImgBtn');
-      if (btn) { btn.disabled = imageSelected.size === 0; btn.textContent = `Verificar (${imageSelected.size})`; }
+      if (imageSelected.has(id)) {
+        imageSelected.delete(id);
+      } else {
+        imageSelected.add(id);
+      }
+      var btn = document.getElementById('verifyImgBtn');
+      if (btn) {
+        btn.disabled = imageSelected.size === 0;
+        btn.textContent = 'Verify (' + imageSelected.size + ')';
+      }
     }
 
     function clearImageSelection() {
       imageSelected.clear();
-      document.querySelectorAll('.image-cell.selected').forEach(el => el.classList.remove('selected'));
-      const btn = document.getElementById('verifyImgBtn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Verificar (0)'; }
+      document.querySelectorAll('.image-cell.selected').forEach(function(el) {
+        el.classList.remove('selected');
+      });
+      var btn = document.getElementById('verifyImgBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Verify (0)';
+      }
     }
 
     function verifyImageSelection() {
-      const selected = Array.from(imageSelected).sort((a,b) => a-b).join(',');
-      submitAnswer(selected);
+      var selected = Array.from(imageSelected).sort(function(a,b){return a-b;}).join(',');
       imageSelected.clear();
+      submitAnswer(selected);
     }
 
-    function drawShape(shape, color, rotation, distorted) {
-      const s = 100, cx = 50, cy = 50, r = 32;
-      const d = distorted ? (Math.random() - 0.5) * 8 : 0;
-      const rot = `transform="rotate(${rotation}, ${cx}, ${cy})"`;
-      const base = `fill="${color}" ${rot}`;
+    function buildShapeSVG(shape, color, rotation) {
+      var cx = 50, cy = 50, r = 32;
+      var rot = ' transform="rotate(' + rotation + ', ' + cx + ', ' + cy + ')"';
+      var fill = ' fill="' + color + '"';
+
       switch (shape) {
-        case 'circle': return `<svg viewBox="0 0 100 100"><circle cx="${cx}" cy="${cy}" r="${r}" ${base} /></svg>`;
-        case 'square': return `<svg viewBox="0 0 100 100"><rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" rx="${distorted ? Math.abs(d)+3 : 2}" ${base} /></svg>`;
-        case 'triangle': { const pts=[[cx,cy-r+d],[cx+r-d,cy+r*.7],[cx-r+d,cy+r*.7]]; return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`; }
-        case 'star': {
-          const pts=[]; for(let i=0;i<10;i++){const a=(i*Math.PI)/5-Math.PI/2,rd=i%2===0?r:r*.45;pts.push([cx+Math.cos(a)*rd+(distorted?d*.5:0),cy+Math.sin(a)*rd+(distorted?d*.3:0)]);}
-          return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`;
-        }
-        case 'diamond': { const pts=[[cx,cy-r+d],[cx+r*.6,cy],[cx,cy+r-d],[cx-r*.6,cy]]; return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`; }
-        case 'hexagon': {
-          const pts=[]; for(let i=0;i<6;i++){const a=(i*Math.PI)/3-Math.PI/6;pts.push([cx+Math.cos(a)*r+(distorted?d*.4:0),cy+Math.sin(a)*r+(distorted?d*.4:0)]);}
-          return `<svg viewBox="0 0 100 100"><polygon points="${pts.flat().join(',')}" ${base} /></svg>`;
-        }
-        default: return `<svg viewBox="0 0 100 100"><circle cx="${cx}" cy="${cy}" r="${r}" ${base} /></svg>`;
+        case 'circle':
+          return '<svg viewBox="0 0 100 100"><circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"' + fill + rot + '/></svg>';
+        case 'square':
+          return '<svg viewBox="0 0 100 100"><rect x="' + (cx-r) + '" y="' + (cy-r) + '" width="' + (r*2) + '" height="' + (r*2) + '" rx="3"' + fill + rot + '/></svg>';
+        case 'triangle':
+          return '<svg viewBox="0 0 100 100"><polygon points="' + cx + ',' + (cy-r) + ' ' + (cx+r) + ',' + (cy+r*0.7) + ' ' + (cx-r) + ',' + (cy+r*0.7) + '"' + fill + rot + '/></svg>';
+        case 'star':
+          var pts = [];
+          for (var i = 0; i < 10; i++) {
+            var angle = (i * Math.PI) / 5 - Math.PI / 2;
+            var rd = i % 2 === 0 ? r : r * 0.45;
+            pts.push(Math.round(cx + Math.cos(angle) * rd) + ',' + Math.round(cy + Math.sin(angle) * rd));
+          }
+          return '<svg viewBox="0 0 100 100"><polygon points="' + pts.join(' ') + '"' + fill + rot + '/></svg>';
+        case 'diamond':
+          return '<svg viewBox="0 0 100 100"><polygon points="' + cx + ',' + (cy-r) + ' ' + (cx+r*0.6) + ',' + cy + ' ' + cx + ',' + (cy+r) + ' ' + (cx-r*0.6) + ',' + cy + '"' + fill + rot + '/></svg>';
+        case 'hexagon':
+          var pts = [];
+          for (var i = 0; i < 6; i++) {
+            var angle = (i * Math.PI) / 3 - Math.PI / 6;
+            pts.push(Math.round(cx + Math.cos(angle) * r) + ',' + Math.round(cy + Math.sin(angle) * r));
+          }
+          return '<svg viewBox="0 0 100 100"><polygon points="' + pts.join(' ') + '"' + fill + rot + '/></svg>';
+        default:
+          return '<svg viewBox="0 0 100 100"><circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"' + fill + '/></svg>';
       }
     }
 
     // ============================================
-    // Math Visual Challenge
+    // Math Visual Challenge (FIXED: literal colors only)
     // ============================================
-    function drawMathEquation() {
-      const canvas = document.getElementById('mathCanvas');
+    function drawMathCanvas() {
+      var canvas = document.getElementById('mathCanvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const c = STATE.challenge;
-      const w = STATE.canvasWidth, h = 120;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-      ctx.scale(dpr, dpr);
+      var c = STATE.challenge;
+      var w = 360, h = 120;
+      var dpr = window.devicePixelRatio || 1;
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
+
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Background
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Noise lines
-      for (let i = 0; i < c.noiseLines; i++) {
+      // Subtle border
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+
+      // Noise lines — all literal rgba colors
+      for (var i = 0; i < c.noiseLines; i++) {
         ctx.beginPath();
         ctx.moveTo(Math.random() * w, Math.random() * h);
         ctx.lineTo(Math.random() * w, Math.random() * h);
-        ctx.strokeStyle = `rgba(55, 65, 81, ${0.3 + Math.random() * 0.4})`;
+        var lineAlpha = (0.3 + Math.random() * 0.3).toFixed(2);
+        ctx.strokeStyle = 'rgba(55, 65, 81, ' + lineAlpha + ')';
         ctx.lineWidth = 1 + Math.random() * 2;
         ctx.stroke();
       }
 
-      // Noise dots
-      for (let i = 0; i < 80; i++) {
-        ctx.fillStyle = `rgba(100, 116, 139, ${0.2 + Math.random() * 0.3})`;
-        ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
+      // Noise dots — all literal rgba colors
+      for (var i = 0; i < c.noiseDots; i++) {
+        var dotAlpha = (0.15 + Math.random() * 0.25).toFixed(2);
+        ctx.fillStyle = 'rgba(100, 116, 139, ' + dotAlpha + ')';
+        var dotSize = 1 + Math.random() * 2;
+        ctx.fillRect(Math.random() * w, Math.random() * h, dotSize, dotSize);
       }
 
-      // Equation text
-      ctx.font = 'bold 42px "JetBrains Mono", monospace';
+      // Equation text — literal colors only
+      ctx.font = 'bold 38px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      // Slight distortion via shadow
+      // Shadow glow
       ctx.shadowColor = 'rgba(52, 211, 153, 0.3)';
-      ctx.shadowBlur = 4;
+      ctx.shadowBlur = 6;
       ctx.fillStyle = '#e2e8f0';
-      ctx.fillText(c.equation, w / 2 + (Math.random()-0.5)*2, h / 2 + (Math.random()-0.5)*2);
+      ctx.fillText(c.equation, w / 2, h / 2);
       ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
     }
 
     function verifyMath() {
-      const input = document.getElementById('mathInput');
+      var input = document.getElementById('mathInput');
       if (!input) return;
       submitAnswer(input.value);
     }
 
     // ============================================
-    // Pattern Trace Challenge
+    // Pattern Trace Challenge (FIXED: proper scaling)
     // ============================================
-    let patternClicked = [];
+    var patternClicked = [];
+    var patternCanvasSize = 280;
 
     function initPattern() {
-      const canvas = document.getElementById('patternCanvas');
+      var canvas = document.getElementById('patternCanvas');
       if (!canvas) return;
-      const c = STATE.challenge;
+      var c = STATE.challenge;
       patternClicked = [];
-      drawPattern();
+      patternCanvasSize = c.canvasSize;
 
-      canvas.addEventListener('click', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = 320 / rect.width;
-        const scaleY = 320 / rect.height;
-        const mx = (e.clientX - rect.left) * scaleX;
-        const my = (e.clientY - rect.top) * scaleY;
+      // Setup canvas DPR
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = patternCanvasSize * dpr;
+      canvas.height = patternCanvasSize * dpr;
+      canvas.style.width = '100%';
+      canvas.style.maxWidth = patternCanvasSize + 'px';
+      canvas.style.height = 'auto';
 
-        for (const pt of c.points) {
-          if (Math.hypot((pt.x / 100) * 320 - mx, (pt.y / 100) * 320 - my) < 22) {
-            if (patternClicked.includes(pt.id)) break;
-            patternClicked.push(pt.id);
-            drawPattern();
-            const btn = document.getElementById('verifyPatBtn');
-            if (btn) btn.disabled = patternClicked.length < c.sequence.length;
+      drawPatternCanvas();
+
+      // Click handler with proper coordinate scaling
+      canvas.onclick = function(e) {
+        if (STATE.phase !== 'solving') return;
+
+        var rect = canvas.getBoundingClientRect();
+        var scaleX = patternCanvasSize / rect.width;
+        var scaleY = patternCanvasSize / rect.height;
+        var mx = (e.clientX - rect.left) * scaleX;
+        var my = (e.clientY - rect.top) * scaleY;
+
+        for (var i = 0; i < c.points.length; i++) {
+          var pt = c.points[i];
+          var dist = Math.hypot(pt.x - mx, pt.y - my);
+          if (dist < 25) {
+            if (patternClicked.indexOf(pt.id) === -1) {
+              patternClicked.push(pt.id);
+              drawPatternCanvas();
+
+              // Auto-verify when all dots clicked
+              if (patternClicked.length === c.sequence.length) {
+                setTimeout(function() {
+                  var response = patternClicked.join(',');
+                  submitAnswer(response);
+                }, 300);
+              }
+            }
             break;
           }
         }
-      });
+      };
     }
 
     function resetPattern() {
       patternClicked = [];
-      drawPattern();
-      const btn = document.getElementById('verifyPatBtn');
-      if (btn) btn.disabled = true;
+      drawPatternCanvas();
     }
 
-    function drawPattern() {
-      const canvas = document.getElementById('patternCanvas');
+    function drawPatternCanvas() {
+      var canvas = document.getElementById('patternCanvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const c = STATE.challenge;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = 320 * dpr; canvas.height = 320 * dpr;
-      canvas.style.width = '100%'; canvas.style.maxWidth = '320px';
-      ctx.scale(dpr, dpr);
+      var c = STATE.challenge;
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      var s = patternCanvasSize;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Background
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, 320, 320);
+      ctx.fillRect(0, 0, s, s);
 
-      // Grid
-      ctx.strokeStyle = 'rgba(55, 65, 81, 0.2)'; ctx.lineWidth = 0.5;
-      for (let i = 0; i <= 320; i += 40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 320); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(320, i); ctx.stroke(); }
+      // Subtle grid
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.15)';
+      ctx.lineWidth = 0.5;
+      for (var i = 0; i <= s; i += 40) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, s); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(s, i); ctx.stroke();
+      }
 
-      // Draw sequence connections (correct path hint)
-      ctx.strokeStyle = 'rgba(55, 65, 81, 0.15)'; ctx.lineWidth = 2;
-      ctx.setLineDash([4, 4]);
-      for (let i = 0; i < c.sequence.length - 1; i++) {
-        const a = c.points.find(p => p.id === c.sequence[i]);
-        const b = c.points.find(p => p.id === c.sequence[i+1]);
+      // Draw hint lines (dashed) showing correct sequence order
+      ctx.strokeStyle = 'rgba(55, 65, 81, 0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 6]);
+      for (var i = 0; i < c.sequence.length - 1; i++) {
+        var pa = c.points[c.sequence[i]];
+        var pb = c.points[c.sequence[i + 1]];
         ctx.beginPath();
-        ctx.moveTo(a.x * 3.2, a.y * 3.2);
-        ctx.lineTo(b.x * 3.2, b.y * 3.2);
+        ctx.moveTo(pa.x, pa.y);
+        ctx.lineTo(pb.x, pb.y);
         ctx.stroke();
       }
       ctx.setLineDash([]);
 
-      // Draw clicked connections
+      // Draw clicked connection lines (solid emerald)
       if (patternClicked.length > 1) {
-        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3;
+        ctx.strokeStyle = '#34d399';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
-        const first = c.points.find(p => p.id === patternClicked[0]);
-        ctx.moveTo(first.x * 3.2, first.y * 3.2);
-        for (let i = 1; i < patternClicked.length; i++) {
-          const pt = c.points.find(p => p.id === patternClicked[i]);
-          ctx.lineTo(pt.x * 3.2, pt.y * 3.2);
+        var firstPt = c.points[patternClicked[0]];
+        ctx.moveTo(firstPt.x, firstPt.y);
+        for (var i = 1; i < patternClicked.length; i++) {
+          var pt = c.points[patternClicked[i]];
+          ctx.lineTo(pt.x, pt.y);
         }
         ctx.stroke();
       }
 
-      // Draw points
-      for (const pt of c.points) {
-        const px = pt.x * 3.2, py = pt.y * 3.2;
-        const idx = patternClicked.indexOf(pt.id);
-        const isClicked = idx !== -1;
+      // Draw dots
+      for (var i = 0; i < c.points.length; i++) {
+        var pt = c.points[i];
+        var clickIdx = patternClicked.indexOf(pt.id);
+        var isClicked = clickIdx !== -1;
 
+        // Outer circle
         ctx.beginPath();
-        ctx.arc(px, py, 14, 0, Math.PI * 2);
-        ctx.fillStyle = isClicked ? 'rgba(16, 185, 129, 0.3)' : 'rgba(30, 41, 59, 0.8)';
+        ctx.arc(pt.x, pt.y, 16, 0, Math.PI * 2);
+        if (isClicked) {
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+        } else {
+          ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+        }
         ctx.fill();
+
+        // Border
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 16, 0, Math.PI * 2);
         ctx.strokeStyle = isClicked ? '#34d399' : 'rgba(75, 85, 99, 0.5)';
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Number label: show the sequence order number
+        var seqIdx = c.sequence.indexOf(pt.id);
+        var displayNum = seqIdx + 1;
+
         ctx.fillStyle = isClicked ? '#34d399' : '#9ca3af';
-        ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(idx !== -1 ? (idx + 1).toString() : (pt.id + 1).toString(), px, py);
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(displayNum), pt.x, pt.y);
       }
     }
 
-    function verifyPattern() {
-      const c = STATE.challenge;
-      submitAnswer(c.sequence.join(','));
+    // ============================================
+    // Result Renderer
+    // ============================================
+    function renderResult(container) {
+      var r = STATE.lastResult;
+      if (!r) return;
+
+      var pct = (r.riskScore * 100).toFixed(1);
+      var level = r.riskScore < 0.3 ? 'low' : r.riskScore < 0.6 ? 'mid' : 'high';
+
+      var iconSvg = r.success
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+      // Signals HTML
+      var signalsHtml = '';
+      if (r.signals && r.signals.length) {
+        signalsHtml = '<div class="signals-list"><h4>Behavioral Signals</h4>';
+        for (var i = 0; i < r.signals.length; i++) {
+          var s = r.signals[i];
+          var sl = s.score < 0.3 ? 'low' : s.score < 0.6 ? 'mid' : 'high';
+          var barColor = sl === 'low' ? '#10b981' : sl === 'mid' ? '#eab308' : '#ef4444';
+          signalsHtml += '<div class="signal-item">' +
+            '<div class="dot ' + sl + '"></div>' +
+            '<span class="name">' + s.name + '</span>' +
+            '<div class="mini-bar"><div class="fill" style="width:' + (s.score*100) + '%;background:' + barColor + '"></div></div>' +
+            '<span class="value">' + (s.score*100).toFixed(0) + '%</span>' +
+            '</div>';
+        }
+        signalsHtml += '</div>';
+      }
+
+      container.innerHTML =
+        '<div class="result-view" style="animation:fadeIn 0.3s">' +
+          '<div class="result-icon ' + (r.success ? 'success' : 'fail') + '">' + iconSvg + '</div>' +
+          '<h3 class="' + (r.success ? 'success' : 'fail') + '">' + (r.success ? 'Verification successful!' : 'Verification failed') + '</h3>' +
+          '<p class="message">' + r.message + '</p>' +
+          '<div class="risk-card">' +
+            '<div class="header">' +
+              '<span>Risk Score</span>' +
+              '<span class="score-value ' + level + '">' + pct + '%</span>' +
+            '</div>' +
+            '<div class="progress-bar"><div class="fill ' + level + '" style="width:' + pct + '%"></div></div>' +
+            '<div class="progress-labels"><span>Human</span><span>Bot</span></div>' +
+          '</div>' +
+          signalsHtml +
+          '<button class="' + (r.success ? 'btn-secondary' : 'btn-primary') + '" onclick="generateCaptcha()" style="margin-top:16px">' +
+            (r.success ? 'New CAPTCHA' : 'Try again') +
+          '</button>' +
+        '</div>';
     }
 
     // ============================================
-    // Utilities
+    // Agent Test Panel
     // ============================================
-    function seedRng(seed) {
-      let s = seed;
-      return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+    function renderAgentPanel() {
+      var panel = document.getElementById('agentPanel');
+      if (!panel) return;
+
+      if (!STATE.challenge) {
+        panel.innerHTML =
+          '<div class="agent-card">' +
+            '<div class="agent-placeholder">' +
+              '<p>No active challenge yet.</p>' +
+              '<p class="sub">Start a CAPTCHA challenge from the Demo tab first, or generate one below.</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="agent-actions">' +
+            '<button class="btn-primary" onclick="generateCaptchaForAgent()">Generate Challenge</button>' +
+          '</div>';
+        return;
+      }
+
+      var c = STATE.challenge;
+      var solutionStr = String(STATE.solution);
+
+      // Build challenge data for agent display
+      var challengeData = '';
+      var solutionHint = '';
+      var answerFormat = '';
+
+      if (c.type === 'puzzle') {
+        challengeData = JSON.stringify({
+          type: 'puzzle',
+          canvas_width: c.canvasWidth,
+          canvas_height: c.canvasHeight,
+          piece_size: c.pieceSize,
+          target_position_percent: c.targetX,
+          tolerance_percent: c.tolerance
+        }, null, 2);
+        solutionHint = 'The slider must be moved to approximately ' + c.targetX + '% of the track width.';
+        answerFormat = 'Submit a number between 0-100 representing the slider position percentage.';
+      } else if (c.type === 'image_select') {
+        var gridData = c.grid.map(function(cell) {
+          return { id: cell.id, shape: cell.shape, color: cell.color, rotation: cell.rotation };
+        });
+        challengeData = JSON.stringify({
+          type: 'image_select',
+          instruction: c.instruction,
+          target_shape: c.targetShape,
+          grid: gridData
+        }, null, 2);
+        solutionHint = 'The correct indices are: [' + c.correctIndices.join(', ') + ']';
+        answerFormat = 'Submit comma-separated indices, e.g. "' + solutionStr + '".';
+      } else if (c.type === 'math_visual') {
+        challengeData = JSON.stringify({
+          type: 'math_visual',
+          equation_display: c.equation,
+          equation_raw: c.equationRaw
+        }, null, 2);
+        solutionHint = 'The answer is: ' + c.answer;
+        answerFormat = 'Submit the numeric answer as a string or number.';
+      } else if (c.type === 'pattern_trace') {
+        var pointsData = c.points.map(function(pt) {
+          return { id: pt.id, x: Math.round(pt.x), y: Math.round(pt.y) };
+        });
+        challengeData = JSON.stringify({
+          type: 'pattern_trace',
+          canvas_size: c.canvasSize,
+          points: pointsData,
+          correct_sequence: c.sequence
+        }, null, 2);
+        solutionHint = 'Click dots in order: [' + c.sequence.join(' -> ') + ']';
+        answerFormat = 'Submit comma-separated dot IDs in sequence order, e.g. "' + solutionStr + '".';
+      }
+
+      var statusHtml = '';
+      if (STATE.lastResult) {
+        var r = STATE.lastResult;
+        var statusColor = r.success ? '#34d399' : '#f87171';
+        statusHtml = '<div class="agent-card">' +
+          '<h4>Last Result <span class="badge" style="background:' + (r.success ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)') + ';color:' + statusColor + '">' + (r.success ? 'PASS' : 'FAIL') + '</span></h4>' +
+          '<pre>{\n' +
+          '  "success": ' + r.success + ',\n' +
+          '  "challenge_correct": ' + r.challengeCorrect + ',\n' +
+          '  "is_bot": ' + r.isBot + ',\n' +
+          '  "risk_score": ' + r.riskScore + ',\n' +
+          '  "message": "' + r.message.replace(/"/g, '\\"') + '"\n' +
+          '}</pre>' +
+        '</div>';
+      }
+
+      panel.innerHTML =
+        '<div class="agent-card">' +
+          '<h4>Challenge Data <span class="badge">LIVE</span></h4>' +
+          '<pre>' + escapeHtml(challengeData) + '</pre>' +
+        '</div>' +
+        '<div class="agent-card">' +
+          '<h4>Solution</h4>' +
+          '<pre>' + escapeHtml(solutionStr) + '</pre>' +
+          '<div class="note">' +
+            '<strong>Hint:</strong> ' + solutionHint + '<br/>' +
+            '<strong>Format:</strong> ' + answerFormat +
+          '</div>' +
+        '</div>' +
+        statusHtml +
+        '<div class="agent-actions">' +
+          '<button class="btn-secondary" onclick="resetChallenge()">Reset</button>' +
+          '<button class="btn-primary" onclick="generateCaptchaForAgent()">Generate New Challenge</button>' +
+        '</div>';
     }
 
-    function switchTab(tab) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + tab).classList.add('active');
-      event.target.classList.add('active');
+    function resetChallenge() {
+      STATE.challenge = null;
+      STATE.solution = null;
+      STATE.phase = 'idle';
+      STATE.lastResult = null;
+      renderCaptcha();
+      renderAgentPanel();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     // ============================================
@@ -1787,4 +2464,3 @@
   </script>
 </body>
 </html>
-
