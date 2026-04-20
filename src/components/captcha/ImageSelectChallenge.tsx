@@ -12,7 +12,8 @@ interface Props {
 function drawShape(cell: ImageCell): string {
   const s = cell.size + 10;
   const cx = s / 2, cy = s / 2, r = s * 0.35;
-  const d = cell.distorted ? (Math.random() - 0.5) * 6 : 0;
+  // Use deterministic distortion based on cell.id instead of Math.random()
+  const d = cell.distorted ? ((cell.id * 7 + 3) % 11 - 5) * 0.6 : 0;
   const rot = `rotate(${cell.rotation}, ${cx}, ${cy})`;
 
   const fill = cell.hasGradient
@@ -22,8 +23,9 @@ function drawShape(cell: ImageCell): string {
   const base = `${f} transform="${rot}"`;
   const shadow = cell.hasShadow ? `filter="drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` : '';
 
+  // Deterministic noise line positions based on cell.id
   const noiseLine = cell.distorted
-    ? `<line x1="0" y1="${s * Math.random()}" x2="${s}" y2="${s * Math.random()}" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>`
+    ? `<line x1="0" y1="${((cell.id * 13 + 7) % 100)}" x2="${s}" y2="${((cell.id * 17 + 11) % 100)}" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>`
     : '';
 
   switch (cell.shape) {
@@ -77,8 +79,6 @@ function drawShape(cell: ImageCell): string {
 
 export default function ImageSelectChallenge({ challengeData, onVerify }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const renderRef = useRef(0);
-  renderRef.current++;
 
   const toggleSelection = useCallback((id: number) => {
     setSelected(prev => {

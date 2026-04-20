@@ -402,7 +402,7 @@ function calculateEnvironmentConsistency(fingerprint: DeviceFingerprint): number
   let checks = 0;
 
   // Plataforma vacía o sospechosa
-  if (!fingerprint.platform || fingerprint.platform === 'Linux x86_64' && fingerprint.maxTouchPoints > 0) {
+  if (!fingerprint.platform || (fingerprint.platform === 'Linux x86_64' && fingerprint.maxTouchPoints > 0)) {
     risk += 0.3;
   }
   checks++;
@@ -656,8 +656,7 @@ export function collectDeviceFingerprint(): DeviceFingerprint {
   // Headless browser detection
   const isHeadless = !!nav.webdriver
     || /HeadlessChrome/i.test(nav.userAgent)
-    || !nav.languages
-    || nav.plugins.length === 0 && !nav.maxTouchPoints;
+    || !nav.languages;
 
   // Automation detection
   const automationDetected = !!nav.webdriver
@@ -665,8 +664,7 @@ export function collectDeviceFingerprint(): DeviceFingerprint {
     || !!(window as any).callPhantom
     || !!(window as any)._phantom
     || /phantom/i.test(nav.userAgent)
-    || /selenium/i.test(nav.userAgent)
-    || /driver/i.test(nav.userAgent);
+    || /selenium/i.test(nav.userAgent);
 
   return {
     screenWidth: window.screen.width,

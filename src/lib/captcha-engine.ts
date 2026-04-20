@@ -565,7 +565,7 @@ export function verifySolution(challenge: ChallengeData, response: any): { succe
       const correct = (challenge as PatternTraceChallengeData).sequence;
       const userSeq = response.sequence as number[];
       if (JSON.stringify(correct) === JSON.stringify(userSeq)) {
-        return { success: true, message: 'Patón trazado correctamente' };
+        return { success: true, message: 'Patrón trazado correctamente' };
       }
       return { success: false, message: 'Secuencia incorrecta. Observa las líneas guía.' };
     }

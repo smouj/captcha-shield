@@ -19,8 +19,32 @@ export default function BehaviorTracker({ onData, active, challengeType }: Behav
   const deviceFingerprintRef = useRef<DeviceFingerprint | null>(null);
   const lastMoveTimeRef = useRef<number>(0);
   const clickStartTimesRef = useRef<Map<number, number>>(new Map());
+  const syncTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const buildAndSendData = useCallback(() => {
+    const bd: BehavioralData = {
+      mouseMovements: [...mouseMovementsRef.current],
+      clicks: [...clicksRef.current],
+      scrollEvents: [...scrollEventsRef.current],
+      keyEvents: [...keyEventsRef.current],
+      visibilityEvents: [...visibilityEventsRef.current],
+      startTime: startTimeRef.current,
+      submitTime: Date.now(),
+      challengeType,
+      totalInteractions: mouseMovementsRef.current.length + clicksRef.current.length + keyEventsRef.current.length,
+      deviceFingerprint: deviceFingerprintRef.current || {
+        screenWidth: 0, screenHeight: 0, colorDepth: 0, timezone: '', language: '',
+        platform: '', hardwareConcurrency: 0, maxTouchPoints: 0, webglRenderer: '',
+        webglVendor: '', hasWebGL: false, hasCanvas: false, pluginsCount: 0,
+        isHeadless: false, automationDetected: false,
+      },
+    };
+    onData(bd);
+  }, [onData, challengeType]);
 
   useEffect(() => {
+    if (!active) return;
+
     startTimeRef.current = Date.now();
     mouseMovementsRef.current = [];
     clicksRef.current = [];
@@ -28,7 +52,21 @@ export default function BehaviorTracker({ onData, active, challengeType }: Behav
     keyEventsRef.current = [];
     visibilityEventsRef.current = [];
     deviceFingerprintRef.current = collectDeviceFingerprint();
-  }, []);
+
+    // Sync behavioral data to parent every 2 seconds
+    syncTimerRef.current = setInterval(() => {
+      buildAndSendData();
+    }, 2000);
+
+    return () => {
+      if (syncTimerRef.current) {
+        clearInterval(syncTimerRef.current);
+        syncTimerRef.current = null;
+      }
+      // Send final data on unmount so parent always has latest
+      buildAndSendData();
+    };
+  }, [active, buildAndSendData]);
 
   const handleMouseMove = useCallback((e: PointerEvent) => {
     if (!active) return;

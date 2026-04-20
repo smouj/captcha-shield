@@ -12,7 +12,7 @@ interface Props {
 export default function TimelineOrderChallenge({ challengeData, onVerify }: Props) {
   const [userOrder, setUserOrder] = useState<number[]>([]);
 
-  const { events, correctOrder } = challengeData;
+  const { events } = challengeData;
 
   const handleEventClick = useCallback((id: number) => {
     setUserOrder(prev => {

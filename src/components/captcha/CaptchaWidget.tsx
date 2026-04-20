@@ -44,6 +44,7 @@ export default function CaptchaWidget() {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [failCount, setFailCount] = useState(0);
+  const failCountRef = useRef(0);
   const [cooldown, setCooldown] = useState(0);
   const [logs, setLogs] = useState<AttemptLog[]>([]);
   const [challengeStartTime, setChallengeStartTime] = useState(0);
@@ -110,11 +111,14 @@ export default function CaptchaWidget() {
       const timeTaken = now - challengeStartTime;
 
       if (!verification.success || riskAssessment.isBot) {
-        setFailCount(prev => prev + 1);
-        if (failCount >= 2) {
+        const newFailCount = failCountRef.current + 1;
+        failCountRef.current = newFailCount;
+        setFailCount(newFailCount);
+        if (newFailCount >= 3) {
           setCooldown(30);
         }
       } else {
+        failCountRef.current = 0;
         setFailCount(0);
       }
 
@@ -309,8 +313,6 @@ export default function CaptchaWidget() {
                   riskLevel={result.riskLevel}
                   message={result.message}
                   signals={result.signals}
-                  deviceFingerprint={result.deviceFingerprint}
-                  challengeType=""
                   timeTaken={result.timeTaken}
                   onRetry={generateCaptcha}
                 />

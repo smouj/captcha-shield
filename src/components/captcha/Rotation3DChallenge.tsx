@@ -22,7 +22,17 @@ function project3D(x: number, y: number, z: number, rotX: number, rotY: number):
   return [rx * scale, ry2 * scale];
 }
 
-function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number, rotY: number, cx: number, cy: number, s: number, color: string) {
+// Compute full 3D z-depth after both rotations
+function computeDepth(x: number, y: number, z: number, rotX: number, rotY: number): number {
+  // Rotate Y
+  const rz = x * Math.sin(rotY) + z * Math.cos(rotY);
+  const ry = y;
+  // Rotate X
+  const rz2 = ry * Math.sin(rotX) + rz * Math.cos(rotX);
+  return rz2;
+}
+
+function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number, rotY: number, cx: number, cy: number, s: number, color: string, doSort: boolean = true) {
   const rX = (rotX * Math.PI) / 180;
   const rY = (rotY * Math.PI) / 180;
 
@@ -37,20 +47,15 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
     ];
     const projected = vertices.map(v => project3D(v[0], v[1], v[2], rX, rY));
 
-    // Sort faces by average z (painter's algorithm)
+    // Sort faces by average z (painter's algorithm) - FIXED: use full rotation
     const faceDepths = faces.map((face, i) => ({
       face,
       depth: face.reduce((sum, vi) => {
-        const [,,z] = (() => {
-          const x = vertices[vi][0], y = vertices[vi][1], z = vertices[vi][2];
-          let rz = x * Math.sin(rY) + z * Math.cos(rY);
-          return [0, 0, rz];
-        })();
-        return sum + z;
+        return sum + computeDepth(vertices[vi][0], vertices[vi][1], vertices[vi][2], rX, rY);
       }, 0) / face.length,
       idx: i,
     }));
-    faceDepths.sort((a, b) => a.depth - b.depth);
+    if (doSort) faceDepths.sort((a, b) => a.depth - b.depth);
 
     faceDepths.forEach(({ face }, sortedIdx) => {
       ctx.beginPath();
@@ -79,21 +84,49 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
       [0, 1, 2], [3, 4, 5], [0, 1, 4, 3], [1, 2, 5, 4], [0, 2, 5, 3],
     ];
 
-    for (const face of faces) {
-      ctx.beginPath();
-      face.forEach((vi, i) => {
-        const [px, py] = projected[vi];
-        if (i === 0) ctx.moveTo(cx + px, cy + py);
-        else ctx.lineTo(cx + px, cy + py);
-      });
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 0.25;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+    if (doSort) {
+      const faceDepths = faces.map((face, i) => ({
+        face,
+        depth: face.reduce((sum, vi) => {
+          return sum + computeDepth(allVerts[vi][0], allVerts[vi][1], allVerts[vi][2], rX, rY);
+        }, 0) / face.length,
+        idx: i,
+      }));
+      faceDepths.sort((a, b) => a.depth - b.depth);
+
+      for (const { face } of faceDepths) {
+        ctx.beginPath();
+        face.forEach((vi, i) => {
+          const [px, py] = projected[vi];
+          if (i === 0) ctx.moveTo(cx + px, cy + py);
+          else ctx.lineTo(cx + px, cy + py);
+        });
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.25;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    } else {
+      for (const face of faces) {
+        ctx.beginPath();
+        face.forEach((vi, i) => {
+          const [px, py] = projected[vi];
+          if (i === 0) ctx.moveTo(cx + px, cy + py);
+          else ctx.lineTo(cx + px, cy + py);
+        });
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.25;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
     }
   } else {
     // Pyramid
@@ -106,33 +139,106 @@ function draw3DShape(ctx: CanvasRenderingContext2D, shape: string, rotX: number,
       [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [1, 2, 3, 4],
     ];
 
-    for (const face of faces) {
-      ctx.beginPath();
-      face.forEach((vi, i) => {
-        const [px, py] = projected[vi];
-        if (i === 0) ctx.moveTo(cx + px, cy + py);
-        else ctx.lineTo(cx + px, cy + py);
-      });
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 0.25;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+    if (doSort) {
+      const faceDepths = faces.map((face, i) => ({
+        face,
+        depth: face.reduce((sum, vi) => {
+          return sum + computeDepth(allVerts[vi][0], allVerts[vi][1], allVerts[vi][2], rX, rY);
+        }, 0) / face.length,
+        idx: i,
+      }));
+      faceDepths.sort((a, b) => a.depth - b.depth);
+
+      for (const { face } of faceDepths) {
+        ctx.beginPath();
+        face.forEach((vi, i) => {
+          const [px, py] = projected[vi];
+          if (i === 0) ctx.moveTo(cx + px, cy + py);
+          else ctx.lineTo(cx + px, cy + py);
+        });
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.25;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    } else {
+      for (const face of faces) {
+        ctx.beginPath();
+        face.forEach((vi, i) => {
+          const [px, py] = projected[vi];
+          if (i === 0) ctx.moveTo(cx + px, cy + py);
+          else ctx.lineTo(cx + px, cy + py);
+        });
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.25;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
     }
   }
 }
 
+function drawRoundRectBg(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.beginPath();
+  ctx.moveTo(10, 0);
+  ctx.lineTo(w - 10, 0);
+  ctx.arcTo(w, 0, w, 10, 10);
+  ctx.lineTo(w, h - 10);
+  ctx.arcTo(w, h, w - 10, h, 10);
+  ctx.lineTo(10, h);
+  ctx.arcTo(0, h, 0, h - 10, 10);
+  ctx.lineTo(0, 10);
+  ctx.arcTo(0, 0, 10, 0, 10);
+  ctx.closePath();
+}
+
 export default function Rotation3DChallenge({ challengeData, onVerify }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const targetCanvasRef = useRef<HTMLCanvasElement>(null);
   const [userRotX, setUserRotX] = useState(0);
   const [userRotY, setUserRotY] = useState(0);
   const canvasSize = 280;
+  const targetSize = 120;
 
   const { shapeType, targetRotationX, targetRotationY } = challengeData;
 
+  // Draw target shape (reference)
+  useEffect(() => {
+    const canvas = targetCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, targetSize, targetSize);
+    ctx.fillStyle = '#1e293b';
+    drawRoundRectBg(ctx, targetSize, targetSize);
+    ctx.fill();
+
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    for (let i = 0; i < targetSize; i += 20) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, targetSize); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(targetSize, i); ctx.stroke();
+    }
+
+    // Target shape (smaller)
+    draw3DShape(ctx, shapeType, targetRotationX, targetRotationY, targetSize / 2, targetSize / 2, 25, '#f59e0b', true);
+
+    // Border
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, targetSize - 1, targetSize - 1);
+  }, [shapeType, targetRotationX, targetRotationY, targetSize]);
+
+  // Draw user shape (main canvas)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -141,17 +247,7 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
 
     ctx.clearRect(0, 0, canvasSize, canvasSize);
     ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.moveTo(10, 0);
-    ctx.lineTo(canvasSize - 10, 0);
-    ctx.arcTo(canvasSize, 0, canvasSize, 10, 10);
-    ctx.lineTo(canvasSize, canvasSize - 10);
-    ctx.arcTo(canvasSize, canvasSize, canvasSize - 10, canvasSize, 10);
-    ctx.lineTo(10, canvasSize);
-    ctx.arcTo(0, canvasSize, 0, canvasSize - 10, 10);
-    ctx.lineTo(0, 10);
-    ctx.arcTo(0, 0, 10, 0, 10);
-    ctx.closePath();
+    drawRoundRectBg(ctx, canvasSize);
     ctx.fill();
 
     // Grid
@@ -162,7 +258,7 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
     }
 
     // User shape
-    draw3DShape(ctx, shapeType, userRotX, userRotY, canvasSize / 2, canvasSize / 2 - 10, 40, '#10b981');
+    draw3DShape(ctx, shapeType, userRotX, userRotY, canvasSize / 2, canvasSize / 2 - 10, 40, '#10b981', true);
 
     // Border
     ctx.strokeStyle = 'rgba(16, 185, 129, 0.2)';
@@ -185,9 +281,20 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
         </p>
       </motion.div>
 
-      <div className="flex justify-center">
-        <canvas ref={canvasRef} width={canvasSize} height={canvasSize}
-          className="rounded-lg border border-gray-700 max-w-full" />
+      <div className="flex items-start gap-3 justify-center">
+        {/* Target reference */}
+        <div className="flex-shrink-0">
+          <p className="text-[9px] text-amber-400 font-medium text-center mb-1">Objetivo</p>
+          <canvas ref={targetCanvasRef} width={targetSize} height={targetSize}
+            className="rounded-lg border border-amber-500/30" />
+        </div>
+
+        {/* User shape */}
+        <div className="flex-shrink-0">
+          <p className="text-[9px] text-emerald-400 font-medium text-center mb-1">Tu figura</p>
+          <canvas ref={canvasRef} width={canvasSize} height={canvasSize}
+            className="rounded-lg border border-gray-700 max-w-full" />
+        </div>
       </div>
 
       <div className="max-w-[300px] mx-auto space-y-2">

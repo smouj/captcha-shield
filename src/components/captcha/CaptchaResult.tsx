@@ -9,8 +9,6 @@ interface Props {
   riskLevel: string;
   message: string;
   signals: RiskAssessment['signals'];
-  deviceFingerprint: any;
-  challengeType: string;
   timeTaken: number;
   onRetry: () => void;
 }
@@ -29,7 +27,7 @@ const categoryLabels: Record<string, string> = {
   environment: 'Entorno',
 };
 
-export default function CaptchaResult({ success, riskScore, riskLevel, message, signals, challengeType, timeTaken, onRetry }: Props) {
+export default function CaptchaResult({ success, riskScore, riskLevel, message, signals, timeTaken, onRetry }: Props) {
   const colors = levelColors[riskLevel] || levelColors.medium;
   const timeStr = timeTaken < 1000 ? `${timeTaken}ms` : `${(timeTaken / 1000).toFixed(1)}s`;
 
