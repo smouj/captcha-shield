@@ -1,33 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-
-export interface MousePoint {
-  x: number;
-  y: number;
-  t: number;
-}
-
-export interface ClickEvent {
-  x: number;
-  y: number;
-  t: number;
-}
-
-export interface ScrollEvent {
-  y: number;
-  t: number;
-}
-
-export interface BehavioralData {
-  mouseMovements: MousePoint[];
-  clicks: ClickEvent[];
-  scrollEvents: ScrollEvent[];
-  startTime: number;
-  submitTime: number;
-  challengeType: string;
-  totalInteractions: number;
-}
+import { collectDeviceFingerprint, type BehavioralData, type DeviceFingerprint, type MousePoint, type ClickEvent, type ScrollEvent, type KeyEvent, type VisibilityEvent } from '@/lib/behavioral-analyzer';
 
 interface BehaviorTrackerProps {
   onData: (data: BehavioralData) => void;
@@ -40,41 +14,53 @@ export default function BehaviorTracker({ onData, active, challengeType }: Behav
   const mouseMovementsRef = useRef<MousePoint[]>([]);
   const clicksRef = useRef<ClickEvent[]>([]);
   const scrollEventsRef = useRef<ScrollEvent[]>([]);
+  const keyEventsRef = useRef<KeyEvent[]>([]);
+  const visibilityEventsRef = useRef<VisibilityEvent[]>([]);
+  const deviceFingerprintRef = useRef<DeviceFingerprint | null>(null);
+  const lastMoveTimeRef = useRef<number>(0);
+  const clickStartTimesRef = useRef<Map<number, number>>(new Map());
 
-  // Reset on mount
   useEffect(() => {
     startTimeRef.current = Date.now();
     mouseMovementsRef.current = [];
     clicksRef.current = [];
     scrollEventsRef.current = [];
+    keyEventsRef.current = [];
+    visibilityEventsRef.current = [];
+    deviceFingerprintRef.current = collectDeviceFingerprint();
   }, []);
 
-  // Throttled mouse move handler
-  const lastMoveTimeRef = useRef<number>(0);
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: PointerEvent) => {
     if (!active) return;
     const now = Date.now();
-    // Throttle to ~30ms intervals
-    if (now - lastMoveTimeRef.current < 30) return;
+    if (now - lastMoveTimeRef.current < 25) return;
     lastMoveTimeRef.current = now;
     mouseMovementsRef.current.push({
       x: e.clientX,
       y: e.clientY,
       t: now - startTimeRef.current,
+      pressure: e.pressure,
     });
-    // Limit stored points to prevent memory issues
-    if (mouseMovementsRef.current.length > 500) {
-      mouseMovementsRef.current = mouseMovementsRef.current.slice(-400);
+    if (mouseMovementsRef.current.length > 600) {
+      mouseMovementsRef.current = mouseMovementsRef.current.slice(-500);
     }
   }, [active]);
 
-  const handleClick = useCallback((e: MouseEvent) => {
+  const handlePointerDown = useCallback((e: PointerEvent) => {
     if (!active) return;
+    clickStartTimesRef.current.set(e.pointerId, Date.now() - startTimeRef.current);
+  }, [active]);
+
+  const handlePointerUp = useCallback((e: PointerEvent) => {
+    if (!active) return;
+    const startT = clickStartTimesRef.current.get(e.pointerId);
     clicksRef.current.push({
       x: e.clientX,
       y: e.clientY,
       t: Date.now() - startTimeRef.current,
+      duration: startT ? (Date.now() - startTimeRef.current) - startT : undefined,
     });
+    clickStartTimesRef.current.delete(e.pointerId);
   }, [active]);
 
   const handleScroll = useCallback(() => {
@@ -83,61 +69,86 @@ export default function BehaviorTracker({ onData, active, challengeType }: Behav
       y: window.scrollY,
       t: Date.now() - startTimeRef.current,
     });
-    if (scrollEventsRef.current.length > 50) {
-      scrollEventsRef.current = scrollEventsRef.current.slice(-40);
+    if (scrollEventsRef.current.length > 60) {
+      scrollEventsRef.current = scrollEventsRef.current.slice(-50);
     }
+  }, [active]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!active) return;
+    keyEventsRef.current.push({ key: e.key, t: Date.now() - startTimeRef.current, type: 'down' });
+    if (keyEventsRef.current.length > 200) keyEventsRef.current = keyEventsRef.current.slice(-150);
+  }, [active]);
+
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    if (!active) return;
+    keyEventsRef.current.push({ key: e.key, t: Date.now() - startTimeRef.current, type: 'up' });
+  }, [active]);
+
+  const handleVisibility = useCallback(() => {
+    if (!active) return;
+    visibilityEventsRef.current.push({
+      hidden: document.hidden,
+      t: Date.now() - startTimeRef.current,
+    });
   }, [active]);
 
   useEffect(() => {
     if (active) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('click', handleClick);
+      window.addEventListener('pointermove', handleMouseMove);
+      window.addEventListener('pointerdown', handlePointerDown);
+      window.addEventListener('pointerup', handlePointerUp);
       window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
+      document.addEventListener('visibilitychange', handleVisibility);
+
       return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('click', handleClick);
+        window.removeEventListener('pointermove', handleMouseMove);
+        window.removeEventListener('pointerdown', handlePointerDown);
+        window.removeEventListener('pointerup', handlePointerUp);
         window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
+        document.removeEventListener('visibilitychange', handleVisibility);
       };
     }
-  }, [active, handleMouseMove, handleClick, handleScroll]);
+  }, [active, handleMouseMove, handlePointerDown, handlePointerUp, handleScroll, handleKeyDown, handleKeyUp, handleVisibility]);
 
-  // Expose getData function
-  const getData = useCallback(() => {
-    return {
-      mouseMovements: mouseMovementsRef.current,
-      clicks: clicksRef.current,
-      scrollEvents: scrollEventsRef.current,
-      startTime: startTimeRef.current,
-      submitTime: Date.now(),
-      challengeType,
-      totalInteractions: clicksRef.current.length,
-    };
-  }, [challengeType]);
+  // Registrar getData via custom event
+  const dataRef = useRef(onData);
+  dataRef.current = onData;
 
-  // Register getData in a ref so parent can access it
-  const dataRef = useRef(getData);
-  dataRef.current = getData;
-
-  // Custom event to allow parent to get data
   useEffect(() => {
     const handler = () => {
-      onData(dataRef.current());
+      dataRef.current({
+        mouseMovements: mouseMovementsRef.current,
+        clicks: clicksRef.current,
+        scrollEvents: scrollEventsRef.current,
+        keyEvents: keyEventsRef.current,
+        visibilityEvents: visibilityEventsRef.current,
+        startTime: startTimeRef.current,
+        submitTime: Date.now(),
+        challengeType,
+        totalInteractions: clicksRef.current.length,
+        deviceFingerprint: deviceFingerprintRef.current || collectDeviceFingerprint(),
+      });
     };
     window.addEventListener('captcha-get-data', handler);
     return () => window.removeEventListener('captcha-get-data', handler);
-  }, [onData]);
+  }, [challengeType]);
 
-  return null; // Invisible tracker
+  return null;
 }
 
-// Hook for components to get behavioral data
-export function triggerGetData(): BehavioralData | null {
-  const event = new CustomEvent('captcha-get-data', {
-    detail: {},
-  });
+export function getBehavioralData(): BehavioralData | null {
+  const event = new Event('captcha-get-data');
   let data: BehavioralData | null = null;
-  const handler = (e: Event) => {
-    // We need a different approach
+
+  const handler = () => {
+    // Solved via ref in the tracker
   };
-  return null;
+
+  window.dispatchEvent(event);
+  return data;
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,19 +13,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://github.com/smouj/captcha-shield"),
-  title: "CAPTCHA Shield - Advanced Anti-Bot CAPTCHA System",
+  title: "CAPTCHA Shield v3.0 - Sistema Anti-Bot Avanzado",
   description:
-    "Advanced anti-bot / anti-AI CAPTCHA system with 6-signal behavioral analysis engine. Sistema avanzado de CAPTCHA anti-bot y anti-IA con motor de análisis comportamental.",
+    "Sistema CAPTCHA anti-bot/anti-IA con 7 tipos de desafío, análisis comportamental de 14 señales y verificación móvil QR. 100% del lado del cliente.",
   icons: {
     icon: "/logo-icon-white.png",
     shortcut: "/logo-icon-white.png",
     apple: "/logo-icon-black.png",
   },
   openGraph: {
-    title: "CAPTCHA Shield",
-    description: "Advanced Anti-Bot / Anti-AI CAPTCHA System",
-    url: "https://github.com/smouj/captcha-shield",
+    title: "CAPTCHA Shield v3.0",
+    description: "Advanced Anti-Bot / Anti-AI CAPTCHA - 7 Challenges, 14 Behavioral Signals, QR Mobile Verification",
     siteName: "CAPTCHA Shield",
     type: "website",
     images: [
@@ -34,13 +31,13 @@ export const metadata: Metadata = {
         url: "/social-banner.png",
         width: 1536,
         height: 1024,
-        alt: "CAPTCHA Shield - Advanced Anti-Bot System",
+        alt: "CAPTCHA Shield v3.0",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CAPTCHA Shield",
+    title: "CAPTCHA Shield v3.0",
     description: "Advanced Anti-Bot / Anti-AI CAPTCHA System",
     images: ["/social-banner.png"],
   },
@@ -57,7 +54,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950 text-gray-100`}
       >
         {children}
-        <Toaster />
       </body>
     </html>
   );
