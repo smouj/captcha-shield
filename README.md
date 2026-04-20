@@ -1,7 +1,4 @@
 <div align="center">
-
-<img src="public/logo-icon-black.png" alt="CAPTCHA Shield Logo" width="120" height="120" />
-
 <br />
 
 <img src="public/social-banner.png" alt="CAPTCHA Shield Banner" width="600" />
