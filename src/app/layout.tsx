@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://smouj.github.io'),
-  title: "CAPTCHA Shield v3.0 - Sistema Anti-Bot Avanzado",
+  title: "CAPTCHA Shield v3.1 - Sistema Anti-Bot Avanzado",
   description:
-    "Sistema CAPTCHA anti-bot/anti-IA con 7 tipos de desafío, análisis comportamental de 14 señales y verificación móvil QR. 100% del lado del cliente.",
+    "Sistema CAPTCHA anti-bot/anti-IA instalable en cualquier web con 2 líneas de código. 7 desafíos, 14 señales, QR móvil, personalizable. 100% client-side.",
   icons: {
     icon: "/logo-icon-white.png",
     shortcut: "/logo-icon-white.png",
     apple: "/logo-icon-black.png",
   },
   openGraph: {
-    title: "CAPTCHA Shield v3.0",
-    description: "Advanced Anti-Bot / Anti-AI CAPTCHA - 7 Challenges, 14 Behavioral Signals, QR Mobile Verification",
+    title: "CAPTCHA Shield v3.1",
+    description: "Installable Anti-Bot / Anti-AI CAPTCHA - 7 Challenges, 14 Behavioral Signals, QR Mobile Verification, Theme Customizer",
     siteName: "CAPTCHA Shield",
     type: "website",
     images: [
@@ -32,14 +32,14 @@ export const metadata: Metadata = {
         url: "/social-banner.png",
         width: 1536,
         height: 1024,
-        alt: "CAPTCHA Shield v3.0",
+        alt: "CAPTCHA Shield v3.1",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CAPTCHA Shield v3.0",
-    description: "Advanced Anti-Bot / Anti-AI CAPTCHA System",
+    title: "CAPTCHA Shield v3.1",
+    description: "Installable Anti-Bot / Anti-AI CAPTCHA System",
     images: ["/social-banner.png"],
   },
 };

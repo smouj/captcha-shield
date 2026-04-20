@@ -1,6 +1,6 @@
 {
   "name": "captcha-shield",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": false,
   "description": "Advanced anti-bot / anti-AI CAPTCHA system with 14-signal behavioral analysis, 8 challenge types, and QR mobile verification.",
   "license": "MIT",

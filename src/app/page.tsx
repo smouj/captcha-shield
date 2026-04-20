@@ -5,12 +5,22 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
   Brain, Eye, Activity, Zap, Lock, Fingerprint, Shield,
-  Smartphone, Volume2, Calendar, RotateCw, Puzzle, ScanSearch, MonitorSmartphone
+  Smartphone, Volume2, Calendar, RotateCw, Puzzle, ScanSearch, MonitorSmartphone,
+  Code, Palette, BarChart3, Play
 } from 'lucide-react';
 import CaptchaWidget from '@/components/captcha/CaptchaWidget';
 import AdminDashboard from '@/components/captcha/AdminDashboard';
+import InstallGuide from '@/components/captcha/InstallGuide';
+import ThemeCustomizer from '@/components/captcha/ThemeCustomizer';
 
-type ViewMode = 'demo' | 'analytics';
+type ViewMode = 'demo' | 'install' | 'customize' | 'analytics';
+
+const TABS: { id: ViewMode; label: string; icon: React.ReactNode }[] = [
+  { id: 'demo', label: 'Demo', icon: <Play className="w-3 h-3" /> },
+  { id: 'install', label: 'Instalar', icon: <Code className="w-3 h-3" /> },
+  { id: 'customize', label: 'Personalizar', icon: <Palette className="w-3 h-3" /> },
+  { id: 'analytics', label: 'Analíticas', icon: <BarChart3 className="w-3 h-3" /> },
+];
 
 const features = [
   { icon: <Fingerprint className="w-4 h-4" />, title: '14 señales de comportamiento', desc: 'Análisis profundo en tiempo real: linealidad, timing, velocidad, entropía, presión, visibilidad, fingerprinting y más.' },
@@ -53,30 +63,31 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-sm font-bold text-gray-100 tracking-tight">CAPTCHA Shield</h1>
-                <p className="text-[9px] text-gray-500 -mt-0.5">Sistema Anti-Bot/AI v3.0</p>
+                <p className="text-[9px] text-gray-500 -mt-0.5">Sistema Anti-Bot/AI v3.1</p>
               </div>
             </div>
             <div className="flex items-center bg-gray-900 rounded-lg p-0.5 border border-gray-800">
-              <button onClick={() => setViewMode('demo')}
-                className={`px-3 py-1 text-[10px] font-medium rounded-md transition-all ${viewMode === 'demo' ? 'bg-emerald-500/20 text-emerald-300' : 'text-gray-500 hover:text-gray-300'}`}>
-                Demo
-              </button>
-              <button onClick={() => setViewMode('analytics')}
-                className={`px-3 py-1 text-[10px] font-medium rounded-md transition-all ${viewMode === 'analytics' ? 'bg-emerald-500/20 text-emerald-300' : 'text-gray-500 hover:text-gray-300'}`}>
-                Analíticas
-              </button>
+              {TABS.map(tab => (
+                <button key={tab.id} onClick={() => setViewMode(tab.id)}
+                  className={`flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium rounded-md transition-all ${
+                    viewMode === tab.id ? 'bg-emerald-500/20 text-emerald-300' : 'text-gray-500 hover:text-gray-300'
+                  }`}>
+                  {tab.icon}
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              ))}
             </div>
           </div>
         </header>
 
         <main className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Hero */}
-          <section className="py-10 sm:py-14 text-center">
+          <section className="py-8 sm:py-10 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', bounce: 0.4 }}
-                className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 mb-5">
+                className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 mb-4">
                 <Activity className="w-3 h-3 text-emerald-400" />
-                <span className="text-[10px] font-medium text-emerald-300">14 señales activas · 7 desafíos · Verificación QR</span>
+                <span className="text-[10px] font-medium text-emerald-300">14 señales · 7 desafíos · QR · Instalable en cualquier web</span>
               </motion.div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-50 tracking-tight">
                 Verificación inteligente
@@ -84,20 +95,35 @@ export default function Home() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-purple-400">anti-bot / anti-IA</span>
               </h2>
               <p className="mt-3 text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-                Sistema CAPTCHA de nueva generación con 14 señales de comportamiento, fingerprinting de dispositivo, 7 tipos de desafío interactivos y verificación móvil QR para máxima seguridad.
+                Sistema CAPTCHA de nueva generación. Instala con 2 líneas de código, personaliza el aspecto desde aquí, y protege tu web con análisis comportamental de 14 señales y verificación móvil QR.
               </p>
             </motion.div>
           </section>
 
-          {/* Demo / Analytics */}
+          {/* Tab Content */}
           <section className="pb-10">
-            {viewMode === 'demo' ? (
-              <motion.div key="demo" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }}
-                className="max-w-md mx-auto">
-                <CaptchaWidget />
+            {viewMode === 'demo' && (
+              <motion.div key="demo" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+                <div className="max-w-md mx-auto">
+                  <CaptchaWidget />
+                </div>
               </motion.div>
-            ) : (
-              <motion.div key="analytics" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}>
+            )}
+
+            {viewMode === 'install' && (
+              <motion.div key="install" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+                <InstallGuide />
+              </motion.div>
+            )}
+
+            {viewMode === 'customize' && (
+              <motion.div key="customize" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+                <ThemeCustomizer />
+              </motion.div>
+            )}
+
+            {viewMode === 'analytics' && (
+              <motion.div key="analytics" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
                 <AdminDashboard />
               </motion.div>
             )}
@@ -188,6 +214,19 @@ export default function Home() {
               </div>
             </motion.div>
           </section>
+
+          {/* Install CTA */}
+          <section className="pb-14">
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+              className="bg-gradient-to-br from-emerald-500/10 to-purple-500/10 border border-emerald-500/20 rounded-2xl p-6 sm:p-8 text-center">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-100 mb-2">Instala CAPTCHA Shield en tu web</h3>
+              <p className="text-xs text-gray-400 max-w-lg mx-auto mb-5">Solo necesitas 2 líneas de código. Sin backend, sin API keys, 100% del lado del cliente. Personaliza colores y tema desde esta página.</p>
+              <button onClick={() => setViewMode('install')}
+                className="px-6 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-600/25 inline-flex items-center gap-2">
+                <Code className="w-4 h-4" /> Ver instrucciones de instalación
+              </button>
+            </motion.div>
+          </section>
         </main>
 
         {/* Footer */}
@@ -195,7 +234,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Image src="/logo-icon-white.png" alt="CAPTCHA Shield" width={14} height={14} className="opacity-40" />
-              <span className="text-[10px] text-gray-600">CAPTCHA Shield v3.0 — Sistema Anti-Bot/AI</span>
+              <span className="text-[10px] text-gray-600">CAPTCHA Shield v3.1 — Sistema Anti-Bot/AI</span>
             </div>
             <div className="flex items-center gap-3 text-[10px] text-gray-600">
               <span>7 desafíos</span>
@@ -204,7 +243,7 @@ export default function Home() {
               <span className="w-0.5 h-0.5 rounded-full bg-gray-700" />
               <span>QR móvil</span>
               <span className="w-0.5 h-0.5 rounded-full bg-gray-700" />
-              <span>Fingerprinting</span>
+              <span>Instalable</span>
             </div>
           </div>
         </footer>
