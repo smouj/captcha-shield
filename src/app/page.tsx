@@ -95,7 +95,7 @@ export default function Home() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-purple-400">anti-bot / anti-IA</span>
               </h2>
               <p className="mt-3 text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-                Sistema CAPTCHA de nueva generación. Instala con 2 líneas de código, personaliza el aspecto desde aquí, y protege tu web con análisis comportamental de 14 señales y verificación móvil QR.
+                Sistema CAPTCHA de nueva generación. Instala con 2 líneas de código, personiza el aspecto y añade fricción anti-bot con 14 señales comportamentales y verificación QR. Para producción, se requiere verificación en servidor.
               </p>
             </motion.div>
           </section>
