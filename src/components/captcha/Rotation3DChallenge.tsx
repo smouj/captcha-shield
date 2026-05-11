@@ -247,7 +247,7 @@ export default function Rotation3DChallenge({ challengeData, onVerify }: Props) 
 
     ctx.clearRect(0, 0, canvasSize, canvasSize);
     ctx.fillStyle = '#0f172a';
-    drawRoundRectBg(ctx, canvasSize);
+    drawRoundRectBg(ctx, canvasSize, canvasSize);
     ctx.fill();
 
     // Grid

@@ -634,13 +634,13 @@ export function collectDeviceFingerprint(): DeviceFingerprint {
   let hasWebGL = false;
   try {
     const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const gl = canvas.getContext('webgl') as WebGLRenderingContext | null || canvas.getContext('experimental-webgl') as WebGLRenderingContext | null;
     if (gl) {
       hasWebGL = true;
-      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      const debugInfo = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
       if (debugInfo) {
-        webglRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        webglVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+        webglRenderer = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        webglVendor = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
       }
     }
   } catch {}

@@ -2,18 +2,40 @@
   "name": "captcha-shield",
   "version": "3.1.0",
   "private": false,
-  "description": "Advanced anti-bot / anti-AI CAPTCHA system with 14-signal behavioral analysis, 8 challenge types, and QR mobile verification.",
+  "description": "Embeddable anti-bot verification UI with behavioral-risk signals, interactive CAPTCHA challenges, QR fallback, and GitHub Pages demo",
   "license": "MIT",
   "author": "CAPTCHA Shield Contributors",
+  "homepage": "https://smouj.github.io/captcha-shield/",
+  "bugs": {
+    "url": "https://github.com/smouj/captcha-shield/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/smouj/captcha-shield.git"
   },
+  "keywords": [
+    "captcha",
+    "anti-bot",
+    "bot-detection",
+    "behavioral-analysis",
+    "browser-security",
+    "nextjs",
+    "react",
+    "typescript",
+    "web-security",
+    "fraud-prevention",
+    "automation-detection",
+    "challenge-response"
+  ],
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
+    "build:pages": "npm run build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run build",
+    "clean": "rm -rf .next docs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",

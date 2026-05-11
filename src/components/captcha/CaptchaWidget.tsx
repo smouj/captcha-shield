@@ -14,7 +14,7 @@ import AudioChallenge from './AudioChallenge';
 import TimelineOrderChallenge from './TimelineOrderChallenge';
 import QRVerification from './QRVerification';
 import CaptchaResult from './CaptchaResult';
-import { generateRandomChallenge, verifySolution, CHALLENGE_LABELS, CHALLENGE_ICONS, type ChallengeData, type ChallengeType } from '@/lib/captcha-engine';
+import { generateRandomChallenge, verifySolution, CHALLENGE_LABELS, CHALLENGE_ICONS, type ChallengeData, type ChallengeType, type PuzzleChallengeData, type ImageSelectChallengeData, type MathVisualChallengeData, type PatternTraceChallengeData, type Rotation3DChallengeData, type AudioChallengeData, type TimelineOrderChallengeData } from '@/lib/captcha-engine';
 import { analyzeBehavior, type BehavioralData, type RiskAssessment } from '@/lib/behavioral-analyzer';
 
 type WidgetState = 'idle' | 'loading' | 'solving' | 'verifying' | 'result' | 'qr';
@@ -187,13 +187,13 @@ export default function CaptchaWidget() {
   const renderChallenge = () => {
     if (!challenge) return null;
     switch (challenge.type as ChallengeType) {
-      case 'puzzle': return <PuzzleChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'image_select': return <ImageSelectChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'math_visual': return <MathVisualChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'pattern_trace': return <PatternTraceChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'rotation_3d': return <Rotation3DChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'audio': return <AudioChallenge challengeData={challenge} onVerify={handleVerify} />;
-      case 'timeline_order': return <TimelineOrderChallenge challengeData={challenge} onVerify={handleVerify} />;
+      case 'puzzle': return <PuzzleChallenge challengeData={challenge as PuzzleChallengeData} onVerify={handleVerify} />;
+      case 'image_select': return <ImageSelectChallenge challengeData={challenge as ImageSelectChallengeData} onVerify={handleVerify} />;
+      case 'math_visual': return <MathVisualChallenge challengeData={challenge as MathVisualChallengeData} onVerify={handleVerify} />;
+      case 'pattern_trace': return <PatternTraceChallenge challengeData={challenge as PatternTraceChallengeData} onVerify={handleVerify} />;
+      case 'rotation_3d': return <Rotation3DChallenge challengeData={challenge as Rotation3DChallengeData} onVerify={handleVerify} />;
+      case 'audio': return <AudioChallenge challengeData={challenge as AudioChallengeData} onVerify={handleVerify} />;
+      case 'timeline_order': return <TimelineOrderChallenge challengeData={challenge as TimelineOrderChallengeData} onVerify={handleVerify} />;
       default: return <p className="text-red-400 text-sm">Tipo desconocido</p>;
     }
   };
