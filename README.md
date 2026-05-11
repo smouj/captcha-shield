@@ -259,3 +259,11 @@ See [SECURITY.md](./SECURITY.md) for responsible disclosure guidelines.
 ## License
 
 [MIT](./LICENSE)
+
+---
+
+<div align="center">
+
+Made by [Smouj](https://github.com/smouj) · [GitHub](https://github.com/smouj/captcha-shield) · [Website](https://smouj.github.io/captcha-shield/)
+
+</div>
