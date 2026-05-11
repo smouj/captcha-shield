@@ -4,8 +4,22 @@
 
 | Version | Supported |
 |---------|-----------|
-| 2.0.x   | ✅        |
-| < 2.0   | ❌        |
+| 3.1.x   | ✅        |
+| < 3.0   | ❌        |
+
+## Important Security Notice / Aviso Importante de Seguridad
+
+CAPTCHA Shield is primarily a **client-side demo and widget system**. The client-side code provides **friction and deterrence**, but **NOT production-grade security**.
+
+**For production deployments, you MUST add server-side verification:**
+
+- Verify signed tokens with cryptographic signatures
+- Validate nonces with TTL expiration
+- Implement rate limiting
+- Correlate client and server signals
+- Never trust client-reported risk scores
+
+See [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md) for complete security architecture.
 
 ## Reporting a Vulnerability / Reportar una Vulnerabilidad
 
@@ -47,5 +61,15 @@ Nos tomamos las vulnerabilidades de seguridad en serio. Si descubres una vulnera
 - El análisis comportamental es heurístico y puede producir falsos positivos/negativos
 - Canvas rendering may behave differently across browsers
 - El renderizado en canvas puede comportarse diferente entre navegadores
-- SQLite is not recommended for high-traffic production deployments
-- SQLite no se recomienda para despliegues de producción con alto tráfico
+- Client-side verification alone is insufficient for production security
+- La verificación client-side sola es insuficiente para seguridad en producción
+- No server-side token validation by default
+- Sin validación de tokens en servidor por defecto
+
+## Security Disclosures / Divulgaciones de Seguridad
+
+For full security model and production deployment guidance, see:
+
+- [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md) - Complete security architecture
+- [docs/PRODUCTION_BACKEND_PLAN.md](docs/PRODUCTION_BACKEND_PLAN.md) - Backend verifier plan
+- [examples/form-protected-demo.html](examples/form-protected-demo.html) - Demo with client-side warning
