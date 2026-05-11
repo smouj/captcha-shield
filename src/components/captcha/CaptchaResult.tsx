@@ -97,7 +97,7 @@ export default function CaptchaResult({ success, riskScore, riskLevel, message, 
                 {catSignals.map((signal, i) => {
                   const sc = signal.score < 0.3 ? levelColors.low : signal.score < 0.6 ? levelColors.medium : signal.score < 0.75 ? levelColors.high : levelColors.critical;
                   return (
-                    <motion.div key={signal.name} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                    <motion.div key={signal.name} initial={false} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 + i * 0.04 }} className="flex items-center gap-2 text-[11px]">
                       <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${sc.dot}`} />
                       <div className="flex-1 min-w-0">

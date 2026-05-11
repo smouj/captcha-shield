@@ -256,7 +256,7 @@ export default function CaptchaWidget() {
         <div className="p-4 min-h-[280px] flex items-center justify-center">
           <AnimatePresence mode="wait">
             {state === 'idle' && verifyMode === 'captcha' && cooldown === 0 && !error && (
-              <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
+              <motion.div key="idle" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto">
                   <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
                 </div>
@@ -272,13 +272,13 @@ export default function CaptchaWidget() {
             )}
 
             {state === 'idle' && verifyMode === 'qr' && cooldown === 0 && (
-              <motion.div key="qr-idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
+              <motion.div key="qr-idle" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
                 <QRVerification onVerified={handleQRVerified} />
               </motion.div>
             )}
 
             {state === 'idle' && cooldown > 0 && (
-              <motion.div key="cooldown" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-2">
+              <motion.div key="cooldown" initial={false} animate={{ opacity: 1 }} className="text-center space-y-2">
                 <AlertCircle className="w-8 h-8 text-amber-400 mx-auto" />
                 <p className="text-sm text-amber-300">Demasiados intentos fallidos</p>
                 <p className="text-xs text-gray-500">Espera <span className="font-mono text-amber-400">{cooldown}s</span> antes de reintentar</p>
@@ -286,27 +286,27 @@ export default function CaptchaWidget() {
             )}
 
             {state === 'loading' && (
-              <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-2">
+              <motion.div key="loading" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-2">
                 <Loader2 className="w-7 h-7 text-emerald-400 animate-spin mx-auto" />
                 <p className="text-xs text-gray-400">Generando desafío...</p>
               </motion.div>
             )}
 
             {state === 'solving' && (
-              <motion.div key="solving" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full">
+              <motion.div key="solving" initial={false} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full">
                 {renderChallenge()}
               </motion.div>
             )}
 
             {state === 'verifying' && (
-              <motion.div key="verifying" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-2">
+              <motion.div key="verifying" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-2">
                 <Loader2 className="w-7 h-7 text-emerald-400 animate-spin mx-auto" />
                 <p className="text-xs text-gray-400">Analizando 14 señales de comportamiento...</p>
               </motion.div>
             )}
 
             {state === 'result' && result && (
-              <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
+              <motion.div key="result" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
                 <CaptchaResult
                   success={result.success}
                   riskScore={result.riskScore}
@@ -320,7 +320,7 @@ export default function CaptchaWidget() {
             )}
 
             {error && state === 'idle' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              <motion.div initial={false} animate={{ opacity: 1 }}
                 className="flex items-center gap-2 text-red-400 text-xs bg-red-500/10 px-3 py-2 rounded-lg">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>{error}</span>

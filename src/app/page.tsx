@@ -83,8 +83,8 @@ export default function Home() {
         <main className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Hero */}
           <section className="py-8 sm:py-10 text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', bounce: 0.4 }}
+            <motion.div initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+              <motion.div initial={false} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', bounce: 0.4 }}
                 className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 mb-4">
                 <Activity className="w-3 h-3 text-emerald-400" />
                 <span className="text-[10px] font-medium text-emerald-300">14 señales · 7 desafíos · QR · Instalable en cualquier web</span>
@@ -103,7 +103,7 @@ export default function Home() {
           {/* Tab Content */}
           <section className="pb-10">
             {viewMode === 'demo' && (
-              <motion.div key="demo" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+              <motion.div key="demo" initial={false} animate={{ opacity: 1 }}>
                 <div className="max-w-md mx-auto">
                   <CaptchaWidget />
                 </div>
@@ -111,19 +111,19 @@ export default function Home() {
             )}
 
             {viewMode === 'install' && (
-              <motion.div key="install" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+              <motion.div key="install" initial={false} animate={{ opacity: 1 }}>
                 <InstallGuide />
               </motion.div>
             )}
 
             {viewMode === 'customize' && (
-              <motion.div key="customize" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+              <motion.div key="customize" initial={false} animate={{ opacity: 1 }}>
                 <ThemeCustomizer />
               </motion.div>
             )}
 
             {viewMode === 'analytics' && (
-              <motion.div key="analytics" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+              <motion.div key="analytics" initial={false} animate={{ opacity: 1 }}>
                 <AdminDashboard />
               </motion.div>
             )}
@@ -131,14 +131,14 @@ export default function Home() {
 
           {/* Challenge Types */}
           <section className="pb-14">
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <div className="text-center mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-100">7 tipos de desafío + QR</h3>
                 <p className="text-xs text-gray-500 mt-1">Cada verificación genera un desafío aleatorio entre los 7 tipos disponibles</p>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 {challengeTypes.map((ct, i) => (
-                  <motion.div key={ct.name} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+                  <motion.div key={ct.name} initial={false} whileInView={{ opacity: 1 }}
                     viewport={{ once: true }} transition={{ delay: i * 0.05 }}
                     className="group bg-gray-900/60 backdrop-blur-sm border border-gray-800/50 rounded-xl p-3.5 hover:border-emerald-500/20 hover:bg-gray-900/80 transition-all duration-300">
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 mb-2 group-hover:bg-emerald-500/15 transition-colors">
@@ -149,7 +149,7 @@ export default function Home() {
                   </motion.div>
                 ))}
                 {/* QR */}
-                <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+                <motion.div initial={false} whileInView={{ opacity: 1 }}
                   viewport={{ once: true }} transition={{ delay: 7 * 0.05 }}
                   className="group bg-purple-900/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-3.5 hover:border-purple-500/40 hover:bg-purple-900/30 transition-all duration-300">
                   <div className="w-8 h-8 bg-purple-500/15 rounded-lg flex items-center justify-center text-purple-400 mb-2">
@@ -164,14 +164,14 @@ export default function Home() {
 
           {/* Features */}
           <section className="pb-14">
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <div className="text-center mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-100">Motor anti-IA de 14 señales</h3>
                 <p className="text-xs text-gray-500 mt-1">Análisis multicapa que combina movimiento, temporización, dispositivo y entorno</p>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                 {features.map((f, i) => (
-                  <motion.div key={f.title} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+                  <motion.div key={f.title} initial={false} whileInView={{ opacity: 1 }}
                     viewport={{ once: true }} transition={{ delay: i * 0.06 }}
                     className="group bg-gray-900/60 backdrop-blur-sm border border-gray-800/50 rounded-xl p-3.5 hover:border-emerald-500/20 hover:bg-gray-900/80 transition-all duration-300">
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 mb-2 group-hover:bg-emerald-500/15 transition-colors">
@@ -187,7 +187,7 @@ export default function Home() {
 
           {/* How it works */}
           <section className="pb-14">
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <div className="text-center mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-100">Cómo funciona</h3>
               </div>
@@ -217,7 +217,7 @@ export default function Home() {
 
           {/* Install CTA */}
           <section className="pb-14">
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               className="bg-gradient-to-br from-emerald-500/10 to-purple-500/10 border border-emerald-500/20 rounded-2xl p-6 sm:p-8 text-center">
               <h3 className="text-lg sm:text-xl font-bold text-gray-100 mb-2">Instala CAPTCHA Shield en tu web</h3>
               <p className="text-xs text-gray-400 max-w-lg mx-auto mb-5">Solo necesitas 2 líneas de código. Sin backend, sin API keys, 100% del lado del cliente. Personaliza colores y tema desde esta página.</p>

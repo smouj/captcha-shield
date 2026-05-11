@@ -210,7 +210,7 @@ export default function PatternTraceChallenge({ challengeData, onVerify }: Props
 
   return (
     <div className="space-y-3">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+      <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
         className={`rounded-lg px-3 py-2.5 text-center ${phase === 'preview' ? 'bg-amber-500/10 border border-amber-500/30' : 'bg-emerald-500/10 border border-emerald-500/30'}`}>
         <p className={`text-xs font-medium ${phase === 'preview' ? 'text-amber-300' : 'text-emerald-300'}`}>
           {phase === 'preview'

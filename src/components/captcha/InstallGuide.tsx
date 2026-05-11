@@ -551,7 +551,7 @@ export default function InstallGuide() {
     <div className="space-y-6">
       {/* ---------- Section header ---------- */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
@@ -572,7 +572,7 @@ export default function InstallGuide() {
 
       {/* ---------- Tab selector ---------- */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay: 0.1 }}
@@ -628,7 +628,7 @@ export default function InstallGuide() {
         {activeTab === 'script' && (
           <motion.div
             key="script"
-            initial={{ opacity: 0, y: 8 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
@@ -660,7 +660,7 @@ export default function InstallGuide() {
         {activeTab === 'react' && (
           <motion.div
             key="react"
-            initial={{ opacity: 0, y: 8 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
@@ -691,7 +691,7 @@ export default function InstallGuide() {
         {activeTab === 'config' && (
           <motion.div
             key="config"
-            initial={{ opacity: 0, y: 8 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
@@ -722,7 +722,7 @@ export default function InstallGuide() {
 
       {/* ---------- Features grid ---------- */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={false}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -741,7 +741,7 @@ export default function InstallGuide() {
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              initial={{ opacity: 0, y: 15 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.04 }}

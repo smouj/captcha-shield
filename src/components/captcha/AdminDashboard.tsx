@@ -113,7 +113,7 @@ export default function AdminDashboard() {
 
       <div className="grid md:grid-cols-2 gap-3">
         {/* Type distribution */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
           className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3">
           <h3 className="text-xs font-semibold text-gray-200 mb-3 flex items-center gap-1.5">
             <BarChart3 className="w-3.5 h-3.5 text-emerald-400" /> Distribución por tipo
@@ -139,7 +139,7 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Risk level distribution */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3">
           <h3 className="text-xs font-semibold text-gray-200 mb-3 flex items-center gap-1.5">
             <Shield className="w-3.5 h-3.5 text-emerald-400" /> Nivel de riesgo
@@ -186,7 +186,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent logs */}
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+      <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
         className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold text-gray-200 flex items-center gap-1.5">
@@ -227,7 +227,7 @@ export default function AdminDashboard() {
       </motion.div>
 
       {/* Info */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+      <motion.div initial={false} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
         className="bg-gray-900/60 border border-gray-700/50 rounded-xl p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <Zap className="w-3.5 h-3.5 text-emerald-400" />
@@ -254,7 +254,7 @@ function StatCard({ icon, label, value, color, bg }: {
   icon: React.ReactNode; label: string; value: string | number; color: string; bg: string;
 }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
       className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3">
       <div className={`w-7 h-7 ${bg} rounded-lg flex items-center justify-center ${color} mb-1.5`}>{icon}</div>
       <p className="text-base font-bold text-gray-200">{value}</p>

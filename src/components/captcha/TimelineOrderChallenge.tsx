@@ -33,7 +33,7 @@ export default function TimelineOrderChallenge({ challengeData, onVerify }: Prop
 
   return (
     <div className="space-y-3">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+      <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
         className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5 text-center">
         <p className="text-xs font-medium text-emerald-300">
           Ordena los eventos cronológicamente ({events.length} eventos)
@@ -49,7 +49,7 @@ export default function TimelineOrderChallenge({ challengeData, onVerify }: Prop
           return (
             <motion.button
               key={event.id}
-              initial={{ opacity: 0, x: -10 }}
+              initial={false}
               animate={{ opacity: 1, x: 0 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

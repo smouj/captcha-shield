@@ -89,7 +89,7 @@ export default function QRVerification({ onVerified }: Props) {
       <AnimatePresence mode="wait">
         {/* Idle */}
         {phase === 'idle' && (
-          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
+          <motion.div key="idle" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
             <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto">
               <Image src="/captcha-shield/logo-icon-white.png" alt="CAPTCHA Shield" width={56} height={56} className="w-full h-full object-cover" />
             </div>
@@ -106,7 +106,7 @@ export default function QRVerification({ onVerified }: Props) {
 
         {/* Generating */}
         {phase === 'generating' && (
-          <motion.div key="gen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-8">
+          <motion.div key="gen" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-8">
             <span className="w-6 h-6 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin inline-block" />
             <p className="text-xs text-gray-400 mt-3">Generando código de verificación...</p>
           </motion.div>
@@ -114,7 +114,7 @@ export default function QRVerification({ onVerified }: Props) {
 
         {/* Waiting / QR Display */}
         {(phase === 'waiting' || phase === 'input') && (
-          <motion.div key="waiting" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+          <motion.div key="waiting" initial={false} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-3">
             {/* QR Code */}
             <div className="flex justify-center">
               <div className="bg-[#0f172a] p-3 rounded-xl border border-gray-700">
@@ -197,7 +197,7 @@ export default function QRVerification({ onVerified }: Props) {
             )}
 
             {showHint && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+              <motion.div initial={false} animate={{ opacity: 1 }}
                 className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 text-center">
                 <p className="text-[10px] text-amber-300">Código de prueba: <span className="font-mono font-bold">{code}</span></p>
                 <p className="text-[10px] text-gray-500 mt-0.5">(Solo para demostración)</p>
@@ -220,7 +220,7 @@ export default function QRVerification({ onVerified }: Props) {
 
         {/* Verified */}
         {phase === 'verified' && (
-          <motion.div key="verified" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
+          <motion.div key="verified" initial={false} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
             <div className="w-16 h-16 rounded-full bg-emerald-500/20 ring-2 ring-emerald-500/50 flex items-center justify-center mx-auto">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
@@ -233,7 +233,7 @@ export default function QRVerification({ onVerified }: Props) {
 
         {/* Expired */}
         {phase === 'expired' && (
-          <motion.div key="expired" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
+          <motion.div key="expired" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
             <div className="w-16 h-16 rounded-full bg-red-500/20 ring-2 ring-red-500/50 flex items-center justify-center mx-auto">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
             </div>

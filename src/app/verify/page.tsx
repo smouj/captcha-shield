@@ -85,7 +85,7 @@ function VerifyContent() {
               {phase === 'verifying' && (
                 <motion.div
                   key="verifying"
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center"
@@ -102,7 +102,7 @@ function VerifyContent() {
               {phase === 'success' && (
                 <motion.div
                   key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   className="bg-gray-900/80 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-8 text-center"
@@ -120,7 +120,7 @@ function VerifyContent() {
               {phase === 'error' && (
                 <motion.div
                   key="error"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   className="bg-gray-900/80 backdrop-blur-sm border border-red-500/30 rounded-2xl p-8 text-center"
@@ -143,7 +143,7 @@ function VerifyContent() {
               {phase === 'input' && (
                 <motion.div
                   key="input"
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   className="bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center"

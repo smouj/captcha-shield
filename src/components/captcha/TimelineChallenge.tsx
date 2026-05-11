@@ -78,7 +78,7 @@ export default function TimelineChallenge({ challengeData, onVerify }: TimelineC
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3"
       >
@@ -103,7 +103,7 @@ export default function TimelineChallenge({ challengeData, onVerify }: TimelineC
                 return (
                   <motion.div
                     key={`${eventId}-${index}`}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={false}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     className="flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 rounded-lg px-2.5 py-1.5"

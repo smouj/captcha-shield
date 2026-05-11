@@ -251,7 +251,7 @@ export default function ThemeCustomizer() {
     <div className="space-y-6">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center gap-3 mb-2"
       >
@@ -271,7 +271,7 @@ export default function ThemeCustomizer() {
       <div className="grid md:grid-cols-2 gap-4">
         {/* Controls Panel */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-gray-900/80 border border-gray-700/50 rounded-xl p-4 space-y-5"
@@ -481,7 +481,7 @@ export default function ThemeCustomizer() {
 
         {/* Live Preview Panel */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.15 }}
           className="bg-gray-900/80 border border-gray-700/50 rounded-xl p-4 flex flex-col"
@@ -643,7 +643,7 @@ export default function ThemeCustomizer() {
 
       {/* Generated Code Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className="bg-gray-900/80 border border-gray-700/50 rounded-xl overflow-hidden"
