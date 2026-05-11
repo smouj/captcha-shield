@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPTCHA Shield - Vanilla HTML Example</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background: #f9fafb; }
+    h1 { color: #111827; margin-bottom: 20px; }
+    .note { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0; }
+    .note h3 { color: #92400e; margin-bottom: 8px; }
+    .note p { color: #78350f; font-size: 0.95rem; }
+    .code-block { background: #1f2937; color: #e5e7eb; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 20px 0; }
+    code { font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9rem; }
+    .highlight { color: #60a5fa; }
+    .string { color: #4ade80; }
+    .attr { color: #f472b6; }
+    .prop { color: #c084fc; }
+    .btn { display: inline-block; background: #10b981; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; margin-top: 20px; }
+    .btn:hover { background: #059669; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ CAPTCHA Shield - Vanilla HTML Example</h1>
+  
+  <div class="note">
+    <h3>Important: Client-Side Only</h3>
+    <p>This is a <strong>demo/example</strong> showing how to embed CAPTCHA Shield in a vanilla HTML page. The widget runs entirely client-side and is <strong>NOT suitable for production security</strong>. For production, you need server-side verification.</p>
+  </div>
+
+  <h2>Quick Embed</h2>
+  <div class="code-block">
+    <span class="comment">&lt;!-- 1. Add CAPTCHA container --&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"captcha-shield"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+    <span class="comment">&lt;!-- 2. Load widget script --&gt;</span>
+    <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://smouj.github.io/captcha-shield/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+    <span class="comment">&lt;!-- 3. Handle verification result --&gt;</span>
+    <span class="tag">&lt;script&gt;</span>
+      <span class="prop">window</span>.<span class="highlight">onCaptchaVerified</span> = <span class="function">function</span>(<span class="param">response</span>) {
+        <span class="comment">// response = { success, riskScore, riskLevel, token }</span>
+        <span class="keyword">if</span> (response.success) {
+          <span class="comment">// User passed CAPTCHA</span>
+          <span class="keyword">console</span>.<span class="highlight">log</span>(<span class="string">'CAPTCHA passed!'</span>, response);
+        } <span class="keyword">else</span> {
+          <span class="comment">// User failed or aborted</span>
+          <span class="keyword">console</span>.<span class="highlight">log</span>(<span class="string">'CAPTCHA failed or aborted'</span>, response);
+        }
+      };
+    <span class="tag">&lt;/script&gt;</span>
+  </div>
+
+  <h2>Complete Example</h2>
+  <div class="code-block">
+    <span class="tag">&lt;!DOCTYPE html&gt;</span>
+    <span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+      <span class="tag">&lt;title&gt;</span>My Form<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+
+      <span class="comment">&lt;!-- CAPTCHA Container --&gt;</span>
+      <span class="tag">&lt;div id="captcha-shield"&gt;&lt;/div&gt;</span>
+
+      <span class="comment">&lt;!-- CAPTCHA Widget Script --&gt;</span>
+      <span class="tag">&lt;script src="https://smouj.github.io/captcha-shield/widget.js"&gt;&lt;/script&gt;</span>
+
+      <span class="comment">&lt;!-- Verify Callback --&gt;</span>
+      <span class="tag">&lt;script&gt;</span>
+        <span class="prop">window</span>.<span class="highlight">onCaptchaVerified</span> = <span class="function">function</span>(<span class="param">response</span>) {
+          <span class="keyword">if</span> (response.success) {
+            <span class="comment">// Submit form programmatically</span>
+            <span class="prop">document</span>.<span class="highlight">getElementById</span>(<span class="string">'myForm'</span>).<span class="highlight">submit</span>();
+          }
+        };
+      <span class="tag">&lt;/script&gt;</span>
+
+      <span class="comment">&lt;!-- Your Form (only submitted if CAPTCHA passes) --&gt;</span>
+      <span class="tag">&lt;form id="myForm" action="/submit" method="POST"&gt;</span>
+        <span class="tag">&lt;input type="text" name="username" placeholder="Username" required&gt;</span>
+        <span class="tag">&lt;input type="email" name="email" placeholder="Email" required&gt;</span>
+        <span class="tag">&lt;button type="submit"&gt;Submit&lt;/button&gt;</span>
+      <span class="tag">&lt;/form&gt;</span>
+
+    <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+  </div>
+
+  <h2>Advanced Configuration</h2>
+  <div class="code-block">
+    <span class="comment">&lt;!-- Configuration BEFORE widget script --&gt;</span>
+    <span class="tag">&lt;script&gt;</span>
+      <span class="prop">window</span>.<span class="highlight">CaptchaShieldConfig</span> = {
+        <span class="attr">theme</span>: <span class="string">'dark'</span>,            <span class="comment">// 'dark' | 'light'</span>
+        <span class="attr">primaryColor</span>: <span class="string">'#10b981'</span>,        <span class="comment">// Any hex color</span>
+        <span class="attr">language</span>: <span class="string">'es'</span>,                  <span class="comment">// 'es' | 'en' | 'pt'</span>
+        <span class="attr">size</span>: <span class="string">'normal'</span>,                <span class="comment">// 'compact' | 'normal' | 'large'</span>
+        <span class="attr">borderRadius</span>: <span class="string">'16px'</span>,
+        <span class="attr">containerId</span>: <span class="string">'captcha-shield'</span>,
+        <span class="attr">timeout</span>: <span class="number">120000</span>,              <span class="comment">// 2 minutes</span>
+        <span class="attr">onVerify</span>: <span class="function">function</span>(<span class="param">response</span>) {
+          <span class="comment">// Alternative to window.onCaptchaVerified</span>
+          <span class="keyword">console</span>.<span class="highlight">log</span>(<span class="string">'Verified:'</span>, response);
+        },
+        <span class="attr">onError</span>: <span class="function">function</span>(<span class="param">error</span>) {
+          <span class="keyword">console</span>.<span class="highlight">error</span>(<span class="string">'Error:'</span>, error);
+        },
+        <span class="attr">onLoad</span>: <span class="function">function</span>() {
+          <span class="keyword">console</span>.<span class="highlight">log</span>(<span class="string">'Widget loaded!'</span>);
+        }
+      };
+    <span class="tag">&lt;/script&gt;</span>
+    <span class="tag">&lt;script src="https://smouj.github.io/captcha-shield/widget.js"&gt;&lt;/script&gt;</span>
+  </div>
+
+  <h2>Widget API</h2>
+  <div class="code-block">
+    <span class="comment">// Event listeners</span>
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">on</span>(<span class="string">'ready'</span>, <span class="function">function</span>() {
+      <span class="comment">// Widget iframe loaded</span>
+    });
+
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">on</span>(<span class="string">'verified'</span>, <span class="function">function</span>(<span class="param">response</span>) {
+      <span class="comment">// User passed CAPTCHA</span>
+    });
+
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">on</span>(<span class="string">'failed'</span>, <span class="function">function</span>(<span class="param">response</span>) {
+      <span class="comment">// User failed CAPTCHA</span>
+    });
+
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">on</span>(<span class="string">'expired'</span>, <span class="function">function</span>() {
+      <span class="comment">// Session expired</span>
+    });
+
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">on</span>(<span class="string">'resize'</span>, <span class="function">function</span>(<span class="param">size</span>) {
+      <span class="comment">// Widget resized</span>
+    });
+
+    <span class="comment">// Programmatic reset</span>
+    <span class="prop">window</span>.<span class="highlight">CaptchaShield</span>.<span class="highlight">reset</span>();
+  </div>
+
+  <a href="https://smouj.github.io/captcha-shield/" class="btn" target="_blank">Live Demo</a>
+  <a href="https://github.com/smouj/captcha-shield/blob/main/docs/SECURITY_MODEL.md" class="btn" style="background: #64748b; margin-left: 10px;" target="_blank">Security Notes</a>
+</body>
+</html>

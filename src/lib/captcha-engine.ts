@@ -277,7 +277,7 @@ export function generateImageSelectChallenge(): ImageSelectChallengeData {
 
 // 3. MATH VISUAL (mejorado)
 export function generateMathVisualChallenge(): MathVisualChallengeData {
-  const generators: () => { equation: string; answer: number }[] = [
+  const generators: (() => { equation: string; answer: number })[] = [
     () => {
       const a = 2 + Math.floor(Math.random() * 9);
       const b = 2 + Math.floor(Math.random() * 9);
@@ -337,7 +337,7 @@ export function generatePatternTraceChallenge(): PatternTraceChallengeData {
   const margin = 15;
 
   for (let i = 0; i < numPoints; i++) {
-    let x: number, y: number;
+    let x: number = 0, y: number = 0;
     let tooClose = true;
     let attempts = 0;
     while (tooClose && attempts < 100) {
