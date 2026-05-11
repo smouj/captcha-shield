@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   description:
     "Sistema CAPTCHA anti-bot/anti-IA instalable en cualquier web con 2 líneas de código. 7 desafíos, 14 señales, QR móvil, personalizable. 100% client-side.",
   icons: {
-    icon: "/captcha-shield/logo-icon-white.png",
-    shortcut: "/captcha-shield/logo-icon-white.png",
+    icon: "/captcha-shield/logo-shield-white.png",
+    shortcut: "/captcha-shield/logo-shield-white.png",
     apple: "/captcha-shield/logo-icon-black.png",
   },
   openGraph: {

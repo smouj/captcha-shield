@@ -18,7 +18,7 @@ export default function Hero() {
       <motion.div initial={false} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.3 }}>
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-4">
           <Image
-            src="/captcha-shield/logo-icon-white.png"
+            src="/captcha-shield/logo-shield-white.png"
             alt="CAPTCHA Shield"
             width={40}
             height={40}

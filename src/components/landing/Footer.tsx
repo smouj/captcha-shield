@@ -16,7 +16,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg overflow-hidden border border-emerald-500/20">
-              <Image src="/captcha-shield/logo-icon-white.png" alt="" width={28} height={28} className="w-full h-full object-cover" />
+              <Image src="/captcha-shield/logo-shield-white.png" alt="" width={28} height={28} className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-xs font-semibold text-gray-400">CAPTCHA Shield</p>
