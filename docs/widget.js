@@ -3,7 +3,7 @@
  * CAPTCHA Shield v3.0 — Embeddable Widget
  * ============================================================================
  *
- * A self-contained, production-ready CAPTCHA widget that any website can embed
+ * A self-contained CAPTCHA widget that any website can embed as a demo and friction layer
  * with a single <script> tag. Uses an iframe for full React app isolation and
  * communicates with the host page via postMessage.
  *

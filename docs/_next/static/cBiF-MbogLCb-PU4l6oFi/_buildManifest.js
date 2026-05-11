@@ -1,7 +1,12 @@
 self.__BUILD_MANIFEST = {
   "__rewrites": {
     "afterFiles": [],
-    "beforeFiles": [],
+    "beforeFiles": [
+      {
+        "source": "/captcha-shield//_next/:path+",
+        "destination": "/captcha-shield/_next/:path+"
+      }
+    ],
     "fallback": []
   },
   "sortedPages": [
