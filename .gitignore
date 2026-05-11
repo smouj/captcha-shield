@@ -99,3 +99,7 @@ __pycache__/
 *$py.class
 upload/
 docs-build/
+
+# Dev cache
+.docs/dev/
+docs/dev/
