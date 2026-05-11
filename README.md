@@ -2,7 +2,7 @@
 
 <br />
 
-<img src="public/logo-shield-white.png" alt="CAPTCHA Shield" width="64" />
+<img src="public/logo-shield-white.png" alt="CAPTCHA Shield" width="128" />
 
 <br />
 
