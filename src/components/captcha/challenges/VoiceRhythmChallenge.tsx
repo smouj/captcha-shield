@@ -111,7 +111,7 @@ export default function VoiceRhythmChallenge({
     for (let i = 0; i < beatTimings.length; i++) {
       const bt = beatTimings[i];
       const x = margin + (bt.start / totalDuration) * usableW;
-      const w = Math.max(4, (bt.duration / totalDuration) * usableW);
+      const w = Math.max(4, ((bt.end - bt.start) / totalDuration) * usableW);
       const isActive = activeBeat === i;
 
       const hue = 140 + (bt.frequency - 200) / 10;
@@ -284,7 +284,7 @@ export default function VoiceRhythmChallenge({
     const usedTaps = new Set<number>();
 
     for (const bt of beatTimings) {
-      const beatCenter = bt.start + bt.duration / 2;
+      const beatCenter = bt.start + (bt.end - bt.start) / 2;
       let bestDist = Infinity;
       let bestTap = -1;
 

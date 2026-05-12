@@ -141,7 +141,7 @@ const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.08, duration: 0.4, ease: 'easeOut' },
+    transition: { delay: i * 0.08, duration: 0.4, ease: 'easeOut' as const },
   }),
 };
 
@@ -149,7 +149,7 @@ const rowVariants = {
   hidden: { opacity: 0, x: -12 },
   visible: (i: number) => ({
     opacity: 1, x: 0,
-    transition: { delay: i * 0.04, duration: 0.3, ease: 'easeOut' },
+    transition: { delay: i * 0.04, duration: 0.3, ease: 'easeOut' as const },
   }),
 };
 
@@ -359,7 +359,7 @@ export function AdminDashboardV4() {
           <span className="text-xs text-gray-500">{events.length} events stored</span>
           <motion.div
             animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: 'easeInOut' as const }}
           >
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </motion.div>

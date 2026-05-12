@@ -169,14 +169,14 @@ const fadeInUp = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -12 },
-  transition: { duration: 0.3, ease: 'easeOut' },
+  transition: { duration: 0.3, ease: 'easeOut' as const },
 };
 
 const scaleIn = {
   initial: { opacity: 0, scale: 0.92 },
   animate: { opacity: 1, scale: 1 },
   exit: { opacity: 0, scale: 0.92 },
-  transition: { duration: 0.25, ease: 'easeOut' },
+  transition: { duration: 0.25, ease: 'easeOut' as const },
 };
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -438,6 +438,14 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
     [completedLayers, currentChallengeIdx, challengeInstances.length, mergedConfig.mode, currentRiskScore, riskAssessment, generateAndIssueToken],
   );
 
+  // ── Cooldown enforcement ───────────────────────────────────────────────────
+  const enforceCooldown = useCallback((attempts: number) => {
+    const cooldown = Math.min(5 * attempts, 60); // 5s * attempts, capped at 60s
+    if (cooldown > 0) {
+      setCooldownSeconds(cooldown);
+    }
+  }, []);
+
   // ── Challenge failed handler ───────────────────────────────────────────────
   const handleChallengeFail = useCallback(
     (reason: string) => {
@@ -470,14 +478,6 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
     },
     [completedLayers, riskAssessment, generateAndIssueToken, t.failMessage],
   );
-
-  // ── Cooldown enforcement ───────────────────────────────────────────────────
-  const enforceCooldown = useCallback((attempts: number) => {
-    const cooldown = Math.min(5 * attempts, 60); // 5s * attempts, capped at 60s
-    if (cooldown > 0) {
-      setCooldownSeconds(cooldown);
-    }
-  }, []);
 
   // ── Reset / retry ──────────────────────────────────────────────────────────
   const handleRetry = useCallback(() => {
@@ -517,7 +517,7 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
             }}
             initial={{ width: 0 }}
             animate={{ width: `${Math.max(score * 100, 2)}%` }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: 'easeOut' as const }}
           />
         </div>
         <p className={`text-[9px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
@@ -788,7 +788,7 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
             <motion.div key="loading" {...fadeInUp} className="text-center space-y-3">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' as const }}
                 className="w-10 h-10 mx-auto"
               >
                 <Loader2
@@ -810,7 +810,7 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
                   className="absolute inset-0 rounded-full border-2 border-t-transparent"
                   style={{ borderColor: `${mergedConfig.accentColor}40`, borderTopColor: 'transparent' }}
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Fingerprint
@@ -874,7 +874,7 @@ export function CaptchaWidgetV4({ config, onVerify, onError }: CaptchaWidgetV4Pr
             <motion.div key="verifying" {...fadeInUp} className="text-center space-y-3">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' as const }}
               >
                 <KeyRound
                   className="w-10 h-10 mx-auto"

@@ -15,16 +15,16 @@
 <br />
 
 [![Version](https://img.shields.io/badge/v4.0.0-9b59b6?style=for-the-badge&label=FORTRESS&labelColor=1a1a2e)](./package.json)
+[![Build Status](https://img.shields.io/badge/CI-Passing-22c55e?style=for-the-badge&logo=github-actions&logoColor=white&labelColor=1a1a2e)](https://github.com/smouj/captcha-shield/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&labelColor=1a1a2e)](./LICENSE)
 [![npm](https://img.shields.io/badge/npm-captcha--shield-22c55e?style=for-the-badge&logo=npm&logoColor=white&labelColor=1a1a2e)](https://www.npmjs.com/)
-[![GitHub Stars](https://img.shields.io/badge/⭐_2.4k-stars-FFD700?style=for-the-badge&labelColor=1a1a2e)](https://github.com/smouj/captcha-shield)
 [![Next.js 16](https://img.shields.io/badge/Next.js_16-black?style=for-the-badge&logo=next.js&logoColor=white&labelColor=1a1a2e)](https://nextjs.org/)
 [![TypeScript 5](https://img.shields.io/badge/TypeScript_5-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=1a1a2e)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black&labelColor=1a1a2e)](https://react.dev/)
 
 <br />
 
-**[🚀 Live Demo](https://smouj.github.io/captcha-shield/) · [📦 Server Module](./server/) · [🔒 Security Model](documentation/SECURITY_MODEL.md) · [📝 API Reference](documentation/API.md) · [🤝 Contributing](CONTRIBUTING.md)**
+**[🚀 Live Demo](https://smouj.github.io/captcha-shield/) · [📦 Server Module](./server/) · [🔒 Security Model](documentation/SECURITY_MODEL.md) · [📝 API Reference](documentation/API.md) · [📝 Changelog](./CHANGELOG.md) · [🤝 Contributing](CONTRIBUTING.md)**
 
 </div>
 
@@ -47,9 +47,11 @@
 - [🌍 Internationalization](#-internationalization)
 - [🏗️ Architecture](#-architecture)
 - [🔒 Security Model](#-security-model)
+- [🛡️ Verification Modes](#-verification-modes)
 - [🗺️ Roadmap](#-roadmap)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
+- [📝 Changelog](#-changelog)
 - [🙏 Credits](#-credits)
 
 ---
@@ -955,6 +957,67 @@ See [SECURITY.md](./SECURITY.md) for responsible disclosure guidelines and [Secu
 
 ---
 
+## 🛡️ Verification Modes
+
+CAPTCHA Shield v4.0 offers **3 verification modes** to balance security and user experience:
+
+| Mode | Behavioral Pre-check | Challenge | QR/WebAuthn | Token TTL | Best For |
+|------|:--------------------:|:---------:|:-----------:|:---------:|----------|
+| 🟢 **Light** | ✅ | 1 easy challenge | ❌ | 120s | Low-risk forms, newsletters, comments |
+| 🔴 **Fortress** | ✅ | 2+ challenges (risk-adaptive) | ✅ (if risk > 0.5) | 60s | Login, payments, account changes |
+| 🟡 **Hybrid** | ✅ | 1 challenge + risk-based escalation | ✅ (if risk > 0.7) | 90s | General-purpose, adaptive security |
+
+### Mode Selection
+
+```tsx
+{/* Light mode — minimal friction */}
+<CaptchaWidgetV4 mode="light" />
+
+{/* Fortress mode — maximum security (default) */}
+<CaptchaWidgetV4 mode="fortress" />
+
+{/* Hybrid mode — adaptive */}
+<CaptchaWidgetV4 mode="hybrid" />
+```
+
+```html
+<!-- HTML configuration -->
+<script>
+  window.CaptchaShieldConfig = {
+    mode: 'fortress',  // 'light' | 'fortress' | 'hybrid'
+  };
+</script>
+```
+
+### Mode Behavior Details
+
+#### 🟢 Light Mode
+- Single easy challenge (e.g., Human Intuition Grid)
+- Behavioral pre-check with 28 signals
+- Instant pass if risk < 0.15 (no challenge needed)
+- Extended token TTL (120s)
+- **No QR/WebAuthn escalation**
+- Best for low-stakes interactions where friction must be minimal
+
+#### 🔴 Fortress Mode (Default)
+- Multi-challenge verification (2+ challenges for medium/high risk)
+- Dynamic difficulty scaling based on Bayesian risk score
+- QR mobile verification for risk > 0.5
+- WebAuthn/Passkey for risk > 0.7
+- Strict token TTL (60s)
+- Cooldown: 5s × attempts, capped at 60s
+- Instant block at risk > 0.85
+- Best for high-value operations requiring maximum security
+
+#### 🟡 Hybrid Mode
+- Single challenge by default, escalates based on risk
+- Additional challenges triggered at risk > 0.4
+- QR/WebAuthn triggered at risk > 0.7
+- Moderate token TTL (90s)
+- Balanced approach — low friction for legitimate users, strong protection against bots
+
+---
+
 ## 🗺️ Roadmap
 
 ### ✅ v4.0 "Fortress" (Current)
@@ -1042,6 +1105,18 @@ npm run typecheck
 - [ ] Documentation updated if needed
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for our community standards.
+
+---
+
+## 📝 Changelog
+
+All notable changes are documented in [CHANGELOG.md](./CHANGELOG.md).
+
+| Version | Codename | Date | Highlights |
+|---------|----------|------|------------|
+| **4.0.0** | Fortress | 2025-05 | 10 challenges, 28 signals, 7 layers, JWT tokens, plugins, i18n |
+| 3.1.0 | — | 2025-04 | 7 challenges, 14 signals, QR verification, widget embed |
+| 3.0.0 | — | 2025-04 | 4 challenges, 6 signals, behavioral analysis engine |
 
 ---
 

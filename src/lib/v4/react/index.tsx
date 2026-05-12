@@ -1,0 +1,547 @@
+/**
+ * CAPTCHA Shield v4.0 "Fortress" — React npm Package Export
+ *
+ * A React component wrapper designed to be published as an npm package.
+ * Provides a thin wrapper around `CaptchaWidgetV4` with idiomatic React
+ * patterns including a Context provider, custom hooks, and a component
+ * with a props interface.
+ *
+ * @example
+ * ```tsx
+ * import { CaptchaShieldProvider, useCaptchaShield, CaptchaShield } from 'captcha-shield-react';
+ *
+ * // Option 1: Use the component directly
+ * function MyForm() {
+ *   return (
+ *     <CaptchaShield
+ *       config={{ mode: 'fortress', theme: 'auto' }}
+ *       onVerify={(token) => console.log('Verified!', token)}
+ *     />
+ *   );
+ * }
+ *
+ * // Option 2: Use the provider + hook pattern
+ * function App() {
+ *   return (
+ *     <CaptchaShieldProvider config={{ mode: 'fortress' }}>
+ *       <MyForm />
+ *     </CaptchaShieldProvider>
+ *   );
+ * }
+ *
+ * function MyForm() {
+ *   const { verify, token, state, error } = useCaptchaShield();
+ *
+ *   const handleSubmit = async () => {
+ *     if (!token) {
+ *       await verify();
+ *       return;
+ *     }
+ *     // Submit form with token
+ *   };
+ *
+ *   return (
+ *     <button onClick={handleSubmit}>
+ *       {state === 'success' ? 'Verified!' : 'Verify & Submit'}
+ *     </button>
+ *   );
+ * }
+ * ```
+ */
+
+'use client';
+
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from 'react';
+
+// ─── Type imports from core ────────────────────────────────────────────────────
+import {
+  WidgetConfig,
+  DEFAULT_WIDGET_CONFIG,
+  WidgetState,
+  CaptchaToken,
+  VerificationMode,
+  ChallengeType,
+  ChallengeDifficulty,
+  ChallengeInstance,
+  ChallengeSolution,
+  RiskAssessment,
+  RiskLevel,
+  BehavioralData,
+  SignalReading,
+  SignalCategory,
+  SignalName,
+  VerificationLayer,
+  VerificationResult,
+  CaptchaPlugin,
+  PluginRegistry,
+  ChallengeProps,
+  ChallengeDefinition,
+  ChallengeCategory,
+  ChallengeResult,
+  TokenHeader,
+  TokenPayload,
+  LanguageCode,
+  AnalyticsEvent,
+  AnalyticsSummary,
+  DeepPartial,
+  Nullable,
+  AsyncResult,
+} from '@/lib/types';
+
+// ─── Component import ──────────────────────────────────────────────────────────
+import { CaptchaWidgetV4 } from '@/components/captcha/CaptchaWidgetV4';
+
+// ─── Re-export all core types ──────────────────────────────────────────────────
+
+export type {
+  WidgetConfig,
+  CaptchaToken,
+  RiskAssessment,
+  RiskLevel,
+  BehavioralData,
+  SignalReading,
+  SignalCategory,
+  SignalName,
+  VerificationLayer,
+  VerificationResult,
+  CaptchaPlugin,
+  PluginRegistry,
+  ChallengeProps,
+  ChallengeDefinition,
+  ChallengeCategory,
+  ChallengeResult,
+  ChallengeInstance,
+  ChallengeSolution,
+  TokenHeader,
+  TokenPayload,
+  LanguageCode,
+  AnalyticsEvent,
+  AnalyticsSummary,
+  DeepPartial,
+  Nullable,
+  AsyncResult,
+};
+
+export {
+  WidgetState,
+  VerificationMode,
+  ChallengeType,
+  ChallengeDifficulty,
+  DEFAULT_WIDGET_CONFIG,
+};
+
+// ─── CaptchaShield Props ───────────────────────────────────────────────────────
+
+/**
+ * Props for the `CaptchaShield` React component.
+ *
+ * This is the primary entry point for most users. Simply render the
+ * component with your desired configuration and handle the verification
+ * callback.
+ *
+ * @example
+ * ```tsx
+ * <CaptchaShield
+ *   config={{ mode: VerificationMode.FORTRESS, theme: 'dark' }}
+ *   onVerify={(token) => {
+ *     console.log('Verification successful!', token);
+ *     // Send token to your server for validation
+ *   }}
+ *   onError={(err) => console.error('Verification failed:', err)}
+ * />
+ * ```
+ */
+export interface CaptchaShieldProps {
+  /**
+   * Widget configuration. Partial — any omitted fields use the defaults.
+   *
+   * @default DEFAULT_WIDGET_CONFIG
+   */
+  config?: Partial<WidgetConfig>;
+
+  /**
+   * Callback invoked when verification succeeds.
+   * Receives the signed `CaptchaToken` that should be sent to your
+   * server for validation.
+   *
+   * @param token - The verification token.
+   */
+  onVerify?: (token: CaptchaToken) => void;
+
+  /**
+   * Callback invoked when verification fails or an error occurs.
+   *
+   * @param error - The error that occurred.
+   */
+  onError?: (error: Error) => void;
+
+  /**
+   * Additional CSS class name to apply to the widget container.
+   */
+  className?: string;
+}
+
+// ─── CaptchaShield Component ───────────────────────────────────────────────────
+
+/**
+ * The main CAPTCHA Shield React component.
+ *
+ * A thin wrapper around `CaptchaWidgetV4` that provides a clean React
+ * props interface. Supports all widget configuration options including
+ * verification mode, theme, language, and accessibility settings.
+ *
+ * **Important:** The token generated by this component should always be
+ * validated on your server using the `verifyCaptchaShieldToken()` function
+ * from the `captcha-shield` server package.
+ *
+ * @example
+ * ```tsx
+ * function LoginForm() {
+ *   const [token, setToken] = useState<CaptchaToken | null>(null);
+ *
+ *   const handleSubmit = () => {
+ *     if (!token) return;
+ *     // Include token in your API request for server-side validation
+ *     fetch('/api/login', {
+ *       method: 'POST',
+ *       body: JSON.stringify({ token: token.signature }),
+ *     });
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <CaptchaShield
+ *         config={{ mode: 'fortress', theme: 'auto' }}
+ *         onVerify={setToken}
+ *       />
+ *       <button onClick={handleSubmit} disabled={!token}>
+ *         Log In
+ *       </button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function CaptchaShield({ config, onVerify, onError, className }: CaptchaShieldProps) {
+  return (
+    <div className={className}>
+      <CaptchaWidgetV4 config={config} onVerify={onVerify} onError={onError} />
+    </div>
+  );
+}
+
+// ─── Context ───────────────────────────────────────────────────────────────────
+
+/**
+ * Context value provided by `CaptchaShieldProvider`.
+ */
+interface CaptchaShieldContextValue {
+  /** The current widget configuration (merged with defaults). */
+  config: WidgetConfig;
+
+  /**
+   * Update the widget configuration.
+   * Merges the partial update with the existing configuration.
+   *
+   * @param update - Partial configuration to merge.
+   */
+  updateConfig: (update: Partial<WidgetConfig>) => void;
+
+  /** The current verification token, if any. */
+  token: CaptchaToken | null;
+
+  /** The current widget state. */
+  state: WidgetState;
+
+  /** The last error that occurred, if any. */
+  error: Error | null;
+
+  /**
+   * Trigger verification programmatically.
+   * This simulates clicking the "Verify" button.
+   */
+  verify: () => void;
+
+  /**
+   * Reset the widget to its initial state.
+   */
+  reset: () => void;
+}
+
+const CaptchaShieldContext = createContext<CaptchaShieldContextValue | null>(null);
+
+// ─── CaptchaShieldProvider Props ───────────────────────────────────────────────
+
+/**
+ * Props for the `CaptchaShieldProvider` context provider.
+ *
+ * Wrap your application or a subtree with this provider to share
+ * CAPTCHA Shield configuration and state across multiple components.
+ *
+ * @example
+ * ```tsx
+ * function App() {
+ *   return (
+ *     <CaptchaShieldProvider config={{ mode: VerificationMode.FORTRESS }}>
+ *       <Header />
+ *       <MainContent />
+ *     </CaptchaShieldProvider>
+ *   );
+ * }
+ * ```
+ */
+export interface CaptchaShieldProviderProps {
+  /** Initial widget configuration. */
+  config?: Partial<WidgetConfig>;
+
+  /** React children. */
+  children: React.ReactNode;
+}
+
+// ─── CaptchaShieldProvider Component ───────────────────────────────────────────
+
+/**
+ * Context provider for shared CAPTCHA Shield configuration and state.
+ *
+ * Provides configuration, verification state, and imperative methods
+ * to all descendant components via the `useCaptchaShield()` and
+ * `useCaptchaConfig()` hooks.
+ *
+ * Use this provider when you need to:
+ * - Share configuration across multiple CAPTCHA instances
+ * - Access verification state from a parent component
+ * - Trigger verification programmatically
+ *
+ * @example
+ * ```tsx
+ * <CaptchaShieldProvider config={{ mode: 'fortress', theme: 'dark' }}>
+ *   <MyForm />
+ * </CaptchaShieldProvider>
+ * ```
+ */
+export function CaptchaShieldProvider({ config: initialConfig, children }: CaptchaShieldProviderProps) {
+  const [config, setConfig] = useState<WidgetConfig>({
+    ...DEFAULT_WIDGET_CONFIG,
+    ...initialConfig,
+  });
+  const [token, setToken] = useState<CaptchaToken | null>(null);
+  const [state, setState] = useState<WidgetState>(WidgetState.IDLE);
+  const [error, setError] = useState<Error | null>(null);
+
+  // Ref for the widget instance
+  const widgetRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Update the configuration by merging the partial update.
+   */
+  const updateConfig = useCallback((update: Partial<WidgetConfig>) => {
+    setConfig((prev) => ({ ...prev, ...update }));
+  }, []);
+
+  /**
+   * Trigger verification programmatically.
+   *
+   * This dispatches a custom event that the widget listens for.
+   */
+  const verify = useCallback(() => {
+    if (widgetRef.current) {
+      const event = new CustomEvent('cshield:verify');
+      widgetRef.current.dispatchEvent(event);
+    }
+  }, []);
+
+  /**
+   * Reset the widget to its initial state.
+   */
+  const reset = useCallback(() => {
+    setToken(null);
+    setError(null);
+    setState(WidgetState.IDLE);
+
+    if (widgetRef.current) {
+      const event = new CustomEvent('cshield:reset');
+      widgetRef.current.dispatchEvent(event);
+    }
+  }, []);
+
+  // Listen for widget state changes
+  useEffect(() => {
+    const handleStateChange = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.state) setState(detail.state as WidgetState);
+      if (detail?.token) setToken(detail.token as CaptchaToken);
+      if (detail?.error) setError(detail.error as Error);
+    };
+
+    document.addEventListener('cshield:stateChange', handleStateChange);
+    return () => {
+      document.removeEventListener('cshield:stateChange', handleStateChange);
+    };
+  }, []);
+
+  const contextValue: CaptchaShieldContextValue = {
+    config,
+    updateConfig,
+    token,
+    state,
+    error,
+    verify,
+    reset,
+  };
+
+  return (
+    <CaptchaShieldContext.Provider value={contextValue}>
+      <div ref={widgetRef}>
+        {children}
+      </div>
+    </CaptchaShieldContext.Provider>
+  );
+}
+
+// ─── useCaptchaShield Hook ─────────────────────────────────────────────────────
+
+/**
+ * React hook for accessing CAPTCHA Shield verification state and actions.
+ *
+ * Must be used within a `CaptchaShieldProvider`.
+ *
+ * Returns an object with the current verification state, the token (if
+ * verification succeeded), any error, and imperative methods to trigger
+ * or reset verification.
+ *
+ * @returns An object with verification state and actions.
+ * @throws Error if used outside of a `CaptchaShieldProvider`.
+ *
+ * @example
+ * ```tsx
+ * function SubmitButton() {
+ *   const { verify, token, state, error } = useCaptchaShield();
+ *
+ *   const handleClick = async () => {
+ *     if (state === 'idle') {
+ *       await verify();
+ *     }
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={handleClick} disabled={state !== 'idle' && state !== 'failed'}>
+ *         {state === 'loading' || state === 'verifying'
+ *           ? 'Verifying...'
+ *           : state === 'success'
+ *             ? 'Verified!'
+ *             : 'Verify'}
+ *       </button>
+ *       {error && <p className="text-red-500">{error.message}</p>}
+ *       {token && <input type="hidden" name="captcha_token" value={token.signature} />}
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function useCaptchaShield(): {
+  /** Trigger verification programmatically. */
+  verify: () => void;
+  /** The current verification token, if verification succeeded. */
+  token: CaptchaToken | null;
+  /** The current widget state. */
+  state: WidgetState;
+  /** The last error, if any. */
+  error: Error | null;
+  /** Reset the widget to its initial state. */
+  reset: () => void;
+} {
+  const context = useContext(CaptchaShieldContext);
+  if (!context) {
+    throw new Error(
+      'useCaptchaShield must be used within a <CaptchaShieldProvider>. ' +
+      'Wrap your component with <CaptchaShieldProvider> to use this hook.',
+    );
+  }
+
+  return {
+    verify: context.verify,
+    token: context.token,
+    state: context.state,
+    error: context.error,
+    reset: context.reset,
+  };
+}
+
+// ─── useCaptchaConfig Hook ─────────────────────────────────────────────────────
+
+/**
+ * React hook for accessing and updating CAPTCHA Shield configuration.
+ *
+ * Must be used within a `CaptchaShieldProvider`.
+ *
+ * Returns the current configuration and a function to update it.
+ * Updates are merged with the existing configuration.
+ *
+ * @returns An object with the current config and an update function.
+ * @throws Error if used outside of a `CaptchaShieldProvider`.
+ *
+ * @example
+ * ```tsx
+ * function ConfigPanel() {
+ *   const { config, updateConfig } = useCaptchaConfig();
+ *
+ *   return (
+ *     <div>
+ *       <label>
+ *         Theme:
+ *         <select
+ *           value={config.theme}
+ *           onChange={(e) => updateConfig({ theme: e.target.value as 'light' | 'dark' | 'auto' })}
+ *         >
+ *           <option value="auto">Auto</option>
+ *           <option value="light">Light</option>
+ *           <option value="dark">Dark</option>
+ *         </select>
+ *       </label>
+ *
+ *       <label>
+ *         Language:
+ *         <select
+ *           value={config.language}
+ *           onChange={(e) => updateConfig({ language: e.target.value })}
+ *         >
+ *           <option value="en">English</option>
+ *           <option value="es">Español</option>
+ *           <option value="fr">Français</option>
+ *         </select>
+ *       </label>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function useCaptchaConfig(): {
+  /** The current widget configuration. */
+  config: WidgetConfig;
+  /**
+   * Update the widget configuration.
+   * Merges the partial update with the existing configuration.
+   */
+  updateConfig: (update: Partial<WidgetConfig>) => void;
+} {
+  const context = useContext(CaptchaShieldContext);
+  if (!context) {
+    throw new Error(
+      'useCaptchaConfig must be used within a <CaptchaShieldProvider>. ' +
+      'Wrap your component with <CaptchaShieldProvider> to use this hook.',
+    );
+  }
+
+  return {
+    config: context.config,
+    updateConfig: context.updateConfig,
+  };
+}

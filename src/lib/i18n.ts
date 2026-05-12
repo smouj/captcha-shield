@@ -7,6 +7,9 @@
 
 import { LanguageCode, TranslationStrings, ChallengeType } from './types';
 
+// Re-export LanguageCode so consumers can import it from this module
+export type { LanguageCode } from './types';
+
 const translations: Record<LanguageCode, TranslationStrings> = {
   en: {
     widgetTitle: 'CAPTCHA Shield',

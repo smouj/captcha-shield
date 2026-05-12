@@ -35,12 +35,13 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "build:pages": "npm run build",
+    "build:pages": "bash scripts/build-static.sh",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm run build",
-    "clean": "rm -rf .next docs"
+    "clean": "rm -rf .next docs",
+    "prebuild:pages": "npm run clean"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
@@ -57,6 +58,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/qrcode": "^1.5.6",

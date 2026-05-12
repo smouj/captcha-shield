@@ -75,21 +75,21 @@ interface HeadlessIndicator {
 }
 
 const HEADLESS_CHECKS: HeadlessIndicator[] = [
-  { name: 'webdriver', check: () => !!(navigator as Record<string, unknown>).webdriver, weight: 0.15 },
+  { name: 'webdriver', check: () => !!(navigator as unknown as Record<string, unknown>).webdriver, weight: 0.15 },
   { name: 'headless_chrome', check: () => /HeadlessChrome/i.test(navigator.userAgent), weight: 0.15 },
-  { name: 'phantom_js', check: () => !!(window as Record<string, unknown>).__phantomas || /PhantomJS/i.test(navigator.userAgent), weight: 0.15 },
+  { name: 'phantom_js', check: () => !!(window as unknown as Record<string, unknown>).__phantomas || /PhantomJS/i.test(navigator.userAgent), weight: 0.15 },
   { name: 'no_plugins', check: () => navigator.plugins.length === 0, weight: 0.05 },
   { name: 'no_languages', check: () => !navigator.languages || navigator.languages.length === 0, weight: 0.05 },
   { name: 'no_webgl', check: () => { try { return !document.createElement('canvas').getContext('webgl'); } catch { return true; } }, weight: 0.08 },
   { name: 'no_touch', check: () => navigator.maxTouchPoints === 0 && !('ontouchstart' in window), weight: 0.02 },
-  { name: 'automation_flags', check: () => !!(window as Record<string, unknown>).__selenium_unwrapped || !!(window as Record<string, unknown>).__nightmare || !!(window as Record<string, unknown>).__puppeteer_evaluation_script__, weight: 0.12 },
-  { name: 'chrome_runtime', check: () => !!(window as Record<string, unknown>).chrome && !(window as Record<string, unknown>).chrome.runtime, weight: 0.04 },
+  { name: 'automation_flags', check: () => !!(window as unknown as Record<string, unknown>).__selenium_unwrapped || !!(window as unknown as Record<string, unknown>).__nightmare || !!(window as unknown as Record<string, unknown>).__puppeteer_evaluation_script__, weight: 0.12 },
+  { name: 'chrome_runtime', check: () => !!(window as unknown as Record<string, unknown>).chrome && !((window as unknown as Record<string, unknown>).chrome as unknown as Record<string, unknown>)?.runtime, weight: 0.04 },
   { name: 'permissions_api', check: () => { try { return navigator.permissions.query({ name: 'notifications' }).then((r: PermissionStatus) => r.state === 'denied' && Notification.permission === 'default').catch(() => false) as unknown as boolean; } catch { return false; } }, weight: 0.03 },
   { name: 'canvas_fingerprint', check: () => { try { const c = document.createElement('canvas'); c.width = 16; c.height = 16; const ctx = c.getContext('2d'); if (!ctx) return true; ctx.fillText('x', 0, 8); return c.toDataURL().length < 100; } catch { return true; } }, weight: 0.05 },
   { name: 'battery_missing', check: () => !('getBattery' in navigator), weight: 0.02 },
   { name: 'connection_missing', check: () => !('connection' in navigator), weight: 0.02 },
   { name: 'hardware_concurrency', check: () => navigator.hardwareConcurrency === undefined || navigator.hardwareConcurrency <= 1, weight: 0.03 },
-  { name: 'device_memory', check: () => !(navigator as Record<string, unknown>).deviceMemory, weight: 0.02 },
+  { name: 'device_memory', check: () => !(navigator as unknown as Record<string, unknown>).deviceMemory, weight: 0.02 },
   { name: 'screen_dimensions', check: () => screen.width === 0 || screen.height === 0, weight: 0.08 },
   { name: 'color_depth', check: () => screen.colorDepth < 24, weight: 0.03 },
   { name: 'timezone_offset', check: () => { const d = new Date(); return Math.abs(d.getTimezoneOffset() - new Date(d.toLocaleString('en-US', { timeZone: 'America/New_York' })).getTimezoneOffset()) > 720; }, weight: 0.02 },
@@ -436,7 +436,7 @@ export class BehavioralAnalyzerV4 {
 
       // ── Network signals ──
       case SignalName.CONNECTION_FINGERPRINT: {
-        const conn = (navigator as Record<string, unknown>).connection as Record<string, unknown> | undefined;
+        const conn = (navigator as unknown as Record<string, unknown>).connection as Record<string, unknown> | undefined;
         value = conn ? 0.7 : 0.3;
         rawValue = conn ? 1 : 0;
         break;
@@ -593,7 +593,7 @@ export class BehavioralAnalyzerV4 {
         new Date().getTimezoneOffset(),
         navigator.language,
         navigator.hardwareConcurrency,
-        (navigator as Record<string, unknown>).deviceMemory,
+        (navigator as unknown as Record<string, unknown>).deviceMemory,
         navigator.maxTouchPoints,
         navigator.plugins.length,
         window.devicePixelRatio,

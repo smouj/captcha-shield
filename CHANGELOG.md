@@ -9,118 +9,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [4.0.0] — 2025-05-12 — "Fortress"
+## [4.0.0] - 2025-01-XX
 
 ### 🏛️ The Unbreakable CAPTCHA
 
-The most significant update in CAPTCHA Shield history. v4.0 "Fortress" introduces 10 AI-proof challenges, 28 behavioral signals, 7 defense layers, Bayesian risk scoring, JWT cryptographic tokens, plugin system, and 8-language support.
+The most significant update in CAPTCHA Shield history. v4.0 "Fortress" is a complete rewrite introducing 10 AI-proof challenges, 28 behavioral signals, 7 defense layers, Bayesian risk scoring, JWT cryptographic tokens, plugin system, and 8-language support.
 
-### Added / Añadido
+### Added
 
-#### 🧩 10 AI-Proof Challenges (replaces 7 previous)
-- **Adversarial Puzzle**: Canvas-rendered puzzle with adversarial noise overlays that confuse all vision AI models (82% AI resistance)
-- **Human Intuition Grid**: 4×4 grid where one shape is subtly different — only humans detect it (91% AI resistance)
-- **Physics Chaos**: Drag objects on a balance beam to achieve equilibrium — requires real physics intuition (88% AI resistance)
-- **Temporal Memory**: 6-event sequence shown for 1.8s, then reproduce exact order (75% AI resistance)
-- **Optical Illusion Maze**: Navigate maze with Moiré/Hermann/Penrose illusion overlays (93% AI resistance)
-- **Voice Rhythm**: Repeat audio rhythm pattern via tapping (85% AI resistance)
-- **Gesture Signature**: Trace a gesture with natural movement — detects automated precision (87% AI resistance)
-- **Contextual Reasoning**: "What happens next?" — only humans understand physical/social causality (94% AI resistance)
-- **Live 3D Biometric**: Rotate 3D object to match target orientation (90% AI resistance)
-- **Zero-Knowledge Proof**: SHA-256 proof-of-work + visual patch matching (96% AI resistance)
+- **10 AI-proof interactive challenges**: Adversarial Puzzle, Human Intuition Grid, Physics Chaos, Temporal Memory, Optical Illusion Maze, Voice Rhythm, Gesture Signature, Contextual Reasoning, Live 3D Biometric, Zero-Knowledge Proof
+- **28 behavioral signals** (up from 14) with Bayesian risk scoring across 7 categories (Motor, Temporal, Device, Cognitive, Environment, Network, Biometric)
+- **Multi-layer verification**: Behavioral pre-check → Dynamic challenge → QR mobile → WebAuthn/Passkey → Cryptographic JWT token
+- **3 verification modes**: Light (minimal friction), Fortress (maximum security, default), Hybrid (adaptive)
+- **JWT token generation** with HMAC-SHA256 (60s TTL, ephemeral private key, single-use nonce)
+- **Plugin system** for community challenges with lifecycle hooks (onInit, onDestroy) and `createPlugin()` factory
+- **i18n support** for 8 languages (en, es, fr, de, pt, ja, zh, ko) with auto-detection
+- **Admin dashboard** with real-time analytics, 28-signal matrix, challenge distribution, risk levels, and export
+- **WCAG 2.2 AA accessibility** support with keyboard navigation, screen reader labels, audio fallbacks, and extended time
+- **Zero telemetry** by default
+- **TensorFlow.js Lite** on-device ML model architecture
+- **WebAssembly module stubs** for critical challenges
+- **Code obfuscation** for production widget.js
+- **CDN integration** (jsDelivr/unpkg) for widget.js distribution
+- **Webhook notifications** support for verification events
+- **Multi-tenant support** for SaaS deployments
+- **React npm package** export for direct component integration
+- **QR mobile verification** (120s timeout, 6-digit code, second-device proof)
+- **Headless browser detection** (40+ vectors including Puppeteer, Selenium, Playwright)
+- **Device fingerprinting** (WebRTC, Battery API, Sensor Fusion, Screen Resolution, Timezone)
+- **Dynamic challenge difficulty** selection based on risk score (Easy → Medium → Hard → Extreme)
+- **Instant block** at >40% risk score
+- **Cooldown system** (5s × attempts, capped at 60s)
+- **Shadow DOM widget** with 3-retry exponential backoff and fallback UI
+- **API routes**: `POST /api/captcha/generate`, `POST /api/captcha/verify`, `GET /api/captcha/analytics`
+- **Server verification module** (`captcha-shield-server`): one-line backend verification with Express middleware, Next.js helper, and standalone function
 
-#### 🧠 28 Behavioral Signals (up from 14)
-- **Motor (8)**: Mouse path linearity, speed variance, acceleration pattern, pointer precision, pointer pressure, click precision, scroll behavior, gesture smoothness
-- **Temporal (6)**: Timing consistency, reaction time, hesitation pattern, inter-event interval, task completion rhythm, temporal anomaly
-- **Device (6)**: Device fingerprint, screen resolution, timezone consistency, battery API, sensor fusion (accelerometer/gyroscope), WebRTC fingerprint
-- **Cognitive (4)**: Decision latency, error correction, pattern recognition, entropy score
-- **Environment (2)**: Tab visibility, environment consistency
-- **Network (1)**: Connection fingerprint
-- **Biometric (1)**: Keyboard dynamics
+### Changed
 
-#### 🛡️ 7 Defense Layers
-1. Headless browser detection (40+ fingerprinting vectors)
-2. Behavioral pre-check (28 signals, Bayesian scoring)
-3. Dynamic challenge selection (risk-adaptive)
-4. Interactive challenge (Canvas/WebGL rendered)
-5. QR mobile verification (120s, 6-digit code)
-6. WebAuthn/Passkey (optional, biometric)
-7. Cryptographic token (JWT HMAC-SHA256, 60s TTL, single-use nonce)
+- Complete rewrite of behavioral analyzer (v3 14 signals → v4 28 signals with Bayesian inference)
+- Upgraded from v3.1 to v4.0 "Fortress" architecture
+- Enhanced token security (HMAC-SHA256 with ephemeral keys, replacing client-only verification)
+- Improved widget with risk meter visualization and verification layer progress indicator
+- Challenge types redesigned with adversarial noise overlays and Canvas/WebGL rendering
+- Risk scoring upgraded from weighted average to Bayesian inference with prior probabilities
 
-#### 🔐 Token System
-- **JWT HMAC-SHA256 tokens** with Web Crypto API
-- **60-second TTL** by default (configurable)
-- **Single-use nonce** (jti claim) prevents replay attacks
-- **Token payload** includes: risk score, challenge type, verified layers, device fingerprint hash
-- **Server verification module** (`captcha-shield-server`): one-line backend verification
+### Breaking Changes
 
-#### 🧩 Plugin System
-- Register custom challenge types
-- Register custom signal processors
-- Lifecycle hooks (onInit, onDestroy)
-- `createPlugin()` factory helper
+- **Widget API completely redesigned** for v4.0 — all configuration keys changed
+- **Token format changed** to CSHIELD-V4 JWT (incompatible with v3 tokens)
+- **API routes require** `export const dynamic = "force-dynamic"` for static export compatibility
+- **Configuration format changed** — see migration guide below
 
-#### 🌍 Internationalization (8 languages)
-- English, Español, Français, Deutsch, Português, 日本語, 中文, 한국어
-- Automatic browser language detection
-- All challenge strings translated
+#### Migration Guide (v3.x → v4.0)
 
-#### 📊 Enhanced Analytics Dashboard
-- 4 stat cards (total, success rate, risk score, block rate)
-- Challenge type distribution chart (10 types)
-- Risk level distribution visualization
-- 28-signal behavioral matrix with category grouping
-- Verification layers breakdown
-- Recent activity log with custom scrollbar
-- Export as JSON
+```diff
+- // v3.x configuration
+- window.CaptchaShieldConfig = {
+-   riskThreshold: 0.65,
+-   challengeType: 'puzzle',
+-   language: 'es',
+- };
 
-#### 🔌 Widget v4
-- Shadow DOM isolation
-- 3-retry with exponential backoff
-- Fallback UI on failure
-- All v4.0 config options
-- Public API: `reset()`, `destroy()`, `getToken()`, `on()`, `off()`
-- Auto-resize via ResizeObserver
++ // v4.0 configuration
++ window.CaptchaShieldConfig = {
++   mode: 'fortress',           // replaces riskThreshold + challengeType
++   language: 'es',             // same key, now supports 8 languages
++   showRiskMeter: true,        // new: risk meter visualization
++   accessibilityMode: false,   // new: WCAG 2.2 AA support
++ };
+```
 
-#### 📡 API Routes
-- `POST /api/captcha/generate` — Create challenge (rate-limited, 10/min/IP)
-- `POST /api/captcha/verify` — Verify solution (single-use, replay-protected)
-- `GET /api/captcha/analytics` — Aggregated analytics
+```diff
+- // v3.x token verification (client-only)
+- const isValid = verifyTokenLocally(token);
 
-#### ♿ Accessibility
-- WCAG 2.2 AA compliance
-- Accessibility mode toggle (simplified challenges + audio/QR fallback)
-- Keyboard navigation for all challenges
-- Screen reader labels
-- ARIA attributes on interactive elements
-
-#### 🎨 UI/UX
-- Widget sizes: micro, compact, normal, full
-- Theme: light, dark, auto
-- Configurable accent color and border radius
-- Risk meter visualization
-- Multi-layer verification progress indicator
-- Framer Motion animations throughout
-
-### Technical / Técnico
-- **Next.js 16** + React 19 + TypeScript 5
-- **Tailwind CSS 4** with shadcn/ui
-- **Web Crypto API** for JWT signing
-- **Canvas/WebGL** rendering for all challenges
-- **Bayesian risk scoring** with adaptive thresholds
-- **In-memory store** with rate limiting and replay protection
-- Static export for GitHub Pages deployment
-
-### Security / Seguridad
-- Solutions never sent to client (server-side storage)
-- HMAC-SHA256 signature verification with timing-safe comparison
-- 40+ headless browser detection vectors
-- Instant block if risk > 85%
-- Challenge warning if risk > 40%
-- Rate limiting: 10 requests/minute/IP
-- Single-use challenges and tokens
-- Replay protection via nonce tracking
-- Device fingerprint consistency checks
++ // v4.0 token verification (server-side)
++ import { verifyCaptchaShieldToken } from 'captcha-shield-server';
++ const result = await verifyCaptchaShieldToken(token, {
++   secretKey: process.env.CAPTCHA_SECRET!,
++ });
+```
 
 ---
 
