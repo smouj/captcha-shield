@@ -1,8 +1,8 @@
 {
   "name": "captcha-shield",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "private": false,
-  "description": "Embeddable anti-bot verification UI with behavioral-risk signals, interactive CAPTCHA challenges, QR fallback, and GitHub Pages demo",
+  "description": "CAPTCHA Shield v4.0 'Fortress' — The unbreakable open-source CAPTCHA with 10 AI-proof challenges, 28 behavioral signals, multi-layer verification, JWT tokens, and plugin system",
   "license": "MIT",
   "author": "CAPTCHA Shield Contributors",
   "homepage": "https://smouj.github.io/captcha-shield/",
@@ -25,7 +25,12 @@
     "web-security",
     "fraud-prevention",
     "automation-detection",
-    "challenge-response"
+    "challenge-response",
+    "jwt",
+    "webauthn",
+    "zero-trust",
+    "adversarial-ml",
+    "fingerprinting"
   ],
   "scripts": {
     "dev": "next dev -p 3000",
@@ -42,6 +47,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.2",
+    "jose": "^6.0.11",
     "lucide-react": "^0.525.0",
     "next": "^16.1.1",
     "qrcode": "^1.5.4",

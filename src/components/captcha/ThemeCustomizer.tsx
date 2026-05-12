@@ -213,6 +213,11 @@ export default function ThemeCustomizer() {
     setCopiedTab(null);
   }, []);
 
+  // Alias to avoid ambiguity — must be declared before use
+  function setPrimaryColor(color: string) {
+    updateSetting('primaryColor', color);
+  }
+
   const handleHexSubmit = useCallback(() => {
     const hex = hexInput.trim();
     if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
@@ -241,11 +246,6 @@ export default function ThemeCustomizer() {
       setTimeout(() => setCopiedTab(null), 2000);
     }
   }, [configCode, embedCode]);
-
-  // Alias to avoid ambiguity
-  function setPrimaryColor(color: string) {
-    updateSetting('primaryColor', color);
-  }
 
   return (
     <div className="space-y-6">

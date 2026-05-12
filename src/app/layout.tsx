@@ -1,59 +1,32 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' });
+const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://smouj.github.io'),
-  title: "CAPTCHA Shield v3.1 - Sistema Anti-Bot Avanzado",
-  description:
-    "Sistema CAPTCHA anti-bot/anti-IA instalable en cualquier web con 2 líneas de código. 7 desafíos, 14 señales, QR móvil, personalizable. 100% client-side.",
-  icons: {
-    icon: "/captcha-shield/logo-shield-white.png",
-    shortcut: "/captcha-shield/logo-shield-white.png",
-    apple: "/captcha-shield/logo-icon-black.png",
-  },
+  title: 'CAPTCHA Shield v4.0 Fortress — The Unbreakable CAPTCHA',
+  description: 'Open-source anti-bot verification with 10 AI-proof challenges, 28 behavioral signals, multi-layer verification, and zero-trust architecture. 100% client-side by default.',
+  keywords: ['captcha', 'anti-bot', 'security', 'AI-resistant', 'behavioral analysis', 'zero-trust'],
+  authors: [{ name: 'CAPTCHA Shield Contributors' }],
   openGraph: {
-    title: "CAPTCHA Shield v3.1",
-    description: "Installable Anti-Bot / Anti-AI CAPTCHA - 7 Challenges, 14 Behavioral Signals, QR Mobile Verification, Theme Customizer",
-    siteName: "CAPTCHA Shield",
-    type: "website",
-    images: [
-      {
-        url: "/captcha-shield/social-banner.png",
-        width: 1536,
-        height: 1024,
-        alt: "CAPTCHA Shield v3.1",
-      },
-    ],
+    title: 'CAPTCHA Shield v4.0 Fortress',
+    description: 'The CAPTCHA that nobody breaks. 10 challenges, 28 signals, 7 defense layers.',
+    type: 'website',
+    url: 'https://smouj.github.io/captcha-shield/',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "CAPTCHA Shield v3.1",
-    description: "Installable Anti-Bot / Anti-AI CAPTCHA System",
-    images: ["/captcha-shield/social-banner.png"],
+    card: 'summary_large_image',
+    title: 'CAPTCHA Shield v4.0 Fortress',
+    description: 'The CAPTCHA that nobody breaks.',
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" suppressHydrationWarning className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950 text-gray-100`}
-      >
+    <html lang="en" className="dark">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

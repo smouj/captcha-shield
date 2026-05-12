@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { BarChart3, Activity, Clock, RefreshCw, Smartphone, Shield, Fingerprint, Zap } from 'lucide-react';
@@ -46,11 +46,11 @@ function loadLogs(): AttemptLog[] {
   } catch { return []; }
 }
 
-function saveLogs(logs: AttemptLog[]) {
+function _saveLogs(logs: AttemptLog[]) {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(logs.slice(0, 200)));
-  } catch {}
+  } catch { /* storage full or unavailable */ }
 }
 
 export function getAnalytics() {
@@ -75,17 +75,14 @@ export function getAnalytics() {
 }
 
 export default function AdminDashboard() {
-  const [analytics, setAnalytics] = useState<ReturnType<typeof getAnalytics> | null>(null);
-
-  const refresh = useCallback(() => {
-    setAnalytics(getAnalytics());
-  }, []);
+  const [analytics, setAnalytics] = useState<ReturnType<typeof getAnalytics> | null>(() => getAnalytics());
 
   useEffect(() => {
-    refresh();
-    const interval = setInterval(refresh, 3000);
+    const interval = setInterval(() => {
+      setAnalytics(getAnalytics());
+    }, 3000);
     return () => clearInterval(interval);
-  }, [refresh]);
+  }, []);
 
   if (!analytics) {
     return (
@@ -192,7 +189,7 @@ export default function AdminDashboard() {
           <h3 className="text-xs font-semibold text-gray-200 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-emerald-400" /> Actividad reciente
           </h3>
-          <button onClick={refresh} className="text-[10px] text-gray-500 hover:text-gray-300 flex items-center gap-1">
+          <button onClick={() => setAnalytics(getAnalytics())} className="text-[10px] text-gray-500 hover:text-gray-300 flex items-center gap-1">
             <RefreshCw className="w-2.5 h-2.5" /> Actualizar
           </button>
         </div>
@@ -218,7 +215,7 @@ export default function AdminDashboard() {
         {/* Clear data */}
         {analytics.total > 0 && (
           <div className="mt-3 pt-2 border-t border-gray-700/50">
-            <button onClick={() => { localStorage.removeItem(STORAGE_KEY); refresh(); }}
+            <button onClick={() => { localStorage.removeItem(STORAGE_KEY); setAnalytics(getAnalytics()); }}
               className="text-[9px] text-gray-600 hover:text-red-400 transition-colors">
               Limpiar datos de sesión
             </button>
